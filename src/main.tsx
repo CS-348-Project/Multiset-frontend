@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home, Root } from "./routes";
 import "./index.css";
+import OAuthCallback from './components/callbacks/OAuthCallback';
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />,
+  },
+  {
+    path: "/auth/callback",
+    element: <OAuthCallback />,
   },
 ]);
 
