@@ -1,4 +1,5 @@
 import DefaultLayout from "@/components/layout/default-layout";
+import { PurchaseForm } from "@/components/PurchaseForm";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 
@@ -15,10 +16,10 @@ const Home = () => {
       <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         <div className="flex items-center gap-4">
           <div className="flex flex-col gap-2">
-            <h1 className="font-semibold text-white text-2xl md:text-3xl lg:text-4xl">
+            <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl">
               Welcome Back, User!
             </h1>
-            <p className="text-white text-sm md:text-base">
+            <p className="text-black text-sm md:text-base">
               You have <span className="text-rose">$20.00</span> in unsettled
               payments.
             </p>
@@ -41,15 +42,16 @@ const Home = () => {
             </Popover>
           </div>
         </div>
+        <PurchaseForm />
 
-        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
-          <div className="bg-creme col-span-2 row-span-2 w-full aspect-[5/4] rounded-xl" />
+        {/* <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
+          <div className="col-span-2 row-span-2 w-full aspect-[5/4] rounded-xl" />
           <div className="bg-creme w-full aspect-[5/4] rounded-xl" />
           <div className="bg-creme w-full aspect-[5/4] rounded-xl" />
           <div className="bg-creme w-full aspect-[5/4] rounded-xl" />
           <div className="bg-creme w-full aspect-[5/4] rounded-xl" />
           <div className="bg-creme w-full aspect-[5/4] rounded-xl" />
-        </div>
+        </div> */}
       </div>
     </DefaultLayout>
   );
