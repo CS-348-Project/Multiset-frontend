@@ -15,7 +15,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
+import { apiService } from "@/utils/api";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -26,6 +27,7 @@ const FormSchema = z.object({
 });
 
 export function PurchaseForm() {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -35,7 +37,18 @@ export function PurchaseForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(data) {
+    data = {
+      ...data,
+      group_id: 1,
+      purchaser: 2,
+      purchase_splits: [
+        {
+          amount: "0",
+          borrower: 2,
+        },
+      ],
+    };
     toast({
       title: "You submitted the following values:",
       description: (
@@ -44,6 +57,7 @@ export function PurchaseForm() {
         </pre>
       ),
     });
+    apiService.post("/api/purchases/new-purchase", data);
   }
 
   return (
