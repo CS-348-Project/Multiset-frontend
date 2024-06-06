@@ -20,7 +20,7 @@ import { apiService } from "@/utils/api";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "Nasme must be at least 2 characters.",
   }),
   category: z.string(),
   total_cost: z.number(),
@@ -37,7 +37,8 @@ export function PurchaseForm() {
     },
   });
 
-  function onSubmit(data) {
+  function onSubmit(data: any) {
+    // TODO: Remove the hardcoded group_id, purchaser and purchase_splits -> then typecast data again with z.infer<typeof FormSchema>
     data = {
       ...data,
       group_id: 1,

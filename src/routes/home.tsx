@@ -42,16 +42,15 @@ const Home = () => {
             </Popover>
           </div>
         </div>
-        <PurchaseForm />
 
-        {/* <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
           <div className="col-span-2 row-span-2 w-full aspect-[5/4] rounded-xl" />
           <div className="bg-creme w-full aspect-[5/4] rounded-xl" />
           <div className="bg-creme w-full aspect-[5/4] rounded-xl" />
           <div className="bg-creme w-full aspect-[5/4] rounded-xl" />
           <div className="bg-creme w-full aspect-[5/4] rounded-xl" />
           <div className="bg-creme w-full aspect-[5/4] rounded-xl" />
-        </div> */}
+        </div>
       </div>
     </DefaultLayout>
   );
