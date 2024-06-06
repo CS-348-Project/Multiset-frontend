@@ -20,7 +20,7 @@ import { apiService } from "@/utils/api";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
-    message: "Nasme must be at least 2 characters.",
+    message: "Name must be at least 2 characters.",
   }),
   category: z.string(),
   total_cost: z.number(),
