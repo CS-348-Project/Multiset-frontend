@@ -1,5 +1,5 @@
 import DefaultLayout from "@/components/layout/default-layout";
-import { PurchaseForm } from "@/components/PurchaseForm";
+import { PurchaseForm } from "@/components/purchase/PurchaseForm";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 
