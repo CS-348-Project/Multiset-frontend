@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, BrowserRouter } from "react-router-dom";
 import { Home, Root } from "./routes";
 import "./index.css";
-import OAuthCallback from './components/callbacks/OAuthCallback';
 import { Toaster } from "./components/ui/toaster";
 import { Purchase } from "./routes/purchase";
+import SocialAuth from "./routes/social-auth/index";
 
 const router = createBrowserRouter([
   {
@@ -17,12 +17,12 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: "/auth/callback",
-    element: <OAuthCallback />,
-  },
-  {
     path: "/purchase",
     element: <Purchase />,
+  },
+  {
+    path: "/auth",
+    element: <SocialAuth />,
   },
 ]);
 
