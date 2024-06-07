@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { apiService } from "@/utils/api";
+import { Select } from "@/components/ui/select";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -64,13 +65,11 @@ export function SettlementForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>To</FormLabel>
               <FormControl>
-                <Input placeholder="Ex: Apples" {...field} />
+                <Select {...field} />
               </FormControl>
-              <FormDescription>
-                A short description of what you purchased!
-              </FormDescription>
+              <FormDescription>Who are you settling with?</FormDescription>
               <FormMessage />
             </FormItem>
           )}
