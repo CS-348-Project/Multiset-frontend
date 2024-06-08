@@ -1,17 +1,31 @@
 import DefaultLayout from "@/components/layout/default-layout";
 import { PieChart } from "@/components/PieChart";
+import { BarChart } from "@/components/BarChart";
 import { apiService } from "@/utils/api";
 import { useEffect, useState } from "react";
 
+const data = [
+  {
+    user_id: "10",
+    value: 200,
+  },
+  {
+    user_id: "20",
+    value: 150,
+  },
+  {
+    user_id: "30",
+    value: 500,
+  },
+];
+
 export const Analytics = () => {
-  const [data, setData] = useState([]);
   const [graphData, setGraphData] = useState([{}]);
   useEffect(() => {
     apiService
       // TODO: make the group ID dynamic
       .get(`/api/analytics/purchase-categories?group_id=1`)
       .then((response) => {
-        setData(response.data);
         const new_graph_data = construct_graph_data(response.data);
         setGraphData(new_graph_data);
       });
@@ -35,6 +49,9 @@ export const Analytics = () => {
       <div className="h-full grid grid-cols-2 grap-4">
         <div>
           <PieChart data={graphData} />
+        </div>
+        <div>
+          <BarChart data={data} />
         </div>
       </div>
     </DefaultLayout>
