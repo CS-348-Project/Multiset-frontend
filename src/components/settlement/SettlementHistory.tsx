@@ -12,10 +12,13 @@ import {
 
 export const SettlementHistory = () => {
   const [settlements, setSettlements] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
   useEffect(() => {
     // TODO: pass in group info to display only group's settlements
     apiService.get("/api/settlements").then((response) => {
       setSettlements(response.data);
+      setLoading(false);
     });
   }, []);
 
@@ -35,7 +38,12 @@ export const SettlementHistory = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {settlements &&
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={4}>Loading...</TableCell>
+            </TableRow>
+          ) : (
+            settlements &&
             settlements.map((settlement: TSettlement) => {
               return (
                 <TableRow key={settlement.id}>
@@ -52,7 +60,8 @@ export const SettlementHistory = () => {
                   </TableCell>
                 </TableRow>
               );
-            })}
+            })
+          )}
         </TableBody>
       </Table>
     </div>

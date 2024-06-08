@@ -11,3 +11,9 @@ export interface TSettlement {
   receiver: TSettlementMemberInfo;
   created_at: Date;
 }
+
+export interface TSettlementCreateDTO {
+  sender_id: number;
+  receiver_id: number;
+  amount: number;
+}

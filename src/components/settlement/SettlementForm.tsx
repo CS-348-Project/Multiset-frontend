@@ -17,14 +17,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { apiService } from "@/utils/api";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { TSettlementCreateDTO } from "./types/SettlementTypes";
 
 const FormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  category: z.string(),
-  total_cost: z.number(),
+  receiver_id: z.coerce.number({ message: "Recipient required" }),
+  amount: z.coerce.number(),
 });
 
 export function SettlementForm() {
@@ -32,26 +36,34 @@ export function SettlementForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
-      category: "",
-      total_cost: 0,
+      receiver_id: undefined,
+      amount: 0,
     },
   });
 
-  function onSubmit(data: any) {
-    // TODO: Remove the hardcoded group_id
+  function onSubmit(data: Partial<TSettlementCreateDTO>) {
+    // TODO: Remove the hardcoded sender_id
     data = {
       ...data,
+      sender_id: 1,
     };
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-    apiService.post("/api/purchases/new-purchase", data);
+    apiService
+      .post("/api/settlements/save", data)
+      .then(() => {
+        toast({
+          title: "Success",
+          description: "Settlement submitted successfully",
+          variant: "success",
+        });
+      })
+      .catch((e) => {
+        console.log("failed");
+        toast({
+          title: "Error",
+          description: e.response.data.message,
+          variant: "destructive",
+        });
+      });
   }
 
   return (
@@ -62,13 +74,26 @@ export function SettlementForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
         <FormField
           control={form.control}
-          name="name"
+          name="receiver_id"
           render={({ field }) => (
             <FormItem>
               <FormLabel>To</FormLabel>
-              <FormControl>
-                <Select {...field} />
-              </FormControl>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value ? String(field.value) : undefined}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a recipient" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {/* TODO: replace with actual member data */}
+                  <SelectItem value="1">Emma Huang</SelectItem>
+                  <SelectItem value="2">Ben Ng</SelectItem>
+                  <SelectItem value="3">Catherine Kim</SelectItem>
+                </SelectContent>
+              </Select>
               <FormDescription>Who are you settling with?</FormDescription>
               <FormMessage />
             </FormItem>
@@ -76,23 +101,10 @@ export function SettlementForm() {
         />
         <FormField
           control={form.control}
-          name="category"
+          name="amount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Category</FormLabel>
-              <FormControl>
-                <Input placeholder="Ex: Groceries" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="total_cost"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Total Cost</FormLabel>
+              <FormLabel>Amount</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
