@@ -6,6 +6,7 @@ import "./index.css";
 import OAuthCallback from './components/callbacks/OAuthCallback';
 import { Toaster } from "./components/ui/toaster";
 import { Purchase } from "./routes/purchase";
+import { Analytics } from "./routes/analytics";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "/purchase",
     element: <Purchase />,
+  },
+  {
+    path: "/analytics",
+    element: <Analytics />,
   },
 ]);
 
