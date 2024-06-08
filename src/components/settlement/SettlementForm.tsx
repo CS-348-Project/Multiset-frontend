@@ -28,7 +28,13 @@ import { TSettlementCreateDTO } from "./types/SettlementTypes";
 
 const FormSchema = z.object({
   receiver_id: z.coerce.number({ message: "Recipient required" }),
-  amount: z.coerce.number(),
+  amount: z.coerce.number().refine(
+    (value) => {
+      const decimalPlaces = value.toString().split(".")[1]?.length || 0;
+      return decimalPlaces <= 2;
+    },
+    { message: "Maximum of 2 decimal places allowed" }
+  ),
 });
 
 export function SettlementForm() {
@@ -46,6 +52,7 @@ export function SettlementForm() {
     data = {
       ...data,
       sender_id: 1,
+      amount: data.amount * 100,
     };
     apiService
       .post("/api/settlements/save", data)

@@ -54,7 +54,7 @@ export const SettlementHistory = () => {
                     {settlement.receiver.first_name}{" "}
                     {settlement.receiver.last_name}
                   </TableCell>
-                  <TableCell>{settlement.amount}</TableCell>
+                  <TableCell>${(settlement.amount / 100).toFixed(2)}</TableCell>
                   <TableCell>
                     {new Date(settlement.created_at).toLocaleString()}
                   </TableCell>
