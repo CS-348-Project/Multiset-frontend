@@ -52,7 +52,7 @@ export function SettlementForm() {
     data = {
       ...data,
       sender_id: 1,
-      amount: data.amount * 100,
+      amount: data.amount ? data.amount * 100 : 0,
     };
     apiService
       .post("/api/settlements/save", data)
