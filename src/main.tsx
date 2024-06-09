@@ -6,6 +6,7 @@ import "./index.css";
 import { Toaster } from "./components/ui/toaster";
 import { Purchase } from "./routes/purchase";
 import SocialAuth from "./routes/social-auth/index";
+import { Analytics } from "./routes/analytics";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "/auth",
     element: <SocialAuth />,
+  },
+  {
+    path: "/analytics",
+    element: <Analytics />,
   },
 ]);
 
