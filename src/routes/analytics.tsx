@@ -22,9 +22,9 @@ export const Analytics = () => {
     const newGraphData = [];
     for (const entry of data) {
       newGraphData.push({
-        id: entry["category"],
-        label: entry["category"],
-        value: entry["count"],
+        id: entry.category,
+        label: entry.category,
+        value: entry.count,
       });
     }
     return newGraphData;
