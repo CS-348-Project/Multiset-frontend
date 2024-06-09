@@ -66,11 +66,14 @@ export const Analytics = () => {
 
   return (
     <DefaultLayout>
+      <h1 className="text-3xl font-bold">Analytics</h1>
       <div className="h-full grid grid-cols-2 grap-4">
         <div>
+          <h2 className="text-xl font-bold">Purchase Categories:</h2>
           <PieChart data={purchaseCategoriesData} />
         </div>
         <div>
+          <h2 className="text-xl font-bold">Spending amount:</h2>
           <BarChart
             colors={colors}
             data={topSpendersLeaderboardData}
@@ -79,6 +82,7 @@ export const Analytics = () => {
           />
         </div>
         <div>
+          <h2 className="text-xl font-bold">Spending frequency:</h2>
           <BarChart
             colors={colors}
             data={numPurchasesLeaderboardData}
