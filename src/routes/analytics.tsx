@@ -1,7 +1,8 @@
 import DefaultLayout from "@/components/layout/default-layout";
-import { PieChart } from "@/components/PieChart";
+import { PieChart } from "@/components/analytics/PieChart";
 import { apiService } from "@/utils/api";
 import { useEffect, useState } from "react";
+import { CategoryCount } from "@/types/PurchaseCategoryCount";
 
 export const Analytics = () => {
   const [data, setData] = useState([]);
@@ -17,7 +18,7 @@ export const Analytics = () => {
       });
   }, []);
 
-  const construct_graph_data = (data) => {
+  const construct_graph_data = (data: CategoryCount[]) => {
     const newGraphData = [];
     for (const entry of data) {
       newGraphData.push({
