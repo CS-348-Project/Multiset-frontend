@@ -19,13 +19,12 @@ export const Analytics = () => {
 
   const construct_graph_data = (data) => {
     const newGraphData = [];
-    for (const [key, val] of Object.entries(data)) {
-      const graph_data = {
-        id: key,
-        label: key,
-        value: val,
-      };
-      newGraphData.push(graph_data);
+    for (const entry of data) {
+      newGraphData.push({
+        id: entry["category"],
+        label: entry["category"],
+        value: entry["count"],
+      });
     }
     return newGraphData;
   };
