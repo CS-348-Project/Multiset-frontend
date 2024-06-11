@@ -3,9 +3,10 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home, Root } from "./routes";
 import "./index.css";
-import OAuthCallback from './components/callbacks/OAuthCallback';
+import OAuthCallback from "./components/callbacks/OAuthCallback";
 import { Toaster } from "./components/ui/toaster";
 import { Purchase } from "./routes/purchase";
+import { Settlement } from "./routes/settlement";
 import { Analytics } from "./routes/analytics";
 
 const router = createBrowserRouter([
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/purchase",
     element: <Purchase />,
+  },
+  {
+    path: "/settlement",
+    element: <Settlement />,
   },
   {
     path: "/analytics",
