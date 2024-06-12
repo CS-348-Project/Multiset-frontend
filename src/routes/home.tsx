@@ -1,4 +1,5 @@
 import DefaultLayout from "@/components/layout/default-layout";
+import { PurchaseForm } from "@/components/purchase/PurchaseForm";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import NewGroupButton from "@/components/ui/groups/new-group-button";

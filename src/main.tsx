@@ -6,6 +6,7 @@ import "./index.css";
 import OAuthCallback from "./components/callbacks/OAuthCallback";
 import { Toaster } from "./components/ui/toaster";
 import { Purchase } from "./routes/purchase";
+import { Settlement } from "./routes/settlement";
 import { Analytics } from "./routes/analytics";
 import groupsRoutes from "./routes/groups";
 
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/purchase",
     element: <Purchase />,
+  },
+  {
+    path: "/settlement",
+    element: <Settlement />,
   },
   {
     path: "/analytics",

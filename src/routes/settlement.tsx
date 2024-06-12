@@ -1,14 +1,16 @@
 import DefaultLayout from "@/components/layout/default-layout";
-import { PurchaseForm } from "@/components/purchase/PurchaseForm";
+import { SettlementForm } from "@/components/settlement/SettlementForm";
+import { SettlementHistory } from "@/components/settlement/SettlementHistory";
 
-export const Purchase = () => {
+export const Settlement = () => {
   return (
     <DefaultLayout>
       <div className="mx-10">
         <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl my-10">
-          New Purchase
+          Settlements
         </h1>
-        <PurchaseForm />
+        <SettlementForm />
+        <SettlementHistory />
       </div>
     </DefaultLayout>
   );

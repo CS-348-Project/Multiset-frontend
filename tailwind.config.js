@@ -38,6 +38,10 @@ module.exports = {
           DEFAULT: "hsl(var(--rose))",
           foreground: "hsl(var(--dusk))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
         destructive: {
           DEFAULT: "hsl(var(--darkrose))",
           foreground: "hsl(var(--creme))",
