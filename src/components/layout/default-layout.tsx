@@ -3,6 +3,7 @@ import {
   LandmarkIcon,
   LineChartIcon,
   PiIcon,
+  TangentIcon,
   UsersIcon,
 } from "lucide-react";
 import {
@@ -71,6 +72,7 @@ const MENU_ITEMS = [
   { icon: <HomeIcon className="h-4 w-4" />, label: "Home" },
   { icon: <UsersIcon className="h-4 w-4" />, label: "Groups" },
   { icon: <LineChartIcon className="h-4 w-4" />, label: "Stats" },
+  { icon: <TangentIcon className="h-4 w-4" />, label: "Optimization" }
 ];
 
 const MenuList = () => {

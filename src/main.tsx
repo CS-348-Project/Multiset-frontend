@@ -8,6 +8,7 @@ import { Toaster } from "./components/ui/toaster";
 import { Purchase } from "./routes/purchase";
 import { Settlement } from "./routes/settlement";
 import { Analytics } from "./routes/analytics";
+import { Optimization } from "./routes/optimization";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
     path: "/analytics",
     element: <Analytics />,
   },
+  {
+    path: "/optimization",
+    element: <Optimization />,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
