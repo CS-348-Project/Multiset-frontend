@@ -8,6 +8,7 @@ import { Toaster } from "./components/ui/toaster";
 import { Purchase } from "./routes/purchase";
 import { Settlement } from "./routes/settlement";
 import { Analytics } from "./routes/analytics";
+import { GroceryList } from "./routes/groceryList";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: "/analytics",
     element: <Analytics />,
+  },
+  {
+    path: "/grocery-list",
+    element: <GroceryList />,
   },
 ]);
 
