@@ -59,6 +59,11 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
                 View Optimal Payments
             </h2>
 
+            <p className="text-black text-sm md:text-base mb-10">
+                Use the dropdown below to select a group and view the optimal payments for the group.
+                This is only available for groups that have opted in to the optimization feature.
+            </p>
+
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
                     <FormField
@@ -77,7 +82,7 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {props.groups && props.groups.map((group: Group) => {
+                                        {props.groups && props.groups.filter((group: Group) => group.optimize_payments).map((group: Group) => {
                                             return (
                                                 <SelectItem key={group.id} value={group.id.toString()}>
                                                     {group.name}
