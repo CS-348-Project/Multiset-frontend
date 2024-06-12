@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 export const Purchase = () => {
   return (
     <DefaultLayout>
-      <div className="mx-10">
+      <div className="mx-10 mb-20">
         <h1 className="font-semibold text-black text-2xl my-10">
           New Purchase
         </h1>

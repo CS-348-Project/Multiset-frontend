@@ -1,9 +1,6 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,6 +14,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { apiService } from "@/utils/api";
+import { Checkbox } from "../ui/checkbox";
+import { useEffect, useState } from "react";
+import { UserInfo } from "@/types/UserInfo";
+import { dollarsToCents } from "@/utils/currencyConverter";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -24,31 +25,45 @@ const FormSchema = z.object({
   }),
   category: z.string(),
   total_cost: z.number(),
+  purchase_splits: z.array(
+    z.object({
+      borrower: z.number(),
+      amount: z.number(),
+    })
+  ),
 });
 
 export function PurchaseForm() {
   const { toast } = useToast();
+  const [usersInGroup, setUsersInGroup] = useState<UserInfo[]>([]);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
       category: "",
       total_cost: 0,
+      purchase_splits: [],
     },
   });
+  useEffect(() => {
+    // TODO: Get the members from the group
+    apiService.get("/api/groups/?group_id=1&detailed=true").then((response) => {
+      setUsersInGroup(response.data[0]["users"]);
+    });
+  }, []);
 
   function onSubmit(data: any) {
     // TODO: Remove the hardcoded group_id, purchaser and purchase_splits -> then typecast data again with z.infer<typeof FormSchema>
     data = {
       ...data,
+      purchase_splits: data.purchase_splits.map((split: any) => ({
+        ...split,
+        amount: dollarsToCents(split.amount),
+      })),
+      total_cost: dollarsToCents(data.total_cost),
       group_id: 1,
       purchaser: 2,
-      purchase_splits: [
-        {
-          amount: "0",
-          borrower: 2,
-        },
-      ],
     };
     toast({
       title: "You submitted the following values:",
@@ -100,12 +115,92 @@ export function PurchaseForm() {
             <FormItem>
               <FormLabel>Total Cost</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  type="number"
+                  {...field}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    field.onChange(Number(value));
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="purchase_splits"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Purchase Split</FormLabel>
+                {usersInGroup.map((user) => {
+                  const split = field.value.find(
+                    (split) => split.borrower === user.id
+                  );
+                  const isChecked = split !== undefined;
+                  const amount = isChecked ? split?.amount : 0;
+
+                  return (
+                    <div
+                      key={user.id}
+                      className="flex flex-row items-center space-x-3 space-y-0 w-2/3"
+                    >
+                      <Checkbox
+                        className="my-2"
+                        checked={isChecked}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            field.onChange([
+                              ...(field.value || []),
+                              { borrower: user.id, amount: 0 },
+                            ]);
+                          } else {
+                            field.onChange(
+                              field.value?.filter(
+                                (value) => value.borrower !== user.id
+                              )
+                            );
+                          }
+                        }}
+                      />
+                      <FormLabel className="w-full">
+                        {user.first_name} {user.last_name}
+                      </FormLabel>
+                      <div className="flex items-center justify-end w-full">
+                        {isChecked && (
+                          <div className="flex items-center">
+                            <h3 className="text-sm mr-5">$</h3>
+                            <Input
+                              type="number"
+                              className="w-100"
+                              placeholder="Enter a number"
+                              value={amount}
+                              onChange={(e) => {
+                                const updatedValue = Number(e.target.value);
+                                const updatedSplits = field.value.map(
+                                  (split) => {
+                                    if (split.borrower === user.id) {
+                                      return { ...split, amount: updatedValue };
+                                    }
+                                    return split;
+                                  }
+                                );
+                                field.onChange(updatedSplits);
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </FormItem>
+            );
+          }}
+        />
+
         <Button type="submit">Submit</Button>
       </form>
     </Form>

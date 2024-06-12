@@ -16,19 +16,16 @@ export const PurchaseHistory = () => {
   const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
-    // TODO: pass in group info to display only group's purchases
-    const user_id = 1;
+    // TODO: pass in group id and user id to display only user's purchases
     const group_id = 1;
     apiService
-      .get(`/api/purchases/${user_id}?group_id=${group_id}`)
+      .get(`/api/purchases/all-purchases?group_id=${group_id}`)
       .then((response) => {
         setPurchases(response.data);
         setLoading(false);
-        console.log(response.data);
       });
   }, []);
 
-  // TODO: add filters to only show the current user's purchases
   return (
     <div>
       <Table>
