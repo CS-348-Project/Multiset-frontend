@@ -12,7 +12,7 @@ export const Optimization = () => {
 
     //TODO wire in the real user ID
     useEffect(() => {
-        setUserId(11);
+        setUserId(18);
     }, [])
 
     useEffect(() => {

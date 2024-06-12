@@ -54,7 +54,7 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
     });
 
     return (
-        <div className="mr-10">
+        <div className="mr-10 mb-10">
             <h2 className="font-semibold text-black text-xl my-5">
                 View Optimal Payments
             </h2>
@@ -119,8 +119,7 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
                                     return (
                                         <TableRow key={settlement.to_id}>
                                             <TableCell>
-                                                {/* TODO name */}
-                                                {settlement.to_id}
+                                                {settlement.to_first_name} {settlement.to_last_name}
                                             </TableCell>
                                             <TableCell>${(settlement.amount / 100).toFixed(2)}</TableCell>
                                         </TableRow>
@@ -129,7 +128,7 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
                         ) : optimizationData ?
                             (
                                 <TableRow>
-                                    <TableCell colSpan={2} className="text-center">You have no outstanding balances.</TableCell>
+                                    <TableCell colSpan={2} className="text-center">You have no outstanding balances in this group!</TableCell>
                                 </TableRow>
                             ) : null}
                 </TableBody>
