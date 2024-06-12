@@ -3,10 +3,11 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home, Root } from "./routes";
 import "./index.css";
-import OAuthCallback from './components/callbacks/OAuthCallback';
+import OAuthCallback from "./components/callbacks/OAuthCallback";
 import { Toaster } from "./components/ui/toaster";
 import { Purchase } from "./routes/purchase";
 import { Analytics } from "./routes/analytics";
+import groupsRoutes from "./routes/groups";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
     path: "/analytics",
     element: <Analytics />,
   },
+  groupsRoutes,
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
