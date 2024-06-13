@@ -8,6 +8,8 @@ import { Toaster } from "./components/ui/toaster";
 import { Purchase } from "./routes/purchase";
 import { Settlement } from "./routes/settlement";
 import { Analytics } from "./routes/analytics";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const router = createBrowserRouter([
   {
@@ -38,9 +40,11 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <main className="font-sans">
-      <RouterProvider router={router} />
-      <Toaster />
-    </main>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <main className="font-sans">
+        <RouterProvider router={router} />
+        <Toaster />
+      </main>
+    </GoogleOAuthProvider>
   </React.StrictMode>
 );

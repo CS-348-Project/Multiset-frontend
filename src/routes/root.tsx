@@ -1,12 +1,51 @@
+import { apiService } from "@/utils/api";
+import { GoogleLogin } from "@react-oauth/google";
+import { useEffect, useState } from "react";
+
 const Root = () => {
-  const handleLogin = () => {
-    window.location.href = 'http://127.0.0.1:8000/accounts/google/login/';
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
+
+  const handleLogin = (response) => {
+    console.log(response);
+    apiService
+      .post("api/auth/google", { token: response.credential })
+      .then((res) => {
+        localStorage.setItem("token", res.data.token);
+        setIsLoggedIn(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
   return (
     <div className="w-screen h-screen bg-orange-50">
       <div className="w-full h-full flex items-center justify-center">
-      <button onClick={handleLogin}>Login with Google</button>
-        <div className="text-4xl font-bold text-black"> Multiset </div>
+        {isLoggedIn ? (
+          <div>
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+        ) : (
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              handleLogin(credentialResponse);
+            }}
+            onError={() => {
+              console.log("Login Failed");
+            }}
+          />
+        )}
       </div>
     </div>
   );
