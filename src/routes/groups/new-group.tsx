@@ -78,7 +78,6 @@ const NewGroup = () => {
         user_ids: accounts.map((account) => account.id),
       })
       .then((response) => {
-        console.log(response.data);
         const groupId = response.data.id;
 
         if (!groupId) {
