@@ -17,7 +17,6 @@ const GroupPage = () => {
     return <LoadingPage />;
   }
 
-  console.log(data);
   return (
     <DefaultLayout>
       <div className="w-full h-full px-6 py-4">
