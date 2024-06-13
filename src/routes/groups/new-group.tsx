@@ -10,38 +10,99 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useToast } from "@/components/ui/use-toast";
 import { apiService } from "@/utils/api";
 import { User } from "@/utils/types";
 import { CornerUpLeftIcon, PlusIcon, XIcon } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const NewGroup = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const [groupName, setGroupName] = useState("");
   const [email, setEmail] = useState("");
   const [accounts, setAccounts] = useState<User[]>([]);
 
-  const handleAddAccount = async (e: any) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (email) {
-        const user = await apiService.get(`/users?email=${email}`);
+  const handleAddAccount = () => {
+    if (!email) return;
+
+    apiService
+      .get<User[]>(`/api/users/?email=${email}`)
+      .then((response) => {
+        if (response.data.length === 0) {
+          toast({
+            title: "User not found",
+          });
+          return;
+        }
+        const user = response.data[0];
+        console.log(user);
 
         setAccounts([...accounts, user]);
         setEmail("");
-      }
-      e.currentTarget.value = "";
-    }
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.status === 404) {
+          toast({
+            title: "User not found",
+          });
+          return;
+        }
+        toast({
+          title: error.response.statusText,
+        });
+      });
   };
 
   const createGroup = () => {
-    apiService.post("/groups/create", {
-      group: {
-        name: groupName,
-        optimize_payments: false,
-        budget: 0,
-      },
-      users: accounts,
-    });
+    if (!groupName) {
+      toast({
+        title: "Group name is required",
+      });
+      return;
+    }
+    if (accounts.length === 0) {
+      toast({
+        title: "Group must have at least one member",
+      });
+      return;
+    }
+
+    apiService
+      .post("/api/groups/create", {
+        group: {
+          name: groupName,
+          optimize_payments: false,
+          budget: null,
+        },
+        user_ids: accounts.map((account) => account.id),
+      })
+      .then((response) => {
+        console.log(response.data[0]);
+        const groupId = response.data[0].id;
+
+        if (!groupId) {
+          toast({
+            title: "Group creation failed",
+          });
+          return;
+        }
+        console.log("oop");
+        toast({
+          title: "Group created successfully",
+        });
+        setGroupName("");
+        setAccounts([]);
+
+        // navigate(`/groups/${groupId}`);
+      })
+      .catch((error) => {
+        toast({
+          title: error.response.statusText,
+        });
+      });
   };
 
   return (
@@ -81,22 +142,36 @@ const NewGroup = () => {
                   <Input
                     id="memberEmails"
                     placeholder="Enter email address"
-                    onKeyDown={handleAddAccount}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleAddAccount();
+                    }}
                   />
-                  <Button variant="ghost" size="icon">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleAddAccount}
+                  >
                     <PlusIcon className="h-5 w-5" />
                     <span className="sr-only">Add email</span>
                   </Button>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                {accounts.map((account) => (
-                  <div className="flex items-center justify-center bg-creme px-3 py-1 rounded-md text-sm text-dusk">
-                    {account}
+                {accounts.map((account, idx) => (
+                  <div
+                    className="flex items-center justify-center bg-creme px-2 py-1 rounded-md text-sm text-dusk"
+                    key={account.id}
+                  >
+                    {`${account.email} - ${account.first_name} ${account.last_name}`}
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-fit w-fit text-dusk hover:text-lilac hover:bg-transparent "
+                      className="h-fit w-fit text-dusk hover:text-lilac hover:bg-transparent px-1"
+                      onClick={() => {
+                        setAccounts(accounts.filter((_, i) => i !== idx));
+                      }}
                     >
                       <XIcon className="h-4 w-4" />
                       <span className="sr-only">Remove email</span>
