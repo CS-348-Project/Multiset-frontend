@@ -8,12 +8,15 @@ import { Toaster } from "./components/ui/toaster";
 import { Purchase } from "./routes/purchase";
 import { Settlement } from "./routes/settlement";
 import { Analytics } from "./routes/analytics";
-<<<<<<< HEAD
 import groupsRoutes from "./routes/groups";
-=======
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQueryClient,
+} from "@tanstack/react-query";
+
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
->>>>>>> 21a142dcedcd33328d79a9fb1538f2735b3072bc
 
 const router = createBrowserRouter([
   {
@@ -43,13 +46,17 @@ const router = createBrowserRouter([
   groupsRoutes,
 ]);
 
+const queryClient = new QueryClient();
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <main className="font-sans">
-        <RouterProvider router={router} />
-        <Toaster />
-      </main>
-    </GoogleOAuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <main className="font-sans">
+          <RouterProvider router={router} />
+          <Toaster />
+        </main>
+      </GoogleOAuthProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );

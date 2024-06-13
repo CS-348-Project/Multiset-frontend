@@ -37,13 +37,11 @@ const NewGroup = () => {
           return;
         }
         const user = response.data[0];
-        console.log(user);
 
         setAccounts([...accounts, user]);
         setEmail("");
       })
       .catch((error) => {
-        console.log(error);
         if (error.response.status === 404) {
           toast({
             title: "User not found",
@@ -80,8 +78,8 @@ const NewGroup = () => {
         user_ids: accounts.map((account) => account.id),
       })
       .then((response) => {
-        console.log(response.data[0]);
-        const groupId = response.data[0].id;
+        console.log(response.data);
+        const groupId = response.data.id;
 
         if (!groupId) {
           toast({
@@ -89,14 +87,13 @@ const NewGroup = () => {
           });
           return;
         }
-        console.log("oop");
         toast({
           title: "Group created successfully",
         });
         setGroupName("");
         setAccounts([]);
 
-        // navigate(`/groups/${groupId}`);
+        navigate(`/groups/${groupId}`);
       })
       .catch((error) => {
         toast({
@@ -108,7 +105,7 @@ const NewGroup = () => {
   return (
     <div className="relative w-screen h-screen flex items-center justify-center">
       <div className="absolute left-4 top-4">
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <CornerUpLeftIcon className="h-6 w-6" />
           <span className="sr-only">Back</span>
         </Button>

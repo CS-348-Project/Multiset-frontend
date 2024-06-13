@@ -1,10 +1,8 @@
 import DefaultLayout from "@/components/layout/default-layout";
-import { PurchaseForm } from "@/components/purchase/PurchaseForm";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import NewGroupButton from "@/components/ui/groups/new-group-button";
-import { Groups } from "@/utils/types";
-
+import useDetailedGroup from "@/hooks/useDetailedGroup";
 import {
   Popover,
   PopoverContent,
@@ -12,20 +10,27 @@ import {
 } from "@radix-ui/react-popover";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const [groups, setGroups] = useState<Groups[]>([
-    // {
-    //   id: 1,
-    //   name: "Group 1",
-    //   created_at: new Date(),
-    //   optimize_payments: false,
-    //   budget: 0,
-    // },
-  ]);
+  // const [groups, setGroups] = useState<Groups[]>([
+  // {
+  //   id: 1,
+  //   name: "Group 1",
+  //   created_at: new Date(),
+  //   optimize_payments: false,
+  //   budget: 0,
+  // },
+  // ]);
+  const { data, isLoading } = useDetailedGroup(2);
+  const navigate = useNavigate();
+
+  if (isLoading || !data) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <DefaultLayout>
+    <DefaultLayout hideMenu>
       <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         <div className="flex items-center gap-4">
           <div className="flex flex-col gap-2">
@@ -62,16 +67,23 @@ const Home = () => {
 
         <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
           {/* Existing Groups */}
-          {groups.length > 0 &&
+          {/* {groups.length > 0 &&
             groups.map((group) => (
               <div
                 key={group.id}
-                className="bg-creme w-full aspect-[5/4] rounded-xl first:col-span-2 first:row-span-2"
+                className="bg-creme w-full aspect-[5/4] rounded-xl"
               />
-            ))}
+            ))} */}
+
+          {/* Demo Group */}
+          <div
+            key={data.id}
+            onClick={() => navigate(`/groups/${data.id}`)}
+            className="bg-creme w-full aspect-[5/4] rounded-xl hover:cursor-pointer"
+          />
 
           {/* New Group Button */}
-          <div className="w-full aspect-[5/4] rounded-xl first:col-span-2 first:row-span-2">
+          <div className="w-full aspect-[5/4] rounded-xl">
             <NewGroupButton />
           </div>
         </div>

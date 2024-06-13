@@ -1,3 +1,4 @@
+import GroupPage from "./group-id";
 import NewGroup from "./new-group";
 
 const groupsRoutes = {
@@ -6,6 +7,10 @@ const groupsRoutes = {
     {
       path: "new",
       element: <NewGroup />,
+    },
+    {
+      path: ":id",
+      element: <GroupPage />,
     },
   ],
 };

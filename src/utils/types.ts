@@ -1,4 +1,12 @@
-export type Groups = {
+export type User = {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  user_token: string;
+};
+
+export type Group = {
   id: number;
   name: string;
   created_at: Date;
@@ -6,10 +14,6 @@ export type Groups = {
   budget: number;
 };
 
-export type User = {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  user_token: string;
+export type DetailedGroup = Group & {
+  users: User[];
 };
