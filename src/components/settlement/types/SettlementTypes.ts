@@ -1,5 +1,13 @@
 export interface TSettlementMemberInfo {
-  memberId: number;
+  member_user_id: number;
+  member_group_id: number;
+  first_name: string;
+  last_name: string;
+}
+
+export interface TGroupMember {
+  id: number;
+  email: string;
   first_name: string;
   last_name: string;
 }
@@ -13,7 +21,8 @@ export interface TSettlement {
 }
 
 export interface TSettlementCreateDTO {
-  sender_id: number;
-  receiver_id: number;
+  sender_user_id: number;
+  receiver_user_id: number;
+  group_id: number;
   amount: number;
 }

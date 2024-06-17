@@ -9,17 +9,31 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import { useToast } from "@/components/ui/use-toast";
 
 export const SettlementHistory = () => {
+  const { toast } = useToast();
   const [settlements, setSettlements] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
-    // TODO: pass in group info to display only group's settlements
-    apiService.get("/api/settlements").then((response) => {
-      setSettlements(response.data);
-      setLoading(false);
-    });
+    apiService
+      .get("/api/settlements", {
+        params: {
+          group_id: 5, // TODO: Remove hardcoded group_id
+        },
+      })
+      .then((response) => {
+        setSettlements(response.data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        toast({
+          title: "Error",
+          description: e.response.data.message,
+          variant: "destructive",
+        });
+      });
   }, []);
 
   // TODO: add filters to only show the current user's settlements
