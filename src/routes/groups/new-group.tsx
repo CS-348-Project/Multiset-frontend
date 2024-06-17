@@ -73,7 +73,6 @@ const NewGroup = () => {
         group: {
           name: groupName,
           optimize_payments: false,
-          budget: null,
         },
         user_ids: accounts.map((account) => account.id),
       })

@@ -1,4 +1,5 @@
 import DefaultLayout from "@/components/layout/default-layout";
+import LoadingPage from "@/components/layout/loading-page";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import NewGroupButton from "@/components/ui/groups/new-group-button";
@@ -9,7 +10,6 @@ import {
   PopoverTrigger,
 } from "@radix-ui/react-popover";
 import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -19,14 +19,13 @@ const Home = () => {
   //   name: "Group 1",
   //   created_at: new Date(),
   //   optimize_payments: false,
-  //   budget: 0,
   // },
   // ]);
-  const { data, isLoading } = useDetailedGroup(2);
+  const { data, isLoading } = useDetailedGroup(4);
   const navigate = useNavigate();
 
   if (isLoading || !data) {
-    return <div>Loading...</div>;
+    return <LoadingPage />;
   }
 
   return (
