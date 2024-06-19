@@ -20,7 +20,7 @@ export const SettlementHistory = () => {
     apiService
       .get("/api/settlements", {
         params: {
-          group_id: 5, // TODO: Remove hardcoded group_id
+          group_id: 1, // TODO: Remove hardcoded group_id
         },
       })
       .then((response) => {

@@ -54,7 +54,7 @@ export function SettlementForm() {
     apiService
       .get("/api/groups/", {
         params: {
-          group_id: 5, // TODO: Remove hardcoded group_id
+          group_id: 1, // TODO: Remove hardcoded group_id
           detailed: true,
         },
       }) // TODO: Remove hardcoded group
@@ -74,8 +74,8 @@ export function SettlementForm() {
     // TODO: Remove the hardcoded sender_id
     data = {
       ...data,
-      sender_user_id: 22,
-      group_id: 5, // TODO: Remove hardcoded group_id
+      sender_user_id: 23,
+      group_id: 1, // TODO: Remove hardcoded group_id
       amount: data.amount ? data.amount * 100 : 0,
     };
 
