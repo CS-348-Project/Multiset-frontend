@@ -2,8 +2,9 @@ import {
   HomeIcon,
   LandmarkIcon,
   LineChartIcon,
+  MenuIcon,
+  PanelRightIcon,
   PiIcon,
-  UsersIcon,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -48,7 +49,7 @@ const NoiseFilter = () => (
 
 const MenuWrapper = ({ children }: MenuWrapperProps) => {
   return (
-    <div className="hidden lg:block bg-dusk relative overflow-hidden">
+    <div className="w-[280px] hidden lg:block bg-dusk relative overflow-hidden">
       <NoiseFilter />
 
       <div className="relative flex h-full max-h-screen flex-col gap-2 z-10">
@@ -67,20 +68,22 @@ const MenuWrapper = ({ children }: MenuWrapperProps) => {
 };
 
 const MENU_ITEMS = [
-  { icon: <LandmarkIcon className="h-4 w-4" />, label: "Multiset" },
-  { icon: <HomeIcon className="h-4 w-4" />, label: "Home" },
-  { icon: <UsersIcon className="h-4 w-4" />, label: "Groups" },
-  { icon: <LineChartIcon className="h-4 w-4" />, label: "Stats" },
+  { icon: <HomeIcon className="h-4 w-4" />, label: "Home", href: "/home" },
+  {
+    icon: <LineChartIcon className="h-4 w-4" />,
+    label: "Stats",
+    href: "/analytics",
+  },
 ];
 
 const MenuList = () => {
   return (
     <div className="flex-1 overflow-auto py-2">
       <nav className="grid items-start px-4 text-sm font-medium">
-        {MENU_ITEMS.map(({ icon, label }, i) => (
+        {MENU_ITEMS.map(({ icon, label, href }, i) => (
           <a
             key={i}
-            href="#"
+            href={href}
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-rose transition-all hover:text-creme hover:bg-coral/10 text-lg leading-none"
           >
             <div>{icon}</div>
@@ -97,9 +100,20 @@ type ContentWrapperProps = {
 };
 const ContentWrapper = ({ children }: ContentWrapperProps) => {
   return (
-    <div className="flex flex-col bg-dusk">
+    <div className="flex-1 flex flex-col bg-dusk">
       <div className="flex h-14 lg:h-[60px] items-center gap-4 px-6">
+        <div className="lg:hidden">
+          <Button
+            variant="ghost"
+            className="p-0 hover:text-lilac hover:bg-transparent"
+          >
+            <PanelRightIcon className="h-6 w-6" />
+            <span className="sr-only">Toggle menu</span>
+          </Button>
+        </div>
+
         <div className="w-full flex-1" />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -131,19 +145,23 @@ const ContentWrapper = ({ children }: ContentWrapperProps) => {
 
 type DefaultLayoutProps = {
   menu?: React.ReactNode;
+  hideMenu?: boolean;
   children?: React.ReactNode;
 };
 
 const DefaultLayout = ({
   menu = <MenuList />,
+  hideMenu = false,
   children,
 }: DefaultLayoutProps) => {
   return (
-    <div className="min-h-screen w-screen grid lg:grid-cols-[280px_1fr]">
-      <MenuWrapper>
-        <MenuHeader />
-        {menu}
-      </MenuWrapper>
+    <div className="min-h-screen w-screen bg-dusk flex flex-row">
+      {!hideMenu && (
+        <MenuWrapper>
+          <MenuHeader />
+          {menu}
+        </MenuWrapper>
+      )}
       <ContentWrapper>{children}</ContentWrapper>
     </div>
   );
