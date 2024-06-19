@@ -1,8 +1,6 @@
 import DefaultLayout from "@/components/layout/default-layout";
 import { PurchaseForm } from "@/components/purchase/PurchaseForm";
 import { PurchaseHistory } from "@/components/purchase/PurchaseHistory";
-import { apiService } from "@/utils/api";
-import { useEffect, useState } from "react";
 
 export const Purchase = () => {
   return (

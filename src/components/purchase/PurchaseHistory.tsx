@@ -10,14 +10,15 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { centsToDollars } from "@/utils/currencyConverter";
+import { useParams } from "react-router-dom";
 
 export const PurchaseHistory = () => {
   const [purchases, setPurchases] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const params = useParams<{ id: string }>();
+  const group_id = Number(params.id);
 
   useEffect(() => {
-    // TODO: pass in group id and user id to display only user's purchases
-    const group_id = 1;
     apiService
       .get(`/api/purchases/all-purchases?group_id=${group_id}`)
       .then((response) => {

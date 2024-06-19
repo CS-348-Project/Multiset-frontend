@@ -18,6 +18,7 @@ import { Checkbox } from "../ui/checkbox";
 import { useEffect, useState } from "react";
 import { UserInfo } from "@/types/UserInfo";
 import { dollarsToCents } from "@/utils/currencyConverter";
+import { useParams } from "react-router-dom";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -31,11 +32,15 @@ const FormSchema = z.object({
       amount: z.number(),
     })
   ),
+  group_id: z.number(),
 });
 
 export function PurchaseForm() {
   const { toast } = useToast();
   const [usersInGroup, setUsersInGroup] = useState<UserInfo[]>([]);
+
+  const params = useParams<{ id: string }>();
+  const group_id = Number(params.id);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -44,17 +49,19 @@ export function PurchaseForm() {
       category: "",
       total_cost: 0,
       purchase_splits: [],
+      group_id: group_id,
     },
   });
+
   useEffect(() => {
-    // TODO: Get the members from the group
-    apiService.get("/api/groups/?group_id=1&detailed=true").then((response) => {
-      setUsersInGroup(response.data[0]["users"]);
-    });
+    apiService
+      .get(`/api/groups/?group_id=${group_id}&detailed=true`)
+      .then((response) => {
+        setUsersInGroup(response.data[0]["users"]);
+      });
   }, []);
 
-  function onSubmit(data: any) {
-    // TODO: Remove the hardcoded group_id, purchaser and purchase_splits -> then typecast data again with z.infer<typeof FormSchema>
+  function onSubmit(data: z.infer<typeof FormSchema>) {
     data = {
       ...data,
       purchase_splits: data.purchase_splits.map((split: any) => ({
@@ -62,8 +69,7 @@ export function PurchaseForm() {
         amount: dollarsToCents(split.amount),
       })),
       total_cost: dollarsToCents(data.total_cost),
-      group_id: 1,
-      purchaser: 2,
+      group_id: group_id,
     };
     toast({
       title: "You submitted the following values:",
