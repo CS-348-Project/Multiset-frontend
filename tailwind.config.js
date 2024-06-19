@@ -18,6 +18,13 @@ module.exports = {
     },
     extend: {
       colors: {
+        // coral: "hsl(var(--coral))",
+        // rose: "hsl(var(--rose))",
+        // darkrose: "hsl(var(--darkrose))",
+        // creme: "hsl(var(--creme))",
+        // dusk: "hsl(var(--dusk))",
+        // offdusk: "hsl(var(--offdusk))",
+        // lilac: "hsl(var(--lilac))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
