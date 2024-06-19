@@ -185,7 +185,7 @@ export const GroceryListForm = ({
               ) : (
                 <div>
                   {items?.length > 0 && (
-                    <Table>
+                    <Table containerClassName="max-h-80 overflow-y-auto h-fit">
                       <TableHeader>
                         <TableRow>
                           <TableHead>Name</TableHead>
