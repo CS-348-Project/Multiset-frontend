@@ -1,13 +1,6 @@
 export interface TSettlementMemberInfo {
-  member_user_id: number;
-  member_group_id: number;
-  first_name: string;
-  last_name: string;
-}
-
-export interface TGroupMember {
   id: number;
-  email: string;
+  email: number;
   first_name: string;
   last_name: string;
 }

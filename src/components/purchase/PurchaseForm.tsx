@@ -35,8 +35,13 @@ const FormSchema = z.object({
   group_id: z.number(),
 });
 
-export function PurchaseForm() {
+interface FormProps {
+  submit: () => void;
+}
+
+export function PurchaseForm({ submit }: FormProps) {
   const { toast } = useToast();
+  const [loading, setIsLoading] = useState(false);
   const [usersInGroup, setUsersInGroup] = useState<UserInfo[]>([]);
 
   const params = useParams<{ id: string }>();
@@ -54,10 +59,17 @@ export function PurchaseForm() {
   });
 
   useEffect(() => {
+    setIsLoading(true);
     apiService
-      .get(`/api/groups/?group_id=${group_id}&detailed=true`)
+      .get("/api/groups/other-members", {
+        params: {
+          group_id,
+          detailed: true,
+        },
+      })
       .then((response) => {
-        setUsersInGroup(response.data[0]["users"]);
+        setUsersInGroup(response.data);
+        setIsLoading(false);
       });
   }, []);
 
@@ -79,136 +91,164 @@ export function PurchaseForm() {
         </pre>
       ),
     });
-    apiService.post("/api/purchases/new-purchase", data);
+    apiService
+      .post("/api/purchases/new-purchase", data)
+      .then(() => {
+        toast({
+          title: "Success",
+          description: "Purchase submitted successfully",
+          variant: "success",
+        });
+        submit();
+      })
+      .catch((e) => {
+        toast({
+          title: "Error",
+          description: e.response.data.message,
+          variant: "destructive",
+        });
+      });
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Ex: Apples" {...field} />
-              </FormControl>
-              <FormDescription>
-                A short description of what you purchased!
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <FormControl>
-                <Input placeholder="Ex: Groceries" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="total_cost"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Total Cost</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    field.onChange(Number(value));
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="purchase_splits"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel>Purchase Split</FormLabel>
-                {usersInGroup.map((user) => {
-                  const split = field.value.find(
-                    (split) => split.borrower === user.id
-                  );
-                  const isChecked = split !== undefined;
-                  const amount = isChecked ? split?.amount : 0;
+    <>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-2/3 space-y-6"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ex: Apples" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    A short description of what you purchased!
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ex: Groceries" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="total_cost"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Total Cost</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(Number(value));
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="purchase_splits"
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>Purchase Split</FormLabel>
+                    {usersInGroup.map((user) => {
+                      const split = field.value.find(
+                        (split) => split.borrower === user.id
+                      );
+                      const isChecked = split !== undefined;
+                      const amount = isChecked ? split?.amount : 0;
 
-                  return (
-                    <div
-                      key={user.id}
-                      className="flex flex-row items-center space-x-3 space-y-0 w-2/3"
-                    >
-                      <Checkbox
-                        className="my-2"
-                        checked={isChecked}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            field.onChange([
-                              ...(field.value || []),
-                              { borrower: user.id, amount: 0 },
-                            ]);
-                          } else {
-                            field.onChange(
-                              field.value?.filter(
-                                (value) => value.borrower !== user.id
-                              )
-                            );
-                          }
-                        }}
-                      />
-                      <FormLabel className="w-full">
-                        {user.first_name} {user.last_name}
-                      </FormLabel>
-                      <div className="flex items-center justify-end w-full">
-                        {isChecked && (
-                          <div className="flex items-center">
-                            <h3 className="text-sm mr-5">$</h3>
-                            <Input
-                              type="number"
-                              className="w-100"
-                              placeholder="Enter a number"
-                              value={amount}
-                              onChange={(e) => {
-                                const updatedValue = Number(e.target.value);
-                                const updatedSplits = field.value.map(
-                                  (split) => {
-                                    if (split.borrower === user.id) {
-                                      return { ...split, amount: updatedValue };
-                                    }
-                                    return split;
-                                  }
+                      return (
+                        <div
+                          key={user.id}
+                          className="flex flex-row items-center space-x-3 space-y-0 w-2/3"
+                        >
+                          <Checkbox
+                            className="my-2"
+                            checked={isChecked}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                field.onChange([
+                                  ...(field.value || []),
+                                  { borrower: user.id, amount: 0 },
+                                ]);
+                              } else {
+                                field.onChange(
+                                  field.value?.filter(
+                                    (value) => value.borrower !== user.id
+                                  )
                                 );
-                                field.onChange(updatedSplits);
-                              }}
-                            />
+                              }
+                            }}
+                          />
+                          <FormLabel className="w-full">
+                            {user.first_name} {user.last_name}
+                          </FormLabel>
+                          <div className="flex items-center justify-end w-full">
+                            {isChecked && (
+                              <div className="flex items-center">
+                                <h3 className="text-sm mr-5">$</h3>
+                                <Input
+                                  type="number"
+                                  className="w-100"
+                                  placeholder="Enter a number"
+                                  value={amount}
+                                  onChange={(e) => {
+                                    const updatedValue = Number(e.target.value);
+                                    const updatedSplits = field.value.map(
+                                      (split) => {
+                                        if (split.borrower === user.id) {
+                                          return {
+                                            ...split,
+                                            amount: updatedValue,
+                                          };
+                                        }
+                                        return split;
+                                      }
+                                    );
+                                    field.onChange(updatedSplits);
+                                  }}
+                                />
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </FormItem>
-            );
-          }}
-        />
+                        </div>
+                      );
+                    })}
+                  </FormItem>
+                );
+              }}
+            />
 
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
+      )}
+    </>
   );
 }

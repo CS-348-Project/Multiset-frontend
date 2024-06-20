@@ -24,8 +24,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TGroupMember, TSettlementCreateDTO } from "./types/SettlementTypes";
+import {
+  TSettlementMemberInfo,
+  TSettlementCreateDTO,
+} from "./types/SettlementTypes";
 import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 const FormSchema = z.object({
   receiver_user_id: z.coerce.number({ message: "Recipient required" }),
@@ -38,8 +42,15 @@ const FormSchema = z.object({
   ),
 });
 
-export function SettlementForm() {
+interface FormProps {
+  submit: () => void;
+}
+
+export function SettlementForm({ submit }: FormProps) {
   const { toast } = useToast();
+  const params = useParams<{ id: string }>();
+  const group_id = Number(params.id);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -48,18 +59,18 @@ export function SettlementForm() {
     },
   });
 
-  const [members, setMembers] = React.useState<TGroupMember[]>([]);
+  const [members, setMembers] = React.useState<TSettlementMemberInfo[]>([]);
 
   useEffect(() => {
     apiService
-      .get("/api/groups/", {
+      .get("/api/groups/other-members", {
         params: {
-          group_id: 1, // TODO: Remove hardcoded group_id
+          group_id,
           detailed: true,
         },
-      }) // TODO: Remove hardcoded group
+      })
       .then((response) => {
-        setMembers(response.data.users);
+        setMembers(response.data);
       })
       .catch((e) => {
         toast({
@@ -71,11 +82,9 @@ export function SettlementForm() {
   }, []);
 
   function onSubmit(data: Partial<TSettlementCreateDTO>) {
-    // TODO: Remove the hardcoded sender_id
     data = {
       ...data,
-      sender_user_id: 23,
-      group_id: 1, // TODO: Remove hardcoded group_id
+      group_id,
       amount: data.amount ? data.amount * 100 : 0,
     };
 
@@ -87,6 +96,7 @@ export function SettlementForm() {
           description: "Settlement submitted successfully",
           variant: "success",
         });
+        submit();
       })
       .catch((e) => {
         toast({
@@ -119,7 +129,6 @@ export function SettlementForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {/* TODO: replace with actual member data */}
                   {members &&
                     members.map((member) => (
                       <SelectItem key={member.id} value={String(member.id)}>

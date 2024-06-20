@@ -31,10 +31,6 @@ const router = createBrowserRouter([
     element: <OAuthCallback />,
   },
   {
-    path: "/settlement",
-    element: <Settlement />,
-  },
-  {
     path: "/analytics",
     element: <Analytics />,
   },
