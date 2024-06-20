@@ -9,7 +9,6 @@ const useDetailedGroup = (id: number) => {
       const response = await apiService.get(
         `/api/groups/?group_id=${id}&detailed=true`
       );
-      console.log(response);
       return response.data;
     },
   });
