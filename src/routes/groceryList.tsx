@@ -17,6 +17,7 @@ import { apiService } from "@/utils/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 import { z } from "zod";
 
 export const GroceryList = () => {
@@ -27,6 +28,9 @@ export const GroceryList = () => {
     React.useState<TGroceryList | null>(null);
   const [addingList, setAddingList] = React.useState(false);
   const [addingListLoading, setAddListLoading] = React.useState(false);
+
+  const params = useParams<{ id: string }>();
+  const group_id = Number(params.id);
 
   const handleListOpen = (id: number) => {
     setIsFormOpen(true);
@@ -39,9 +43,8 @@ export const GroceryList = () => {
   };
 
   const fetchLists = () => {
-    // TODO: pass in group info to display only group's settlements
     return apiService
-      .get("/api/grocery-lists", { params: { group_id: 1 } }) // TODO: remove hardcoded group_id
+      .get("/api/grocery-lists", { params: { group_id } })
       .then((response) => {
         setGroceryLists(response.data);
         setLoading(false);
@@ -105,10 +108,9 @@ export const GroceryList = () => {
   });
 
   function onSubmit(data: any) {
-    // TODO: Remove the hardcoded group_id
     data = {
       ...data,
-      group_id: 1,
+      group_id,
     };
     setAddListLoading(true);
     toast({

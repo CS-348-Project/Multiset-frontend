@@ -32,6 +32,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/components/ui/use-toast";
 import { Trash2 } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 interface TGroceryListFormProps {
   isOpen: boolean;
@@ -50,6 +51,9 @@ export const GroceryListForm = ({
   const [loading, setLoading] = React.useState(true);
   const [addingItem, setAddingItem] = React.useState(false);
   const [addItemLoading, setAddItemLoading] = React.useState(false);
+
+  const params = useParams<{ id: string }>();
+  const group_id = Number(params.id);
 
   const fetchItems = () => {
     if (!groceryList?.id) {
@@ -94,13 +98,12 @@ export const GroceryListForm = ({
   });
 
   function onSubmit(data: any) {
-    // TODO: Remove the hardcoded member_id
     if (!groceryList) {
       return;
     }
     data = {
       ...data,
-      member_id: 1,
+      requester_group_id: group_id,
       grocery_list_id: groceryList?.id,
     };
     setAddItemLoading(true);
@@ -126,7 +129,9 @@ export const GroceryListForm = ({
 
   const toggleItem = (id: number) => {
     apiService
-      .post(`/api/grocery-lists/toggle-item?item_id=${id}`)
+      .post(
+        `/api/grocery-lists/toggle-item?item_id=${id}&grocery_list_id=${groceryList?.id}`
+      )
       .catch(() => {
         toast({
           title: "Error",
