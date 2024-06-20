@@ -17,6 +17,7 @@ import {
 import { Group } from "@/types/Group";
 import { OptimalSettlement } from "@/types/OptimalSettlement";
 import { apiService } from "@/utils/api";
+import { toast } from "../ui/use-toast";
 
 interface OptimalPaymentTableProps {
     groups: Group[] | undefined;
@@ -41,7 +42,11 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
             })
             .catch((err) => {
                 console.error(err);
-                alert("Failed to calculate optimal payments. Please try again later.")
+                toast({
+                    variant: "destructive",
+                    description: <p>Failed to calculate optimal payments. Please try again later.</p>,
+
+                })
             });
     }
 

@@ -1,6 +1,7 @@
 import { apiService } from "@/utils/api";
 
 import { Group } from "@/types/Group";
+import { toast } from "../ui/use-toast";
 
 interface OptimizationToggleProps {
     groups: Group[];
@@ -45,8 +46,11 @@ export const OptimizationToggle: React.FC<OptimizationToggleProps> = (data: Opti
                 data.setGroups(newGroups);
 
                 console.error(err);
-                // TODO toast
-                alert("Failed to toggle optimization settings. Please try again later.")
+                toast({
+                    variant: "destructive",
+                    description: <p>Failed to toggle optimization settings. Please try again later.</p>,
+
+                })
             });
     }
 
