@@ -19,7 +19,6 @@ import { OptimalSettlement } from "@/types/OptimalSettlement";
 import { apiService } from "@/utils/api";
 
 interface OptimalPaymentTableProps {
-    userId: number;
     groups: Group[] | undefined;
 }
 
@@ -37,7 +36,7 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
 
         apiService.post(`/api/optimization/calculate?group_id=${data.group_id}`)
             .then((res) => {
-                setOptimizationData(res.data.filter((settlement: OptimalSettlement) => settlement.from_id === props.userId));
+                setOptimizationData(res.data);
                 setLoadingOptimizationData(false);
             })
             .catch((err) => {

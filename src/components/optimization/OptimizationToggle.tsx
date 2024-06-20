@@ -3,7 +3,6 @@ import { apiService } from "@/utils/api";
 import { Group } from "@/types/Group";
 
 interface OptimizationToggleProps {
-    userId: number;
     groups: Group[];
     setGroups: React.Dispatch<React.SetStateAction<undefined | Group[]>>;
 }

@@ -7,23 +7,14 @@ import { OptimizationToggle } from "@/components/optimization/OptimizationToggle
 import { OptimalPaymentTable } from "@/components/optimization/OptimalPaymentTable";
 
 export const Optimization = () => {
-    const [userId, setUserId] = useState<number | undefined>(undefined);
     const [groups, setGroups] = useState<Group[] | undefined>(undefined);
 
-    //TODO wire in the real user ID
     useEffect(() => {
-        setUserId(18);
+        apiService.get(`/api/groups/`)
+            .then((res) => {
+                setGroups(res.data);
+            })
     }, [])
-
-    useEffect(() => {
-        if (userId) {
-
-            apiService.get(`/api/groups/?user_id=${userId}`)
-                .then((res) => {
-                    setGroups(res.data);
-                })
-        }
-    }, [userId])
 
     return (
         <DefaultLayout>
@@ -32,8 +23,8 @@ export const Optimization = () => {
                     Optimization
                 </h1>
 
-                <OptimizationToggle userId={userId!} groups={groups!} setGroups={setGroups} />
-                <OptimalPaymentTable userId={userId!} groups={groups} />
+                <OptimizationToggle groups={groups!} setGroups={setGroups} />
+                <OptimalPaymentTable groups={groups} />
             </div>
         </DefaultLayout>
     );
