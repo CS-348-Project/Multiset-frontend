@@ -55,12 +55,12 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
     return (
         <div className="mr-10 mb-10">
             <h2 className="font-semibold text-black text-xl my-5">
-                View Optimal Payments
+                View Payments
             </h2>
 
             <p className="text-black text-sm md:text-base mb-10">
                 Use the dropdown below to select a group and view the payments for the group.
-                You can see both who owes you money and who you owe money to.
+                You can see both who owes you money and whom you owe money to.
                 If your group is optimized, you will see the optimal payments to make.
             </p>
 
@@ -94,7 +94,7 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Calculate Optimal Payments</Button>
+                    <Button type="submit">Calculate Payments</Button>
                 </form>
             </Form>
             <Table>
@@ -115,7 +115,7 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
                         </TableRow>
                     ) :
                         optimizationData && optimizationData.length > 0 ? (
-                            optimizationData!
+                            optimizationData!.filter((settlement: OptimalSettlement) => settlement.from_id !== 0)
                                 .map((settlement: OptimalSettlement) => {
                                     return (
                                         <TableRow key={settlement.to_id}>
