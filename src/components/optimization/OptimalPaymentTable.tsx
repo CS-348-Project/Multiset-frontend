@@ -36,7 +36,7 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
 
         apiService.post(`/api/optimization/calculate?group_id=${data.group_id}`)
             .then((res) => {
-                setOptimizationData(res.data);
+                setOptimizationData(res.data.transfers);
                 setLoadingOptimizationData(false);
             })
             .catch((err) => {
@@ -59,8 +59,9 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
             </h2>
 
             <p className="text-black text-sm md:text-base mb-10">
-                Use the dropdown below to select a group and view the optimal payments for the group.
-                This is only available for groups that have opted in to the optimization feature.
+                Use the dropdown below to select a group and view the payments for the group.
+                You can see both who owes you money and who you owe money to.
+                If your group is optimized, you will see the optimal payments to make.
             </p>
 
             <Form {...form}>
@@ -81,7 +82,7 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {props.groups && props.groups.filter((group: Group) => group.optimize_payments).map((group: Group) => {
+                                        {props.groups && props.groups.map((group: Group) => {
                                             return (
                                                 <SelectItem key={group.id} value={group.id.toString()}>
                                                     {group.name}
@@ -100,6 +101,7 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
                 {(loadingOptimizationData || optimizationData) &&
                     <TableHeader>
                         <TableRow>
+                            <TableHead className="w-[200px]">From</TableHead>
                             <TableHead className="w-[200px]">To</TableHead>
                             <TableHead className="w-[200px]">Amount ($)</TableHead>
                         </TableRow>
@@ -117,6 +119,9 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
                                 .map((settlement: OptimalSettlement) => {
                                     return (
                                         <TableRow key={settlement.to_id}>
+                                            <TableCell>
+                                                {settlement.from_first_name} {settlement.from_last_name}
+                                            </TableCell>
                                             <TableCell>
                                                 {settlement.to_first_name} {settlement.to_last_name}
                                             </TableCell>
