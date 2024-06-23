@@ -1,5 +1,5 @@
 export interface TSettlementMemberInfo {
-  memberId: number;
+  member_id: number;
   first_name: string;
   last_name: string;
 }
