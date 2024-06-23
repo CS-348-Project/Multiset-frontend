@@ -182,7 +182,9 @@ export const GroceryListForm = ({
               <DialogTitle>{groceryList.name}</DialogTitle>
               <p className="text-muted-foreground text-sm">
                 Grocery list created on{" "}
-                {new Date(groceryList.created_at).toLocaleString()}
+                {new Date(
+                  `${groceryList.created_at.replace("T", " ")} UTC`
+                ).toLocaleString()}
               </p>
               <Separator className="my-3" />
               {loading ? (

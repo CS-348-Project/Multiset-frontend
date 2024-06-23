@@ -87,7 +87,10 @@ export const GroceryList = () => {
       >
         <h2 className="font-semibold text-black text-xl">{groceryList.name}</h2>
         <h2 className="text-muted-foreground">
-          Created on {new Date(groceryList.created_at).toLocaleString()}
+          Created on{" "}
+          {new Date(
+            `${groceryList.created_at.replace("T", " ")} UTC`
+          ).toLocaleString()}
         </h2>
       </div>
     );
