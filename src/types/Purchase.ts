@@ -1,4 +1,4 @@
-export interface Purchase {
+export interface TPurchase {
   id: number;
   name: string;
   category: string;
