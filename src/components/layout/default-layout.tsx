@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown";
 import { Button } from "../ui/button";
+import NotificationDropdown from "../notifications/NotificationDropdown";
 
 type MenuHeaderProps = {
   children?: React.ReactNode;
@@ -113,6 +114,8 @@ const ContentWrapper = ({ children }: ContentWrapperProps) => {
         </div>
 
         <div className="w-full flex-1" />
+
+        <NotificationDropdown />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
