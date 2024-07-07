@@ -20,7 +20,6 @@ const NotificationDropdown = () => {
         apiService
             .get("api/notifications/")
             .then((response) => {
-                console.log(response.data);
                 setNotifications(response.data);
             })
             .catch((error) => {
@@ -110,7 +109,12 @@ const NotificationDropdown = () => {
     }
 
     return (
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={(open: boolean) => {
+            if (!open) { // if the dropdown is closing, mark all as read
+                read();
+            }
+
+        }}>
             <DropdownMenuTrigger asChild>
                 <Button
                     variant="ghost"
@@ -131,15 +135,11 @@ const NotificationDropdown = () => {
                             </DropdownMenuItem>
                         ))}
 
-                        <div className="flex flex-rows">
-                            <Button variant="ghost" className="text-primary flex-grow" onClick={read}>
-                                Mark all as read
-                            </Button>
-
+                        <DropdownMenuItem>
                             <Button variant="ghost" className="text-primary flex-grow" onClick={clear}>
                                 Clear all
                             </Button>
-                        </div>
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 )
                     : (
