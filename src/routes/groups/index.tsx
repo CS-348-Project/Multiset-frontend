@@ -1,4 +1,4 @@
-import { Settlement } from "@/routes/settlement";
+import { Settlement, GroceryList } from "@/routes/settlement";
 import GroupPage from "./group-id";
 import NewGroup from "./new-group";
 import { Purchase } from "@/routes/purchase";
@@ -21,6 +21,10 @@ const groupsRoutes = {
     {
       path: ":id/settlement",
       element: <Settlement />,
+    },
+    {
+      path: ":id/grocery-list",
+      element: <GroceryList />,
     },
   ],
 };
