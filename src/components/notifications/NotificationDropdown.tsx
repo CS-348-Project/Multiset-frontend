@@ -5,8 +5,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown";
 
@@ -30,6 +28,26 @@ const NotificationDropdown = () => {
             });
     }, []);
 
+    const read = () => {
+        apiService.patch("api/notifications/read")
+            .then(() => {
+                setNotifications(currentNotifs => currentNotifs.map(notif => ({ ...notif, read: true })));
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    const clear = () => {
+        apiService.delete("api/notifications/")
+            .then(() => {
+                setNotifications([]);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -42,14 +60,35 @@ const NotificationDropdown = () => {
                     <span className="sr-only">Toggle user menu</span>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                {notifications.map((notification) => (
-                    <DropdownMenuItem key={notification.id} className="flex flex-col items-end">
-                        <div className={`block ${notification.read ? "" : "font-bold"}`}>{notification.message}</div>
-                        <div className="text-xs text-dusk block">{notification.created_at}</div>
-                    </DropdownMenuItem>
-                ))}
-            </DropdownMenuContent>
+            {
+                notifications.length > 0 ? (
+                    <DropdownMenuContent align="end">
+                        {notifications.map((notification) => (
+                            <DropdownMenuItem key={notification.id} className="flex flex-col items-end">
+                                <div className={`block ${notification.read ? "" : "font-bold"}`}>{notification.message}</div>
+                                <div className="text-xs text-dusk block">{notification.created_at}</div>
+                            </DropdownMenuItem>
+                        ))}
+
+                        <div className="flex flex-rows">
+                            <Button variant="ghost" className="text-primary flex-grow" onClick={read}>
+                                Mark all as read
+                            </Button>
+
+                            <Button variant="ghost" className="text-primary flex-grow" onClick={clear}>
+                                Clear all
+                            </Button>
+                        </div>
+                    </DropdownMenuContent>
+                )
+                    : (
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem className="text-center">
+                                You have no notifications
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    )
+            }
         </DropdownMenu>
     )
 };
