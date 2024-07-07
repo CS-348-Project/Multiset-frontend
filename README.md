@@ -8,6 +8,7 @@
 4. Settling debts -> `/groups/:id/settlement`
 5. Analytics -> `/analytics`
 6. Group grocery list `/grocery-list`
+7. Member activity logs `/groups/:id/logs`
 
 ## Setup
 
