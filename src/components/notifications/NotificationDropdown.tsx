@@ -15,6 +15,7 @@ import { Notification } from "@/types/Notification";
 
 const NotificationDropdown = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [unread, setUnread] = useState<number>(0);
 
     useEffect(() => {
         apiService
@@ -26,6 +27,10 @@ const NotificationDropdown = () => {
                 console.error(error);
             });
     }, []);
+
+    useEffect(() => {
+        setUnread(notifications.filter(notif => !notif.read).length);
+    }, [notifications]);
 
     const read = () => {
         apiService.patch("api/notifications/read")
@@ -119,21 +124,26 @@ const NotificationDropdown = () => {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className=" w-8 h-8"
+                    className=" w-8 h-8 relative"
                 >
                     <BellIcon className="w-4 h-4" />
+                    {unread > 0 && (
+                        <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                    )}
                     <span className="sr-only">Toggle user menu</span>
                 </Button>
             </DropdownMenuTrigger>
             {
                 notifications.length > 0 ? (
-                    <DropdownMenuContent align="end">
-                        {notifications.map((notification) => (
-                            <DropdownMenuItem key={notification.id} className="flex flex-col items-end">
-                                <div className={`block ${notification.read ? "" : "font-bold"}`}>{notification.message}</div>
-                                <div className="text-xs text-dusk block">{getTime(notification.created_at)}</div>
-                            </DropdownMenuItem>
-                        ))}
+                    <DropdownMenuContent align="end" className="bg-white">
+                        <div className="max-h-80 overflow-y-auto">
+                            {notifications.map((notification) => (
+                                <DropdownMenuItem key={notification.id} className="flex flex-col items-end">
+                                    <div className={`block ${notification.read ? "" : "font-bold"}`}>{notification.message}</div>
+                                    <div className="text-xs text-dusk block">{getTime(notification.created_at)}</div>
+                                </DropdownMenuItem>
+                            ))}
+                        </div>
 
                         <DropdownMenuItem>
                             <Button variant="ghost" className="text-primary flex-grow" onClick={clear}>
