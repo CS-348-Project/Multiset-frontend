@@ -24,10 +24,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TSettlementCreateDTO } from "./types/SettlementTypes";
+import {
+  TSettlementMemberInfo,
+  TSettlementCreateDTO,
+} from "./types/SettlementTypes";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 const FormSchema = z.object({
-  receiver_id: z.coerce.number({ message: "Recipient required" }),
+  receiver_user_id: z.coerce.number({ message: "Recipient required" }),
   amount: z.coerce.number().refine(
     (value) => {
       const decimalPlaces = value.toString().split(".")[1]?.length || 0;
@@ -37,34 +42,63 @@ const FormSchema = z.object({
   ),
 });
 
-export function SettlementForm() {
+interface FormProps {
+  submit: () => void;
+}
+
+export function SettlementForm({ submit }: FormProps) {
   const { toast } = useToast();
+  const params = useParams<{ id: string }>();
+  const group_id = Number(params.id);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      receiver_id: undefined,
+      receiver_user_id: undefined,
       amount: 0,
     },
   });
 
+  const [members, setMembers] = React.useState<TSettlementMemberInfo[]>([]);
+
+  useEffect(() => {
+    apiService
+      .get("/api/groups/other-members", {
+        params: {
+          group_id,
+          detailed: true,
+        },
+      })
+      .then((response) => {
+        setMembers(response.data);
+      })
+      .catch((e) => {
+        toast({
+          title: "Error",
+          description: e.response.data.message,
+          variant: "destructive",
+        });
+      });
+  }, []);
+
   function onSubmit(data: Partial<TSettlementCreateDTO>) {
-    // TODO: Remove the hardcoded sender_id
     data = {
       ...data,
-      sender_id: 1,
+      group_id,
       amount: data.amount ? data.amount * 100 : 0,
     };
+
     apiService
-      .post("/api/settlements/save", data)
+      .post("/api/settlements/create", data)
       .then(() => {
         toast({
           title: "Success",
           description: "Settlement submitted successfully",
           variant: "success",
         });
+        submit();
       })
       .catch((e) => {
-        console.log("failed");
         toast({
           title: "Error",
           description: e.response.data.message,
@@ -81,7 +115,7 @@ export function SettlementForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
         <FormField
           control={form.control}
-          name="receiver_id"
+          name="receiver_user_id"
           render={({ field }) => (
             <FormItem>
               <FormLabel>To</FormLabel>
@@ -95,10 +129,12 @@ export function SettlementForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {/* TODO: replace with actual member data */}
-                  <SelectItem value="1">Emma Huang</SelectItem>
-                  <SelectItem value="2">Ben Ng</SelectItem>
-                  <SelectItem value="3">Catherine Kim</SelectItem>
+                  {members &&
+                    members.map((member) => (
+                      <SelectItem key={member.id} value={String(member.id)}>
+                        {member.first_name} {member.last_name}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
               <FormDescription>Who are you settling with?</FormDescription>
@@ -111,7 +147,7 @@ export function SettlementForm() {
           name="amount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Amount</FormLabel>
+              <FormLabel>Amount ($)</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
