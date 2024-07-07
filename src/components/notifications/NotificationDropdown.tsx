@@ -48,6 +48,67 @@ const NotificationDropdown = () => {
             });
     }
 
+    const getTime = (date: string) => {
+        const notifDate = new Date(`${date.replace("T", " ")} UTC`);
+
+        const currentDate = new Date();
+
+        const diff = currentDate.getTime() - notifDate.getTime();
+
+        // see if the difference is less than 1 day
+        if (diff < 60000) { // 60 * 1000
+            return "Just now";
+        }
+        if (diff < 3600000) { // 60 * 60 * 1000
+            const minutes = Math.floor(diff / 60000);
+
+            return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+        }
+
+        if (diff < 86400000) { // 24 * 60 * 60 * 1000
+            const hours = Math.floor(diff / 3600000);
+
+            return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+        }
+
+        //otherwise, see if the difference is less than 1 week
+        const days = Math.floor(diff / 86400000);
+
+        if (days === 1) {
+            return "Yesterday";
+        }
+
+        if (days < 7) {
+            return `${days} days ago`;
+        }
+
+        // if it's not, try to see if it's less than 4 weeks
+        const weeks = Math.floor(days / 7);
+
+        if (weeks === 1) {
+            return "Last week";
+        }
+
+        if (weeks < 4) {
+            return `${weeks} weeks ago`;
+        }
+
+        // if it's not, return the date
+
+        if (notifDate.getFullYear() === currentDate.getFullYear()) {
+            return notifDate.toLocaleDateString([], {
+                month: "long",
+                day: "numeric"
+            })
+        }
+
+        return notifDate.toLocaleDateString([], {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        });
+    }
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -66,7 +127,7 @@ const NotificationDropdown = () => {
                         {notifications.map((notification) => (
                             <DropdownMenuItem key={notification.id} className="flex flex-col items-end">
                                 <div className={`block ${notification.read ? "" : "font-bold"}`}>{notification.message}</div>
-                                <div className="text-xs text-dusk block">{notification.created_at}</div>
+                                <div className="text-xs text-dusk block">{getTime(notification.created_at)}</div>
                             </DropdownMenuItem>
                         ))}
 
