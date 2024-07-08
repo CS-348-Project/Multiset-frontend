@@ -26,7 +26,11 @@ export const PurchaseDetails = () => {
       setLoading(true);
       try {
         apiService
-          .get(`/api/purchases/purchase_splits/${purchase_id}`)
+          .get(`/api/purchases/purchase_splits`, {
+            params: {
+              purchase_id,
+            },
+          })
           .then((response) => {
             setPurchaseSplits(response.data);
             setLoading(false);
@@ -40,7 +44,11 @@ export const PurchaseDetails = () => {
       setLoading(true);
       try {
         apiService
-          .get(`/api/purchases/purchase_details/${purchase_id}`)
+          .get(`/api/purchases/purchase_details`, {
+            params: {
+              purchase_id,
+            },
+          })
           .then((response) => {
             setPurchase(response.data);
             setLoading(false);
