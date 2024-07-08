@@ -25,11 +25,23 @@ const FormSchema = z.object({
     message: "Name must be at least 2 characters.",
   }),
   category: z.string(),
-  total_cost: z.number(),
+  total_cost: z.coerce.number().refine(
+    (value) => {
+      const decimalPlaces = value.toString().split(".")[1]?.length || 0;
+      return decimalPlaces <= 2;
+    },
+    { message: "Maximum of 2 decimal places allowed" }
+  ),
   purchase_splits: z.array(
     z.object({
       borrower: z.number(),
-      amount: z.number(),
+      amount: z.coerce.number().refine(
+        (value) => {
+          const decimalPlaces = value.toString().split(".")[1]?.length || 0;
+          return decimalPlaces <= 2;
+        },
+        { message: "Maximum of 2 decimal places allowed" }
+      ),
     })
   ),
   group_id: z.number(),
@@ -78,9 +90,9 @@ export function PurchaseForm() {
       ...data,
       purchase_splits: data.purchase_splits.map((split: any) => ({
         ...split,
-        amount: dollarsToCents(split.amount),
+        amount: split.amount ? dollarsToCents(split.amount) : 0,
       })),
-      total_cost: dollarsToCents(data.total_cost),
+      total_cost: data.total_cost ? dollarsToCents(data.total_cost) : 0,
       group_id: group_id,
     };
     toast({
@@ -156,11 +168,11 @@ export function PurchaseForm() {
                   <FormLabel>Total Cost</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
                       {...field}
                       onChange={(e) => {
-                        const value = e.target.value;
-                        field.onChange(Number(value));
+                        if (!isNaN(Number(e.target.value))) {
+                          field.onChange(e.target.value);
+                        }
                       }}
                     />
                   </FormControl>
@@ -213,24 +225,24 @@ export function PurchaseForm() {
                               <div className="flex items-center">
                                 <h3 className="text-sm mr-5">$</h3>
                                 <Input
-                                  type="number"
                                   className="w-100"
                                   placeholder="Enter a number"
                                   value={amount}
                                   onChange={(e) => {
-                                    const updatedValue = Number(e.target.value);
-                                    const updatedSplits = field.value.map(
-                                      (split) => {
-                                        if (split.borrower === user.id) {
-                                          return {
-                                            ...split,
-                                            amount: updatedValue,
-                                          };
+                                    if (!isNaN(Number(e.target.value))) {
+                                      const updatedSplits = field.value.map(
+                                        (split) => {
+                                          if (split.borrower === user.id) {
+                                            return {
+                                              ...split,
+                                              amount: e.target.value,
+                                            };
+                                          }
+                                          return split;
                                         }
-                                        return split;
-                                      }
-                                    );
-                                    field.onChange(updatedSplits);
+                                      );
+                                      field.onChange(updatedSplits);
+                                    }
                                   }}
                                 />
                               </div>

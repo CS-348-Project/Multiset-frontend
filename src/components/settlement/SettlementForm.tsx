@@ -149,7 +149,14 @@ export function SettlementForm({ submit }: FormProps) {
             <FormItem>
               <FormLabel>Amount ($)</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  onChange={(e) => {
+                    if (!isNaN(Number(e.target.value))) {
+                      field.onChange(e.target.value);
+                    }
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
