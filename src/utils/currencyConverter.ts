@@ -3,5 +3,5 @@ export const centsToDollars = (cents: number) => {
 };
 
 export const dollarsToCents = (dollars: number) => {
-  return dollars * 100;
+  return Math.round(dollars * 100);
 };

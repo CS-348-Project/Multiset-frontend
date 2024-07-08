@@ -1,5 +1,5 @@
 import DefaultLayout from "@/components/layout/default-layout";
-import { OptimizationToggle } from "@/components/optimization/OptimizationToggle";
+// import { SettingToggle } from "@/components/optimization/SettingToggle";
 import { apiService } from "@/utils/api";
 import { Group } from "@/types/Group";
 import { useEffect, useState } from "react";
@@ -27,7 +27,7 @@ const Settings = () => {
           You can configure the settings for your groups here. This affects the
           setting for all users in the group.
         </p>
-        <OptimizationToggle groups={groups!} setGroups={setGroups} />
+        {/* <SettingToggle groups={groups!} setGroups={setGroups} /> */}
       </div>
     </DefaultLayout>
   );
