@@ -47,10 +47,6 @@ const FormSchema = z.object({
   group_id: z.number(),
 });
 
-interface FormProps {
-  submit: () => void;
-}
-
 export function PurchaseForm() {
   const { toast } = useToast();
   const [loading, setIsLoading] = useState(false);
@@ -73,10 +69,10 @@ export function PurchaseForm() {
   useEffect(() => {
     setIsLoading(true);
     apiService
-      .get("/api/groups/other-members", {
+      .get("/api/groups/members", {
         params: {
           group_id,
-          detailed: true,
+          exclude_current_user: false,
         },
       })
       .then((response) => {
@@ -120,6 +116,36 @@ export function PurchaseForm() {
         });
       });
   }
+
+  const splitEvenly = (e) => {
+    e.preventDefault();
+    const totalCost = form.getValues("total_cost");
+    const checkedUsers = usersInGroup.filter((user) => {
+      return form
+        .getValues("purchase_splits")
+        .find((split) => split.borrower === user.id);
+    });
+
+    const numberOfUsers = checkedUsers.length;
+    let splitAmount = totalCost / numberOfUsers;
+    splitAmount = Math.round(splitAmount * 100) / 100; // Round to 2 decimal places
+
+    const splits = checkedUsers.map((user) => ({
+      borrower: user.id,
+      amount: splitAmount,
+    }));
+
+    // Calculate the sum of the rounded split amounts
+    const totalSplitAmount =
+      Math.round(
+        splits.reduce((acc, curr) => {
+          return acc + Number(curr.amount);
+        }, 0) * 100
+      ) / 100;
+
+    form.setValue("purchase_splits", splits);
+    form.setValue("total_cost", totalSplitAmount);
+  };
 
   return (
     <>
@@ -170,7 +196,7 @@ export function PurchaseForm() {
                     <Input
                       {...field}
                       onChange={(e) => {
-                        if (!isNaN(Number(e.target.value))) {
+                        if (!isNaN(parseFloat(e.target.value))) {
                           field.onChange(e.target.value);
                         }
                       }}
@@ -187,6 +213,9 @@ export function PurchaseForm() {
                 return (
                   <FormItem>
                     <FormLabel>Purchase Split</FormLabel>
+                    <Button onClick={splitEvenly} className="ml-3">
+                      Split Evenly
+                    </Button>
                     {usersInGroup.map((user) => {
                       const split = field.value.find(
                         (split) => split.borrower === user.id

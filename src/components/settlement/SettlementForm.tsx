@@ -63,10 +63,10 @@ export function SettlementForm({ submit }: FormProps) {
 
   useEffect(() => {
     apiService
-      .get("/api/groups/other-members", {
+      .get("/api/groups/members", {
         params: {
           group_id,
-          detailed: true,
+          exclude_current_user: true,
         },
       })
       .then((response) => {
