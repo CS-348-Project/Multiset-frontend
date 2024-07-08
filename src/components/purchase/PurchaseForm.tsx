@@ -1,5 +1,6 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,39 +16,67 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { apiService } from "@/utils/api";
 import { Checkbox } from "../ui/checkbox";
-import { useEffect, useState } from "react";
+
 import { UserInfo } from "@/types/UserInfo";
 import { dollarsToCents } from "@/utils/currencyConverter";
+import { centsToDollars } from "@/utils/currencyConverter";
 import { useParams } from "react-router-dom";
+import { AutoComplete, AutoCompleteCompleteEvent } from "primereact/autocomplete";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
   category: z.string(),
-  total_cost: z.coerce.number().refine(
-    (value) => {
-      const decimalPlaces = value.toString().split(".")[1]?.length || 0;
-      return decimalPlaces <= 2;
-    },
-    { message: "Maximum of 2 decimal places allowed" }
-  ),
+  total_cost: z.number(),
   purchase_splits: z.array(
     z.object({
       borrower: z.number(),
-      amount: z.coerce.number().refine(
-        (value) => {
-          const decimalPlaces = value.toString().split(".")[1]?.length || 0;
-          return decimalPlaces <= 2;
-        },
-        { message: "Maximum of 2 decimal places allowed" }
-      ),
+      amount: z.number(),
     })
   ),
   group_id: z.number(),
 });
 
-export function PurchaseForm() {
+interface RecurringPurchase {
+  name: string;
+  category: string;
+  total_cost: number;
+}
+
+interface FormProps {
+  submit: () => void;
+  initialData?: Partial<z.infer<typeof FormSchema>>;
+  recurringPurchases: RecurringPurchase[];
+}
+
+export function PurchaseForm({ submit, initialData, recurringPurchases }: FormProps) {
+  const [value, setValue] = useState<string>('');
+  const [items, setItems] = useState<string[]>([]);
+
+  const search = (event: AutoCompleteCompleteEvent) => {
+    if (!recurringPurchases || recurringPurchases.length === 0) {
+      setItems([]);
+      return;
+    }
+    
+    const filtered = recurringPurchases.filter((purchase) =>
+      purchase.name.toLowerCase().includes(event.query.toLowerCase())
+    );
+    setItems(filtered.map(p => p.name));
+  };
+  
+  const onSelect = (e: { value: string }) => {
+    if (!recurringPurchases || recurringPurchases.length === 0) return;
+  
+    const selectedPurchase = recurringPurchases.find(p => p.name === e.value);
+    if (selectedPurchase) {
+      form.setValue("name", selectedPurchase.name);
+      form.setValue("category", selectedPurchase.category);
+      form.setValue("total_cost", parseFloat(centsToDollars(selectedPurchase.total_cost)));
+      console.log("Selected purchase:", selectedPurchase);
+    }
+  };
   const { toast } = useToast();
   const [loading, setIsLoading] = useState(false);
   const [usersInGroup, setUsersInGroup] = useState<UserInfo[]>([]);
@@ -58,10 +87,10 @@ export function PurchaseForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
-      category: "",
-      total_cost: 0,
-      purchase_splits: [],
+      name: initialData?.name || "",
+      category: initialData?.category || "",
+      total_cost: initialData?.total_cost || 0,
+      purchase_splits: initialData?.purchase_splits || [],
       group_id: group_id,
     },
   });
@@ -69,26 +98,26 @@ export function PurchaseForm() {
   useEffect(() => {
     setIsLoading(true);
     apiService
-      .get("/api/groups/members", {
+      .get("/api/groups/other-members", {
         params: {
           group_id,
-          exclude_current_user: false,
+          detailed: true,
         },
       })
       .then((response) => {
         setUsersInGroup(response.data);
         setIsLoading(false);
       });
-  }, []);
+  }, [group_id]);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     data = {
       ...data,
       purchase_splits: data.purchase_splits.map((split: any) => ({
         ...split,
-        amount: split.amount ? dollarsToCents(split.amount) : 0,
+        amount: dollarsToCents(split.amount),
       })),
-      total_cost: data.total_cost ? dollarsToCents(data.total_cost) : 0,
+      total_cost: dollarsToCents(data.total_cost),
       group_id: group_id,
     };
     toast({
@@ -107,6 +136,7 @@ export function PurchaseForm() {
           description: "Purchase submitted successfully",
           variant: "success",
         });
+        submit();
       })
       .catch((e) => {
         toast({
@@ -116,39 +146,6 @@ export function PurchaseForm() {
         });
       });
   }
-
-  const splitEvenly = (e) => {
-    e.preventDefault();
-    const totalCost = form.getValues("total_cost");
-    let checkedUsers = usersInGroup.filter((user) => {
-      return form
-        .getValues("purchase_splits")
-        .find((split) => split.borrower === user.id);
-    });
-    if (checkedUsers.length === 0) {
-      checkedUsers = usersInGroup;
-    }
-
-    const numberOfUsers = checkedUsers.length;
-    let splitAmount = totalCost / numberOfUsers;
-    splitAmount = Math.round(splitAmount * 100) / 100; // Round to 2 decimal places
-
-    const splits = checkedUsers.map((user) => ({
-      borrower: user.id,
-      amount: splitAmount,
-    }));
-
-    // Calculate the sum of the rounded split amounts
-    const totalSplitAmount =
-      Math.round(
-        splits.reduce((acc, curr) => {
-          return acc + Number(curr.amount);
-        }, 0) * 100
-      ) / 100;
-
-    form.setValue("purchase_splits", splits);
-    form.setValue("total_cost", totalSplitAmount);
-  };
 
   return (
     <>
@@ -165,9 +162,19 @@ export function PurchaseForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel htmlFor="purchase-name">Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Apples" {...field} />
+                    <div>
+                    <AutoComplete 
+                      id="purchase-name"
+                      value={field.value}
+                      suggestions={items} 
+                      completeMethod={search} 
+                      onChange={(e) => field.onChange(e.value)}
+                      onSelect={onSelect}
+                      placeholder="Ex: Apples"
+                    />
+                    </div>
                   </FormControl>
                   <FormDescription>
                     A short description of what you purchased!
@@ -197,11 +204,13 @@ export function PurchaseForm() {
                   <FormLabel>Total Cost</FormLabel>
                   <FormControl>
                     <Input
+                      type="number"
+                      step="0.01"
                       {...field}
+                      value={field.value === 0 || isNaN(field.value) ? '' : field.value}
                       onChange={(e) => {
-                        if (!isNaN(parseFloat(e.target.value))) {
-                          field.onChange(e.target.value);
-                        }
+                        const value = e.target.value;
+                        field.onChange(value === '' ? 0 : Number(value));
                       }}
                     />
                   </FormControl>
@@ -216,9 +225,6 @@ export function PurchaseForm() {
                 return (
                   <FormItem>
                     <FormLabel>Purchase Split</FormLabel>
-                    <Button onClick={splitEvenly} className="ml-3">
-                      Split Evenly
-                    </Button>
                     {usersInGroup.map((user) => {
                       const split = field.value.find(
                         (split) => split.borrower === user.id
@@ -257,24 +263,24 @@ export function PurchaseForm() {
                               <div className="flex items-center">
                                 <h3 className="text-sm mr-5">$</h3>
                                 <Input
+                                  type="number"
                                   className="w-100"
                                   placeholder="Enter a number"
                                   value={amount}
                                   onChange={(e) => {
-                                    if (!isNaN(Number(e.target.value))) {
-                                      const updatedSplits = field.value.map(
-                                        (split) => {
-                                          if (split.borrower === user.id) {
-                                            return {
-                                              ...split,
-                                              amount: e.target.value,
-                                            };
-                                          }
-                                          return split;
+                                    const updatedValue = Number(e.target.value);
+                                    const updatedSplits = field.value.map(
+                                      (split) => {
+                                        if (split.borrower === user.id) {
+                                          return {
+                                            ...split,
+                                            amount: updatedValue,
+                                          };
                                         }
-                                      );
-                                      field.onChange(updatedSplits);
-                                    }
+                                        return split;
+                                      }
+                                    );
+                                    field.onChange(updatedSplits);
                                   }}
                                 />
                               </div>
@@ -287,7 +293,6 @@ export function PurchaseForm() {
                 );
               }}
             />
-
             <Button type="submit">Submit</Button>
           </form>
         </Form>
