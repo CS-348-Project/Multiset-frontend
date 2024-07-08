@@ -3,6 +3,7 @@ import { GroceryList } from "@/routes/groceryList";
 import GroupPage from "./group-id";
 import NewGroup from "./new-group";
 import { Purchase } from "@/routes/purchase";
+import { Analytics } from "../analytics";
 
 const groupsRoutes = {
   path: "groups",
@@ -26,6 +27,10 @@ const groupsRoutes = {
     {
       path: ":id/grocery-list",
       element: <GroceryList />,
+    },
+    {
+      path: ":id/analytics",
+      element: <Analytics />,
     },
   ],
 };

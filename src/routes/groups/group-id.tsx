@@ -4,7 +4,9 @@ import Space from "@/components/ui/space";
 import UserBadge from "@/components/ui/users/user-badge";
 import useDetailedGroup from "@/hooks/useDetailedGroup";
 import { User } from "@/utils/types";
+import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
+import { SettingsIcon } from "lucide-react";
 
 const GroupPage = () => {
   const navigate = useNavigate();
@@ -21,6 +23,18 @@ const GroupPage = () => {
     <DefaultLayout>
       <div className="w-full h-full px-6 py-4">
         <h1 className="text-3xl font-bold">{data.name}</h1>
+
+        <Space s="h-4" />
+
+        <div className="w-full flex justify-between">
+          <Button
+            variant="secondary"
+            onClick={() => navigate(`/groups/${id}/purchase`)}
+          >
+            Add Purchase
+          </Button>
+          <SettingsIcon className="w-8 h-8 hover:rotate-[90deg] hover:duration-200 hover:repeat-1 cursor-pointer" />
+        </div>
 
         <Space s="h-8" />
 

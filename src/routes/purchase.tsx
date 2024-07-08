@@ -36,7 +36,7 @@ export const Purchase = () => {
 
   return (
     <DefaultLayout>
-      <div className="mx-10 mb-20">
+      <div className="w-full px-10 pb-20">
         <h1 className="font-semibold text-black text-2xl my-10">
           New Purchase
         </h1>

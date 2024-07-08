@@ -35,8 +35,8 @@ const Root = () => {
   return (
     <div className="relative w-screen h-screen bg-creme px-12 lg:px-24 overflow-hidden">
       <div className="absolute w-full h-full top-0 left-0">
-        <div className="bg-green-300 absolute filter blur-[60px] h-[200px] w-[200px] animate-green-blob"></div>
-        <div className="bg-red-500 absolute filter blur-[60px] h-[200px] w-[200px] animate-red-blob"></div>
+        <div className="bg-coral absolute filter blur-[60px] h-[200px] w-[200px] animate-coral-blob"></div>
+        <div className="bg-navy absolute filter blur-[60px] h-[200px] w-[200px] animate-navy-blob"></div>
         <div className="bg-yellow-500 absolute filter blur-[60px] h-[200px] w-[200px] animate-yellow-blob"></div>
       </div>
       <div className="relative w-full h-full flex items-center">

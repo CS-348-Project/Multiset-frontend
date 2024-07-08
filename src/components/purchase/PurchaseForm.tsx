@@ -118,7 +118,7 @@ export function PurchaseForm({ submit }: FormProps) {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-2/3 space-y-6"
+            className="w-full lg:w-2/3 space-y-6"
           >
             <FormField
               control={form.control}
@@ -186,7 +186,7 @@ export function PurchaseForm({ submit }: FormProps) {
                       return (
                         <div
                           key={user.id}
-                          className="flex flex-row items-center space-x-3 space-y-0 w-2/3"
+                          className="flex flex-row items-center space-x-3 space-y-0 w-full lg:w-2/3"
                         >
                           <Checkbox
                             className="my-2"

@@ -2,19 +2,17 @@ import {
   HomeIcon,
   LandmarkIcon,
   LineChartIcon,
-  MenuIcon,
+  WalletIcon,
   PanelRightIcon,
   PiIcon,
+  MenuIcon,
+  LayoutDashboardIcon,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown";
 import { Button } from "../ui/button";
+import { useLocation } from "react-router-dom";
+import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { useState } from "react";
+import useProfile from "@/context/profile-context";
 
 type MenuHeaderProps = {
   children?: React.ReactNode;
@@ -22,7 +20,7 @@ type MenuHeaderProps = {
 const MenuHeader = ({ children }: MenuHeaderProps) => {
   return (
     <div className="w-full flex h-[40px] items-center justify-center p-6 pt-16">
-      <a href="#" className="flex items-center gap-2 font-semibold">
+      <a href="/home" className="flex items-center gap-2 font-semibold">
         <PiIcon className="h-6 w-6 text-creme" />
       </a>
     </div>
@@ -67,16 +65,33 @@ const MenuWrapper = ({ children }: MenuWrapperProps) => {
   );
 };
 
-const MENU_ITEMS = [
-  { icon: <HomeIcon className="h-4 w-4" />, label: "Home", href: "/home" },
-  {
-    icon: <LineChartIcon className="h-4 w-4" />,
-    label: "Stats",
-    href: "/analytics",
-  },
-];
-
 const MenuList = () => {
+  const location = useLocation();
+  const isGroup = location.pathname.includes("groups");
+  const groupPath = isGroup
+    ? location.pathname.split("/").slice(0, 3).join("/")
+    : null;
+
+  console.log(groupPath);
+
+  const MENU_ITEMS = [
+    {
+      icon: <LayoutDashboardIcon className="h-4 w-4" />,
+      label: "Dashboard",
+      href: `${groupPath}`,
+    },
+    {
+      icon: <WalletIcon className="h-4 w-4" />,
+      label: "Purchases",
+      href: isGroup ? `${groupPath}/purchase` : `#`,
+    },
+    {
+      icon: <LineChartIcon className="h-4 w-4" />,
+      label: "Stats",
+      href: isGroup ? `${groupPath}/analytics` : `#`,
+    },
+  ];
+
   return (
     <div className="flex-1 overflow-auto py-2">
       <nav className="grid items-start px-4 text-sm font-medium">
@@ -96,47 +111,58 @@ const MenuList = () => {
 };
 
 type ContentWrapperProps = {
+  menu: React.ReactNode;
+  hideMenu: boolean;
   children: React.ReactNode;
 };
-const ContentWrapper = ({ children }: ContentWrapperProps) => {
+const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const { profile } = useProfile();
+
   return (
-    <div className="flex-1 flex flex-col bg-creme">
-      <div className="flex h-14 lg:h-[60px] items-center gap-4 px-6">
-        <div className="lg:hidden">
-          <Button
-            variant="ghost"
-            className="p-0 hover:text-lilac hover:bg-transparent"
+    <div className="relative w-full flex-1 flex flex-col bg-creme">
+      <div className="sticky top-0 w-full flex h-14 lg:h-[60px] items-center justify-between bg-creme px-4 lg:bg-transparent drop-shadow-md z-[1]">
+        {!hideMenu && (
+          <div className="lg:hidden">
+            <Button
+              variant="ghost"
+              className="p-0"
+              onClick={() => setSheetOpen(true)}
+            >
+              <MenuIcon className="h-6 w-6" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </div>
+        )}
+        <Sheet open={sheetOpen} onOpenChange={(open) => setSheetOpen(open)}>
+          <SheetTrigger asChild></SheetTrigger>
+          <SheetContent
+            side="left"
+            className="w-64 bg-navy text-creme border-none p-0"
           >
-            <PanelRightIcon className="h-6 w-6" />
-            <span className="sr-only">Toggle menu</span>
-          </Button>
-        </div>
+            <MenuHeader />
+            {menu}
+          </SheetContent>
+        </Sheet>
 
         <div className="w-full flex-1" />
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full border border-primary w-8 h-8"
-            >
-              <img
-                src="/placeholder.svg"
-                width="32"
-                height="32"
-                className="rounded-full bg-creme"
-                alt="Avatar"
-              />
-              <span className="sr-only">Toggle user menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {profile && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full border border-primary w-8 h-8"
+          >
+            <img
+              src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=000&color=fff`}
+              width="32"
+              height="32"
+              className="rounded-full bg-creme"
+              alt="Avatar"
+            />
+            <span className="sr-only">Toggle user menu</span>
+          </Button>
+        )}
       </div>
       {children}
     </div>
@@ -155,14 +181,16 @@ const DefaultLayout = ({
   children,
 }: DefaultLayoutProps) => {
   return (
-    <div className="min-h-screen w-screen bg-dusk flex flex-row">
+    <div className="min-h-screen w-full bg-dusk flex flex-row">
       {!hideMenu && (
         <MenuWrapper>
           <MenuHeader />
           {menu}
         </MenuWrapper>
       )}
-      <ContentWrapper>{children}</ContentWrapper>
+      <ContentWrapper menu={menu} hideMenu={hideMenu}>
+        {children}
+      </ContentWrapper>
     </div>
   );
 };

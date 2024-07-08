@@ -18,7 +18,7 @@ const GroupCard = ({ group }: { group: DetailedGroup }) => {
   console.log(parsedName);
 
   return (
-    <Card className="w-full h-full flex flex-col aspect=[5/4]">
+    <Card className="w-full h-full flex flex-col aspect-[5/4]">
       <CardContent className="w-full h-full flex flex-col justify-end">
         {/* Horizontal Line */}
         <div className="w-full h-[1px] bg-dusk my-2" />

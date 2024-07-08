@@ -79,18 +79,18 @@ module.exports = {
           to: { height: "0" },
         },
         "yellow-blob": {
-          "0%": { top: "40vh", right: "20vw", transform: "scale(1)" },
+          "0%": { top: "40vh", right: "15vw", transform: "scale(1)" },
           "30%": { top: "50vh", right: "30vw", transform: "scale(1.2)" },
           "60%": { top: "20vh", right: "20vw", transform: "scale(1.3)" },
           "100%": { top: "40vh", right: "15vw", transform: "scale(1)" },
         },
-        "green-blob": {
+        "navy-blob": {
           "0%": { top: "30vh", right: "16vw", transform: "scale(1.2)" },
           "30%": { top: "60vh", right: "16vw", transform: "scale(1)" },
           "60%": { top: "40vh", right: "26vw", transform: "scale(1)" },
-          "100%": { top: "32vh", right: "16vw", transform: "scale(1.2)" },
+          "100%": { top: "30vh", right: "16vw", transform: "scale(1.2)" },
         },
-        "red-blob": {
+        "coral-blob": {
           "0%": { top: "40vh", right: "14vw", transform: "scale(1)" },
           "30%": { top: "25vh", right: "20vw", transform: "scale(1.4)" },
           "60%": { top: "40vh", right: "16vw", transform: "scale(1)" },
@@ -101,8 +101,8 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "yellow-blob": "yellow-blob 8s ease-in-out infinite",
-        "green-blob": "green-blob 8s ease-in-out infinite",
-        "red-blob": "red-blob 8s ease-in-out infinite",
+        "navy-blob": "navy-blob 8s ease-in-out infinite",
+        "coral-blob": "coral-blob 8s ease-in-out infinite",
       },
     },
   },
