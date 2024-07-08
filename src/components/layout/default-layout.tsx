@@ -2,7 +2,6 @@ import {
   HomeIcon,
   LandmarkIcon,
   LineChartIcon,
-  MenuIcon,
   PanelRightIcon,
   PiIcon,
   TangentIcon,
@@ -12,7 +11,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown";
