@@ -115,16 +115,26 @@ export const GroceryListForm = ({
         </pre>
       ),
     });
-    apiService.post("/api/grocery-lists/add-item", data).then(() => {
-      toast({
-        title: "Success",
-        description: "Item added successfully",
-        variant: "success",
+    apiService
+      .post("/api/grocery-lists/add-item", data)
+      .then(() => {
+        toast({
+          title: "Success",
+          description: "Item added successfully",
+          variant: "success",
+        });
+        setAddingItem(false);
+        fetchItems();
+        setAddItemLoading(false);
+      })
+      .catch(() => {
+        toast({
+          title: "Error",
+          description: "Failed to add item, please refresh and try again.",
+          variant: "destructive",
+        });
+        setAddItemLoading(false);
       });
-      setAddingItem(false);
-      fetchItems();
-      setAddItemLoading(false);
-    });
   }
 
   const toggleItem = (id: number) => {
@@ -260,7 +270,18 @@ export const GroceryListForm = ({
                               <FormItem>
                                 <FormLabel>Quantity</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Ex: 2" {...field} />
+                                  <Input
+                                    placeholder="Ex: 2"
+                                    {...field}
+                                    onChange={(e) => {
+                                      if (
+                                        !isNaN(Number(e.target.value)) &&
+                                        Number.isInteger(Number(e.target.value))
+                                      ) {
+                                        field.onChange(e.target.value);
+                                      }
+                                    }}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
