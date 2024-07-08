@@ -32,10 +32,6 @@ const groupsRoutes = {
       path: ":id/grocery-list",
       element: <GroceryList />,
     },
-    {
-      path: ":id/settlement",
-      element: <Settlement />,
-    },
   ],
 };
 
