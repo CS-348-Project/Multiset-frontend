@@ -16,6 +16,7 @@ import { useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { useState } from "react";
 import useProfile from "@/context/profile-context";
+import NotificationDropdown from "../notifications/NotificationDropdown";
 
 type MenuHeaderProps = {
   children?: React.ReactNode;
@@ -160,6 +161,8 @@ const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
         </Sheet>
 
         <div className="w-full flex-1" />
+
+        <NotificationDropdown />
 
         {profile && (
           <Button
