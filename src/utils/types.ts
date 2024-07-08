@@ -3,7 +3,6 @@ export type User = {
   email: string;
   first_name: string;
   last_name: string;
-  user_token: string;
 };
 
 export type Group = {
@@ -11,7 +10,6 @@ export type Group = {
   name: string;
   created_at: Date;
   optimize_payments: boolean;
-  budget: number;
 };
 
 export type DetailedGroup = Group & {

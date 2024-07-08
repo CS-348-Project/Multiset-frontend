@@ -23,7 +23,7 @@ const MenuHeader = ({ children }: MenuHeaderProps) => {
   return (
     <div className="w-full flex h-[40px] items-center justify-center p-6 pt-16">
       <a href="#" className="flex items-center gap-2 font-semibold">
-        <PiIcon className="h-6 w-6" />
+        <PiIcon className="h-6 w-6 text-creme" />
       </a>
     </div>
   );
@@ -49,7 +49,7 @@ const NoiseFilter = () => (
 
 const MenuWrapper = ({ children }: MenuWrapperProps) => {
   return (
-    <div className="w-[280px] hidden lg:block bg-dusk relative overflow-hidden">
+    <div className="w-[280px] hidden lg:block bg-navy relative overflow-hidden">
       <NoiseFilter />
 
       <div className="relative flex h-full max-h-screen flex-col gap-2 z-10">
@@ -84,7 +84,7 @@ const MenuList = () => {
           <a
             key={i}
             href={href}
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-rose transition-all hover:text-creme hover:bg-coral/10 text-lg leading-none"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-creme transition-all hover:text-creme/90 hover:bg-creme/10 text-lg leading-none"
           >
             <div>{icon}</div>
             <div className="pt-1">{label}</div>
@@ -100,7 +100,7 @@ type ContentWrapperProps = {
 };
 const ContentWrapper = ({ children }: ContentWrapperProps) => {
   return (
-    <div className="flex-1 flex flex-col bg-dusk">
+    <div className="flex-1 flex flex-col bg-creme">
       <div className="flex h-14 lg:h-[60px] items-center gap-4 px-6">
         <div className="lg:hidden">
           <Button

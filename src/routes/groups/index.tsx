@@ -1,4 +1,5 @@
-import { Settlement, GroceryList } from "@/routes/settlement";
+import { Settlement } from "@/routes/settlement";
+import { GroceryList } from "@/routes/groceryList";
 import GroupPage from "./group-id";
 import NewGroup from "./new-group";
 import { Purchase } from "@/routes/purchase";
