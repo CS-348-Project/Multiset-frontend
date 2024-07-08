@@ -33,6 +33,7 @@ const GroupPage = () => {
             ))}
           </div>
         </div>
+        <div className="h-8" />
         <PurchaseHistory />
       </div>
     </DefaultLayout>

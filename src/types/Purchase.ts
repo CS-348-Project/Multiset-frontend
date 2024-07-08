@@ -7,4 +7,5 @@ export interface TPurchase {
   purchaser: number;
   purchaser_first_name: string;
   purchaser_last_name: string;
+  created_at: string;
 }

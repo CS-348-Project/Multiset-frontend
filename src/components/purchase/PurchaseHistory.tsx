@@ -35,7 +35,7 @@ export const PurchaseHistory = () => {
 
   return (
     <div>
-      <h1 className="font-semibold text-black text-2xl my-10">
+      <h1 className="font-semibold text-black text-2xl my-5">
         Purchase History
       </h1>
 
