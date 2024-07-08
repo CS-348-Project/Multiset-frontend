@@ -1,9 +1,9 @@
 import { apiService } from "@/utils/api";
-import { User } from "@/utils/types";
+import { UserInfo } from "@/types/UserInfo";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type ProfileContextType = {
-  profile: User | null;
+  profile: UserInfo | null;
 };
 
 const ProfileContext = createContext({} as ProfileContextType);
@@ -13,7 +13,7 @@ const ProfileContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [profile, setProfile] = useState<User | null>(null);
+  const [profile, setProfile] = useState<UserInfo | null>(null);
 
   useEffect(() => {
     apiService.get("/api/auth/user").then((response) => {

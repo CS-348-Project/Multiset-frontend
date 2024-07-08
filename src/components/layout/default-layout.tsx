@@ -8,6 +8,8 @@ import {
   MenuIcon,
   LayoutDashboardIcon,
   TangentIcon,
+  HandCoinsIcon,
+  SettingsIcon,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useLocation } from "react-router-dom";
@@ -87,11 +89,20 @@ const MenuList = () => {
       href: isGroup ? `${groupPath}/purchase` : `#`,
     },
     { icon: <TangentIcon className="h-4 w-4" />, label: "Optimization" },
-
+    {
+      icon: <HandCoinsIcon className="h-4 w-4" />,
+      label: "Settlements",
+      href: isGroup ? `${groupPath}/settlement` : `#`,
+    },
     {
       icon: <LineChartIcon className="h-4 w-4" />,
       label: "Stats",
       href: isGroup ? `${groupPath}/analytics` : `#`,
+    },
+    {
+      icon: <SettingsIcon className="h-4 w-4" />,
+      label: "Settings",
+      href: isGroup ? `${groupPath}/settings` : `#`,
     },
   ];
 

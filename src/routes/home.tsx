@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import GroupCard from "@/components/groups/group-card";
 import DefaultLayout from "@/components/layout/default-layout";
 import LoadingPage from "@/components/layout/loading-page";
@@ -6,36 +6,29 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import NewGroupButton from "@/components/ui/groups/new-group-button";
 import useDetailedGroup from "@/hooks/useDetailedGroup";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@radix-ui/react-popover";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
-import { DetailedGroup } from "@/utils/types";
+import { DetailedGroup } from "@/types/Group";
+import useProfile from "@/context/profile-context";
+import { apiService } from "@/utils/api";
 
 const Home = () => {
   // const [groups, setGroups] = useState<DetailedGroup[]>([]);
-  const [groups, setGroups] = useState<DetailedGroup[]>([
-    {
-      id: 1,
-      name: "Group 1",
-      created_at: new Date(),
-      optimize_payments: false,
-      users: [
-        // {
-        //   id: 1,
-        //   email: "jd@gmail.com",
-        //   first_name: "John",
-        //   last_name: "Doe",
-        // },
-      ],
-    },
-  ]);
-  const { data, isLoading } = useDetailedGroup(4);
+  const { profile } = useProfile();
+  const [groups, setGroups] = useState<DetailedGroup[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  if (isLoading || !data) {
+  useEffect(() => {
+    if (!profile) return;
+    setLoading(true);
+    apiService.get(`/api/groups?detailed=true`).then((response) => {
+      console.log(response.data);
+      setGroups(response.data);
+      setLoading(false);
+    });
+  }, [profile]);
+
+  if (!profile) {
     return <LoadingPage />;
   }
 
@@ -45,7 +38,7 @@ const Home = () => {
         <div className="flex items-center gap-4">
           <div className="flex flex-col gap-2">
             <h1 className="font-semibold text-dusk text-2xl md:text-3xl lg:text-4xl">
-              Welcome Back, User!
+              Welcome Back, {profile?.first_name}!
             </h1>
             <p className="text-dusk text-sm md:text-base">
               You have <span className="text-coral font-bold">$20.00</span> in
@@ -62,13 +55,6 @@ const Home = () => {
                 <GroupCard group={group} />
               </React.Fragment>
             ))}
-
-          {/* Demo Group */}
-          {/* <div
-            key={data.id}
-            onClick={() => navigate(`/groups/${data.id}`)}
-            className="bg-creme w-full aspect-[5/4] rounded-xl hover:cursor-pointer"
-          /> */}
 
           {/* New Group Button */}
           <div className="w-full aspect-[5/4] rounded-xl">

@@ -1,4 +1,4 @@
-import { DetailedGroup } from "@/utils/types";
+import { DetailedGroup } from "@/types/Group";
 import {
   Card,
   CardContent,

@@ -1,6 +1,7 @@
 import { apiService } from "@/utils/api";
 import { GoogleLogin } from "@react-oauth/google";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 const Root = () => {
@@ -44,20 +45,28 @@ const Root = () => {
           <h1 className="mt-6 text-left text-6xl font-bold tracking-tight text-foreground">
             Multiset
           </h1>
-          <div className="flex flex-col">
-            <h2 className="mt-6 text-left text-2xl font-medium tracking-tight text-foreground">
-              Log in to your account
-            </h2>
-            <p className="text-left text-md text-muted-foreground">
-              Or{" "}
-              <span className="font-medium text-primary">
-                sign up via Google
-              </span>
-            </p>
+          <div className="mt-4">
+            {isLoggedIn ? (
+              <Button variant="default">Navigate to Dashboard</Button>
+            ) : (
+              <div className="flex flex-col">
+                <h2 className="text-left text-2xl font-medium tracking-tight text-foreground">
+                  Log in to your account
+                </h2>
+                <p className="text-left text-md text-muted-foreground">
+                  Or{" "}
+                  <span className="font-medium text-primary">
+                    sign up via Google
+                  </span>
+                </p>
+              </div>
+            )}
           </div>
           {isLoggedIn ? (
-            <div>
-              <button onClick={handleLogout}>Logout</button>
+            <div className="mt-2">
+              <button onClick={handleLogout} className="underline">
+                Logout
+              </button>
             </div>
           ) : (
             <GoogleLogin
