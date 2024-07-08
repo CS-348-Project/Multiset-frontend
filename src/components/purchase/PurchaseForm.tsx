@@ -120,11 +120,14 @@ export function PurchaseForm() {
   const splitEvenly = (e) => {
     e.preventDefault();
     const totalCost = form.getValues("total_cost");
-    const checkedUsers = usersInGroup.filter((user) => {
+    let checkedUsers = usersInGroup.filter((user) => {
       return form
         .getValues("purchase_splits")
         .find((split) => split.borrower === user.id);
     });
+    if (checkedUsers.length === 0) {
+      checkedUsers = usersInGroup;
+    }
 
     const numberOfUsers = checkedUsers.length;
     let splitAmount = totalCost / numberOfUsers;
