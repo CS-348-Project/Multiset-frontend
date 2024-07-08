@@ -7,8 +7,6 @@ export const timeConverter = (UNIX_timestamp: string) => {
   const day = date.getDate();
   let hours = date.getHours();
   const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-  const milliseconds = date.getMilliseconds();
 
   // Determine AM or PM
   const ampm = hours >= 12 ? "PM" : "AM";
@@ -23,7 +21,5 @@ export const timeConverter = (UNIX_timestamp: string) => {
     minutes
   ).padStart(2, "0")} ${ampm}`;
 
-  console.log(`Formatted Date: ${formattedDate}`);
-  console.log(`Formatted Time: ${formattedTime}`);
   return formattedDate + " " + formattedTime;
 };

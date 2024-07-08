@@ -91,9 +91,6 @@ export const PurchaseDetails = () => {
                 return (
                   <TableRow
                     key={split["id"]}
-                    // onClick={() =>
-                    //   navigate(`/groups/${group_id}/purchase/${purchase.id}`)
-                    // }
                     className="cursor-pointer"
                     tabIndex={0}
                     role="button"
