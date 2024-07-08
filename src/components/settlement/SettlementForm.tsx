@@ -63,10 +63,10 @@ export function SettlementForm({ submit }: FormProps) {
 
   useEffect(() => {
     apiService
-      .get("/api/groups/other-members", {
+      .get("/api/groups/members", {
         params: {
           group_id,
-          detailed: true,
+          exclude_current_user: true,
         },
       })
       .then((response) => {
@@ -149,7 +149,14 @@ export function SettlementForm({ submit }: FormProps) {
             <FormItem>
               <FormLabel>Amount ($)</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  onChange={(e) => {
+                    if (!isNaN(Number(e.target.value))) {
+                      field.onChange(e.target.value);
+                    }
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

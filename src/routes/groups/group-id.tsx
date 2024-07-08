@@ -1,5 +1,6 @@
 import DefaultLayout from "@/components/layout/default-layout";
 import LoadingPage from "@/components/layout/loading-page";
+import { PurchaseHistory } from "@/components/purchase/PurchaseHistory";
 import Space from "@/components/ui/space";
 import UserBadge from "@/components/ui/users/user-badge";
 import useDetailedGroup from "@/hooks/useDetailedGroup";
@@ -32,6 +33,8 @@ const GroupPage = () => {
             ))}
           </div>
         </div>
+        <div className="h-8" />
+        <PurchaseHistory />
       </div>
     </DefaultLayout>
   );

@@ -2,15 +2,15 @@ import {
   HomeIcon,
   LandmarkIcon,
   LineChartIcon,
-  MenuIcon,
   PanelRightIcon,
   PiIcon,
+  TangentIcon,
+  UsersIcon,
 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown";
@@ -68,6 +68,11 @@ const MenuWrapper = ({ children }: MenuWrapperProps) => {
 };
 
 const MENU_ITEMS = [
+  { icon: <LandmarkIcon className="h-4 w-4" />, label: "Multiset" },
+  { icon: <HomeIcon className="h-4 w-4" />, label: "Home" },
+  { icon: <UsersIcon className="h-4 w-4" />, label: "Groups" },
+  { icon: <LineChartIcon className="h-4 w-4" />, label: "Stats" },
+  { icon: <TangentIcon className="h-4 w-4" />, label: "Optimization" },
   { icon: <HomeIcon className="h-4 w-4" />, label: "Home", href: "/home" },
   {
     icon: <LineChartIcon className="h-4 w-4" />,
