@@ -1,5 +1,7 @@
 # Multiset-frontend
 
+To try out multiset, you can go to the hosted app at `https://multiset.benjaminng.ca`. 
+
 ## Current Features
 
 1. Google authentication -> `/`
