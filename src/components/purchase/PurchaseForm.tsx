@@ -39,7 +39,7 @@ interface FormProps {
   submit: () => void;
 }
 
-export function PurchaseForm({ submit }: FormProps) {
+export function PurchaseForm() {
   const { toast } = useToast();
   const [loading, setIsLoading] = useState(false);
   const [usersInGroup, setUsersInGroup] = useState<UserInfo[]>([]);
@@ -99,7 +99,6 @@ export function PurchaseForm({ submit }: FormProps) {
           description: "Purchase submitted successfully",
           variant: "success",
         });
-        submit();
       })
       .catch((e) => {
         toast({

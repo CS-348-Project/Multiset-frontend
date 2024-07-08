@@ -7,6 +7,7 @@ import {
   PiIcon,
   MenuIcon,
   LayoutDashboardIcon,
+  TangentIcon,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useLocation } from "react-router-dom";
@@ -85,6 +86,8 @@ const MenuList = () => {
       label: "Purchases",
       href: isGroup ? `${groupPath}/purchase` : `#`,
     },
+    { icon: <TangentIcon className="h-4 w-4" />, label: "Optimization" },
+
     {
       icon: <LineChartIcon className="h-4 w-4" />,
       label: "Stats",

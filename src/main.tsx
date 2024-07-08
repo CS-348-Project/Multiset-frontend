@@ -6,6 +6,7 @@ import "./index.css";
 import OAuthCallback from "./components/callbacks/OAuthCallback";
 import { Toaster } from "./components/ui/toaster";
 import { Analytics } from "./routes/analytics";
+import { Optimization } from "./routes/optimization";
 import groupsRoutes from "./routes/groups";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/analytics",
     element: <Analytics />,
+  },
+  {
+    path: "/optimization",
+    element: <Optimization />,
   },
   groupsRoutes,
 ]);
