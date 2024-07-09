@@ -59,9 +59,7 @@ export const SettingsToggle: React.FC<SettingsToggleProps> = ({
         <div key={group.id} className="bg-white shadow-md rounded-lg p-5">
           <h3 className="font-semibold text-black text-lg">{group.name}</h3>
           <div className="flex justify-between items-center mt-5">
-            <p className="text-black text-sm md:text-base">
-              Optimized Payments
-            </p>
+            <p className="text-black text-sm md:text-base">Optimize Payments</p>
 
             <div className="flex items-center">
               <input

@@ -46,7 +46,7 @@ const GroupPage = () => {
           <h2 className="text-xl font-medium mb-4">Members</h2>
           <div className="flex flex-col gap-4">
             {data.users.map((user: UserInfo) => (
-              <UserBadge user={user} />
+              <UserBadge user={user} key={user.id} />
             ))}
           </div>
         </div>

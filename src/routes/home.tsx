@@ -36,8 +36,8 @@ const Home = () => {
               Welcome Back, {profile?.first_name}!
             </h1>
             <p className="text-dusk text-sm md:text-base">
-              You have <span className="text-coral font-bold">$20.00</span> in
-              unsettled payments.
+              {/* TODO: You have <span className="text-coral font-bold">$20.00</span> in
+              unsettled payments. */}
             </p>
           </div>
         </div>

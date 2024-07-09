@@ -107,14 +107,6 @@ export const GroceryListForm = ({
       grocery_list_id: groceryList?.id,
     };
     setAddItemLoading(true);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
     apiService
       .post("/api/grocery-lists/add-item", data)
       .then(() => {

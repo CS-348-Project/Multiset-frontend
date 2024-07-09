@@ -69,7 +69,7 @@ export const OptimizationToggle: React.FC<OptimizationToggleProps> = (
 
               <div className="flex justify-between items-center mt-5">
                 <p className="text-black text-sm md:text-base">
-                  Optimized Payments
+                  Optimize Payments
                 </p>
 
                 <div className="flex items-center">

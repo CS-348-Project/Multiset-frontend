@@ -56,9 +56,8 @@ const Root = () => {
                   Log in to your account
                 </h2>
                 <p className="text-left text-md text-muted-foreground">
-                  Or{" "}
                   <span className="font-medium text-primary">
-                    sign up via Google
+                    Sign up via Google
                   </span>
                 </p>
               </div>
