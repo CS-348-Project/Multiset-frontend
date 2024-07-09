@@ -47,7 +47,13 @@ const FormSchema = z.object({
   group_id: z.number(),
 });
 
-export function PurchaseForm() {
+type PurchaseFormProps = {
+  onSubmitRefresh?: () => void;
+};
+
+export function PurchaseForm({
+  onSubmitRefresh,
+}: PurchaseFormProps): JSX.Element {
   const { toast } = useToast();
   const [loading, setIsLoading] = useState(false);
   const [usersInGroup, setUsersInGroup] = useState<UserInfo[]>([]);
@@ -91,14 +97,6 @@ export function PurchaseForm() {
       total_cost: data.total_cost ? dollarsToCents(data.total_cost) : 0,
       group_id: group_id,
     };
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
     apiService
       .post("/api/purchases/new-purchase", data)
       .then(() => {
@@ -107,6 +105,7 @@ export function PurchaseForm() {
           description: "Purchase submitted successfully",
           variant: "success",
         });
+        onSubmitRefresh?.();
       })
       .catch((e) => {
         toast({
@@ -117,7 +116,7 @@ export function PurchaseForm() {
       });
   }
 
-  const splitEvenly = (e) => {
+  const splitEvenly = (e: any) => {
     e.preventDefault();
     const totalCost = form.getValues("total_cost");
     let checkedUsers = usersInGroup.filter((user) => {
@@ -158,7 +157,7 @@ export function PurchaseForm() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-2/3 space-y-6"
+            className="w-full lg:w-2/3 space-y-6"
           >
             <FormField
               control={form.control}
@@ -229,7 +228,7 @@ export function PurchaseForm() {
                       return (
                         <div
                           key={user.id}
-                          className="flex flex-row items-center space-x-3 space-y-0 w-2/3"
+                          className="flex flex-row items-center space-x-3 space-y-0 w-full lg:w-2/3"
                         >
                           <Checkbox
                             className="my-2"
