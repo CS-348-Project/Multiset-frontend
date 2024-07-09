@@ -136,7 +136,7 @@ const NotificationDropdown = () => {
           <span className="sr-only">Toggle user menu</span>
         </Button>
       </DropdownMenuTrigger>
-      {notifications.length > 0 ? (
+      {notifications?.length > 0 ? (
         <DropdownMenuContent align="end" className="bg-white">
           <div className="max-h-80 overflow-y-auto">
             {notifications.map((notification) => (
