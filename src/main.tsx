@@ -10,6 +10,7 @@ import { Optimization } from "./routes/optimization";
 import groupsRoutes from "./routes/groups";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ProfileContextProvider } from "./context/profile-context";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -43,10 +44,12 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-        <main className="font-sans">
-          <RouterProvider router={router} />
-          <Toaster />
-        </main>
+        <ProfileContextProvider>
+          <main className="font-sans">
+            <RouterProvider router={router} />
+            <Toaster />
+          </main>
+        </ProfileContextProvider>
       </GoogleOAuthProvider>
     </QueryClientProvider>
   </React.StrictMode>

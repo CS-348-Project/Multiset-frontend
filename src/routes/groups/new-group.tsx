@@ -11,24 +11,43 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
+import useProfile from "@/context/profile-context";
 import { apiService } from "@/utils/api";
-import { User } from "@/utils/types";
+import { UserInfo } from "@/types/UserInfo";
 import { CornerUpLeftIcon, PlusIcon, XIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { set } from "date-fns";
 
 const NewGroup = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { profile } = useProfile();
+
   const [groupName, setGroupName] = useState("");
   const [email, setEmail] = useState("");
-  const [accounts, setAccounts] = useState<User[]>([]);
+  const [accounts, setAccounts] = useState<UserInfo[]>([]);
+  const [optimizePayments, setOptimizePayments] = useState(false);
+
+  useEffect(() => {
+    if (!profile) return;
+    setAccounts((p) => [
+      profile,
+      ...p.filter((a) => a.email !== profile.email),
+    ]);
+  }, [profile]);
 
   const handleAddAccount = () => {
     if (!email) return;
+    if (accounts.some((user) => user.email == email)) {
+      toast({
+        title: "User already in group",
+      });
+      return;
+    }
 
     apiService
-      .get<User[]>(`/api/users/?email=${email}`)
+      .get<UserInfo[]>(`/api/users/?email=${email}`)
       .then((response) => {
         if (response.data.length === 0) {
           toast({
@@ -72,7 +91,7 @@ const NewGroup = () => {
       .post("/api/groups/create", {
         group: {
           name: groupName,
-          optimize_payments: false,
+          optimize_payments: optimizePayments,
         },
         user_ids: accounts.map((account) => account.id),
       })
@@ -100,16 +119,18 @@ const NewGroup = () => {
       });
   };
 
+  if (!profile) return null;
+
   return (
-    <div className="relative w-screen h-screen flex items-center justify-center">
+    <div className="relative w-full h-screen flex items-center justify-center bg-creme">
       <div className="absolute left-4 top-4">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <CornerUpLeftIcon className="h-6 w-6" />
           <span className="sr-only">Back</span>
         </Button>
       </div>
-      <Card className="w-full max-w-lg bg-dusk drop-shadow-md">
-        <Tabs defaultValue="create" className="text-creme">
+      <Card className="w-full max-w-lg bg-white drop-shadow-md">
+        <Tabs defaultValue="create" className="text-dusk">
           <TabsList>
             <TabsTrigger value="create">Create Group</TabsTrigger>
             <TabsTrigger value="settings">Group Settings</TabsTrigger>
@@ -168,7 +189,9 @@ const NewGroup = () => {
                         setAccounts(accounts.filter((_, i) => i !== idx));
                       }}
                     >
-                      <XIcon className="h-4 w-4" />
+                      {account.email !== profile.email && (
+                        <XIcon className="h-4 w-4" />
+                      )}
                       <span className="sr-only">Remove email</span>
                     </Button>
                   </div>
@@ -184,7 +207,21 @@ const NewGroup = () => {
               <CardTitle>Group Settings</CardTitle>
               <CardDescription>Adjust settings for the group</CardDescription>
             </CardHeader>
-            <CardContent>Bonk</CardContent>
+            <CardContent>
+              <div className="flex items-center gap-4">
+                <p className="text-dusk text-sm md:text-base">
+                  Optimize Payments
+                </p>
+                <input
+                  type="checkbox"
+                  className="form-checkbox h-5 w-5 text-blue-600"
+                  checked={optimizePayments}
+                  onChange={() => {
+                    setOptimizePayments((p) => !p);
+                  }}
+                />
+              </div>
+            </CardContent>
           </TabsContent>
         </Tabs>
       </Card>

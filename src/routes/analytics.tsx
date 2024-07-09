@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { CategoryCount, TopSpender } from "@/types/AnalyticTypes";
 import { BarChart } from "@/components/analytics/BarChart";
 import { centsToDollars } from "@/utils/currencyConverter";
+import { useLocation } from "react-router-dom";
 
 export const Analytics = () => {
   const [purchaseCategoriesData, setPurchaseCategoriesData] = useState([{}]);
@@ -13,12 +14,16 @@ export const Analytics = () => {
   ]);
   const [numPurchasesLeaderboardData, setNumPurchasesLeaderboardData] =
     useState([{}]);
+  const location = useLocation();
   const colors = ["#f47560", "#f1e15b", "#e8a838", "#60cdbb", "#e8c0a0"];
 
   useEffect(() => {
+    const pathname = location.pathname.split("/");
+    const groupId = pathname[pathname.findIndex((s) => s === "groups") + 1];
+
     apiService
       // TODO: make the group ID dynamic
-      .get(`/api/analytics/purchase-categories?group_id=1`)
+      .get(`/api/analytics/purchase-categories?group_id=${groupId}`)
       .then((response) => {
         const new_graph_data = construct_purchase_categories_graph_data(
           response.data
@@ -27,7 +32,7 @@ export const Analytics = () => {
       });
 
     apiService
-      .get(`/api/analytics/top-spenders?group_id=1`)
+      .get(`/api/analytics/top-spenders?group_id=${groupId}`)
       .then((response) => {
         const { newtopSpendersLeaderboardData, newNumPurchasesData } =
           construct_top_spenders_graph_data(response.data);
@@ -66,29 +71,33 @@ export const Analytics = () => {
 
   return (
     <DefaultLayout>
-      <h1 className="text-3xl font-bold">Analytics</h1>
-      <div className="h-full grid grid-cols-2 grap-4">
-        <div>
-          <h2 className="text-xl font-bold">Purchase Categories:</h2>
-          <PieChart data={purchaseCategoriesData} />
-        </div>
-        <div>
-          <h2 className="text-xl font-bold">Spending amount:</h2>
-          <BarChart
-            colors={colors}
-            data={topSpendersLeaderboardData}
-            keys={["Total Spent"]}
-            indexBy="name"
-          />
-        </div>
-        <div>
-          <h2 className="text-xl font-bold">Spending frequency:</h2>
-          <BarChart
-            colors={colors}
-            data={numPurchasesLeaderboardData}
-            keys={["Number of Purchases"]}
-            indexBy="name"
-          />
+      <div className="w-full h-full pb-24">
+        <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl my-10">
+          Grocery Lists
+        </h1>
+        <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="aspect-square">
+            <h2 className="text-xl font-bold">Purchase Categories:</h2>
+            <PieChart data={purchaseCategoriesData} />
+          </div>
+          <div className="aspect-square">
+            <h2 className="text-xl font-bold">Spending amount:</h2>
+            <BarChart
+              colors={colors}
+              data={topSpendersLeaderboardData}
+              keys={["Total Spent"]}
+              indexBy="name"
+            />
+          </div>
+          <div className="aspect-square">
+            <h2 className="text-xl font-bold">Spending frequency:</h2>
+            <BarChart
+              colors={colors}
+              data={numPurchasesLeaderboardData}
+              keys={["Number of Purchases"]}
+              indexBy="name"
+            />
+          </div>
         </div>
       </div>
     </DefaultLayout>

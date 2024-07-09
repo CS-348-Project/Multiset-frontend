@@ -1,30 +1,29 @@
+import React, { useEffect } from "react";
+import GroupCard from "@/components/groups/group-card";
 import DefaultLayout from "@/components/layout/default-layout";
 import LoadingPage from "@/components/layout/loading-page";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import NewGroupButton from "@/components/ui/groups/new-group-button";
-import useDetailedGroup from "@/hooks/useDetailedGroup";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@radix-ui/react-popover";
-import { CalendarIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { DetailedGroup } from "@/types/Group";
+import useProfile from "@/context/profile-context";
+import { apiService } from "@/utils/api";
 
 const Home = () => {
-  // const [groups, setGroups] = useState<Groups[]>([
-  // {
-  //   id: 1,
-  //   name: "Group 1",
-  //   created_at: new Date(),
-  //   optimize_payments: false,
-  // },
-  // ]);
-  const { data, isLoading } = useDetailedGroup(4);
-  const navigate = useNavigate();
+  // const [groups, setGroups] = useState<DetailedGroup[]>([]);
+  const { profile } = useProfile();
+  const [groups, setGroups] = useState<DetailedGroup[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  if (isLoading || !data) {
+  useEffect(() => {
+    if (!profile) return;
+    setLoading(true);
+    apiService.get(`/api/groups?detailed=true`).then((response) => {
+      setGroups(response.data);
+      setLoading(false);
+    });
+  }, [profile]);
+
+  if (!profile || loading) {
     return <LoadingPage />;
   }
 
@@ -33,53 +32,24 @@ const Home = () => {
       <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         <div className="flex items-center gap-4">
           <div className="flex flex-col gap-2">
-            <h1 className="font-semibold text-creme text-2xl md:text-3xl lg:text-4xl">
-              Welcome Back, User!
+            <h1 className="font-semibold text-dusk text-2xl md:text-3xl lg:text-4xl">
+              Welcome Back, {profile?.first_name}!
             </h1>
-            <p className="text-creme text-sm md:text-base">
-              You have <span className="text-rose">$20.00</span> in unsettled
-              payments.
+            <p className="text-dusk text-sm md:text-base">
+              {/* TODO: You have <span className="text-coral font-bold">$20.00</span> in
+              unsettled payments. */}
             </p>
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  id="date"
-                  variant="outline"
-                  className="w-[280px] justify-start text-left font-normal text-creme/80"
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  Date
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
-                <Calendar
-                  initialFocus
-                  mode="single"
-                  className="bg-dusk mt-3 border border-creme/20 text-creme/80"
-                />
-              </PopoverContent>
-            </Popover>
           </div>
         </div>
 
-        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
           {/* Existing Groups */}
-          {/* {groups.length > 0 &&
+          {groups?.length > 0 &&
             groups.map((group) => (
-              <div
-                key={group.id}
-                className="bg-creme w-full aspect-[5/4] rounded-xl"
-              />
-            ))} */}
-
-          {/* Demo Group */}
-          <div
-            key={data.id}
-            onClick={() => navigate(`/groups/${data.id}`)}
-            className="bg-creme w-full aspect-[5/4] rounded-xl hover:cursor-pointer"
-          />
+              <React.Fragment key={group.id}>
+                <GroupCard group={group} />
+              </React.Fragment>
+            ))}
 
           {/* New Group Button */}
           <div className="w-full aspect-[5/4] rounded-xl">

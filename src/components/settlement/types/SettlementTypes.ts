@@ -10,7 +10,7 @@ export interface TSettlement {
   sender: TSettlementMemberInfo;
   amount: number;
   receiver: TSettlementMemberInfo;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface TSettlementCreateDTO {

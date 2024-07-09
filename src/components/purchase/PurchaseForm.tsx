@@ -120,14 +120,6 @@ export function PurchaseForm({ submit, initialData, recurringPurchases }: FormPr
       total_cost: dollarsToCents(data.total_cost),
       group_id: group_id,
     };
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
     apiService
       .post("/api/purchases/new-purchase", data)
       .then(() => {
@@ -155,7 +147,7 @@ export function PurchaseForm({ submit, initialData, recurringPurchases }: FormPr
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-2/3 space-y-6"
+            className="w-full lg:w-2/3 space-y-6"
           >
             <FormField
               control={form.control}
@@ -235,7 +227,7 @@ export function PurchaseForm({ submit, initialData, recurringPurchases }: FormPr
                       return (
                         <div
                           key={user.id}
-                          className="flex flex-row items-center space-x-3 space-y-0 w-2/3"
+                          className="flex flex-row items-center space-x-3 space-y-0 w-full lg:w-2/3"
                         >
                           <Checkbox
                             className="my-2"

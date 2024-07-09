@@ -12,7 +12,11 @@ import { centsToDollars } from "@/utils/currencyConverter";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-export const PurchaseHistory = () => {
+type PurchaseHistoryProps = {
+  key?: number;
+};
+
+export const PurchaseHistory = ({ _key = 0 }: PurchaseHistoryProps) => {
   const navigate = useNavigate();
   const [purchases, setPurchases] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -33,6 +33,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/components/ui/use-toast";
 import { Trash2 } from "lucide-react";
 import { useParams } from "react-router-dom";
+import { timeConverter } from "@/utils/timeConverter";
 
 interface TGroceryListFormProps {
   isOpen: boolean;
@@ -107,14 +108,6 @@ export const GroceryListForm = ({
       grocery_list_id: groceryList?.id,
     };
     setAddItemLoading(true);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
     apiService
       .post("/api/grocery-lists/add-item", data)
       .then(() => {
@@ -191,10 +184,7 @@ export const GroceryListForm = ({
             <DialogHeader>
               <DialogTitle>{groceryList.name}</DialogTitle>
               <p className="text-muted-foreground text-sm">
-                Grocery list created on{" "}
-                {new Date(
-                  `${groceryList.created_at.replace("T", " ")} UTC`
-                ).toLocaleString()}
+                Grocery list created on {timeConverter(groceryList.created_at)}
               </p>
               <Separator className="my-3" />
               {loading ? (
