@@ -47,7 +47,9 @@ const Root = () => {
           </h1>
           <div className="mt-4">
             {isLoggedIn ? (
-              <Button variant="default">Navigate to Dashboard</Button>
+              <a href="/home">
+                <Button variant="default">Navigate to Dashboard</Button>
+              </a>
             ) : (
               <div className="flex flex-col">
                 <h2 className="text-left text-2xl font-medium tracking-tight text-foreground">

@@ -10,6 +10,8 @@ import {
   TangentIcon,
   HandCoinsIcon,
   SettingsIcon,
+  HistoryIcon,
+  ClipboardListIcon,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useLocation } from "react-router-dom";
@@ -17,6 +19,16 @@ import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { useState } from "react";
 import useProfile from "@/context/profile-context";
 import NotificationDropdown from "../notifications/NotificationDropdown";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "../ui/dropdown";
+import { apiService } from "@/utils/api";
+import { toast } from "../ui/use-toast";
 
 type MenuHeaderProps = {
   children?: React.ReactNode;
@@ -76,8 +88,6 @@ const MenuList = () => {
     ? location.pathname.split("/").slice(0, 3).join("/")
     : null;
 
-  console.log(groupPath);
-
   const MENU_ITEMS = [
     {
       icon: <LayoutDashboardIcon className="h-4 w-4" />,
@@ -89,16 +99,30 @@ const MenuList = () => {
       label: "Purchases",
       href: isGroup ? `${groupPath}/purchase` : `#`,
     },
-    { icon: <TangentIcon className="h-4 w-4" />, label: "Optimization" },
+    {
+      icon: <TangentIcon className="h-4 w-4" />,
+      label: "Optimization",
+      href: isGroup ? `${groupPath}/optimization` : `#`,
+    },
     {
       icon: <HandCoinsIcon className="h-4 w-4" />,
       label: "Settlements",
       href: isGroup ? `${groupPath}/settlement` : `#`,
     },
     {
+      icon: <ClipboardListIcon className="h-4 w-4" />,
+      label: "Grocery Lists",
+      href: isGroup ? `${groupPath}/grocery-list` : `#`,
+    },
+    {
       icon: <LineChartIcon className="h-4 w-4" />,
       label: "Stats",
       href: isGroup ? `${groupPath}/analytics` : `#`,
+    },
+    {
+      icon: <HistoryIcon className="h-4 w-4" />,
+      label: "History",
+      href: isGroup ? `${groupPath}/logs` : `#`,
     },
     {
       icon: <SettingsIcon className="h-4 w-4" />,
@@ -125,6 +149,53 @@ const MenuList = () => {
   );
 };
 
+const NotificationToggle = ({
+  profile,
+  refetchProfile,
+}: {
+  profile: any;
+  refetchProfile: any;
+}) => {
+  const handleEmailNotificationsChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    // try to toggle the notification setting
+    apiService
+      .patch(`/api/notifications/email`)
+      .then(() => {
+        refetchProfile();
+      })
+      // if it fails, revert the state and show an alert
+      .catch((err) => {
+        // Change profile state here:
+        console.error(err);
+        toast({
+          variant: "destructive",
+          description: (
+            <p>
+              Failed to toggle notification settings. Please try again later.
+            </p>
+          ),
+        });
+      });
+  };
+
+  return (
+    <div className="flex justify-between gap-5 items-center">
+      <p className="text-creme text-sm md:text-base">Notifications</p>
+      <div className="flex items-center">
+        <input
+          type="checkbox"
+          className="form-checkbox h-5 w-5 text-blue-600"
+          checked={profile.email_notifications}
+          data-profile-id={profile.id}
+          onChange={handleEmailNotificationsChange}
+        />
+      </div>
+    </div>
+  );
+};
+
 type ContentWrapperProps = {
   menu: React.ReactNode;
   hideMenu: boolean;
@@ -132,7 +203,7 @@ type ContentWrapperProps = {
 };
 const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { profile } = useProfile();
+  const { profile, refetchProfile } = useProfile();
 
   return (
     <div className="relative w-full flex-1 flex flex-col bg-creme">
@@ -164,21 +235,35 @@ const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
 
         <NotificationDropdown />
 
+        <div className="w-4" />
+
         {profile && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full border border-primary w-8 h-8"
-          >
-            <img
-              src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=000&color=fff`}
-              width="32"
-              height="32"
-              className="rounded-full bg-creme"
-              alt="Avatar"
-            />
-            <span className="sr-only">Toggle user menu</span>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full border border-primary w-8 h-8"
+              >
+                <img
+                  src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=000&color=fff`}
+                  width="32"
+                  height="32"
+                  className="rounded-full bg-creme"
+                  alt="Avatar"
+                />
+                <span className="sr-only">Toggle user menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <div className="py-2 px-1">
+                <NotificationToggle
+                  profile={profile}
+                  refetchProfile={refetchProfile}
+                />
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
       {children}

@@ -15,8 +15,6 @@ const GroupCard = ({ group }: { group: DetailedGroup }) => {
     splitName.length > 1 ? "+" + splitName[1] : ""
   }`;
 
-  console.log(parsedName);
-
   return (
     <Card className="w-full h-full flex flex-col aspect-[5/4]">
       <CardContent className="w-full h-full flex flex-col justify-end">

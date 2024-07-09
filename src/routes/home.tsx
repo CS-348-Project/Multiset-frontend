@@ -2,11 +2,7 @@ import React, { useEffect } from "react";
 import GroupCard from "@/components/groups/group-card";
 import DefaultLayout from "@/components/layout/default-layout";
 import LoadingPage from "@/components/layout/loading-page";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import NewGroupButton from "@/components/ui/groups/new-group-button";
-import useDetailedGroup from "@/hooks/useDetailedGroup";
-import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { DetailedGroup } from "@/types/Group";
 import useProfile from "@/context/profile-context";
@@ -22,13 +18,12 @@ const Home = () => {
     if (!profile) return;
     setLoading(true);
     apiService.get(`/api/groups?detailed=true`).then((response) => {
-      console.log(response.data);
       setGroups(response.data);
       setLoading(false);
     });
   }, [profile]);
 
-  if (!profile) {
+  if (!profile || loading) {
     return <LoadingPage />;
   }
 

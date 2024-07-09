@@ -117,7 +117,7 @@ export function PurchaseForm() {
       });
   }
 
-  const splitEvenly = (e) => {
+  const splitEvenly = (e: any) => {
     e.preventDefault();
     const totalCost = form.getValues("total_cost");
     let checkedUsers = usersInGroup.filter((user) => {
