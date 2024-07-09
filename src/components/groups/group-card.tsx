@@ -10,11 +10,6 @@ import { UsersIcon } from "lucide-react";
 import { Button } from "../ui/button";
 
 const GroupCard = ({ group }: { group: DetailedGroup }) => {
-  const splitName = group.name.split(" ");
-  const parsedName = `${splitName[0]}${
-    splitName.length > 1 ? "+" + splitName[1] : ""
-  }`;
-
   return (
     <Card className="w-full h-full flex flex-col aspect-[5/4]">
       <CardContent className="w-full h-full flex flex-col justify-end">

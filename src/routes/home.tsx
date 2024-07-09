@@ -44,7 +44,7 @@ const Home = () => {
 
         <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
           {/* Existing Groups */}
-          {groups.length > 0 &&
+          {groups?.length > 0 &&
             groups.map((group) => (
               <React.Fragment key={group.id}>
                 <GroupCard group={group} />
