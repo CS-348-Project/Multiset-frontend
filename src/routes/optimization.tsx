@@ -19,7 +19,7 @@ export const Optimization = () => {
 
   return (
     <DefaultLayout>
-      <div className="mx-10">
+      <div>
         <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl my-10">
           Optimization
         </h1>

@@ -71,8 +71,10 @@ export const Analytics = () => {
 
   return (
     <DefaultLayout>
-      <div className="w-full h-full px-6 lg:px-10 py-12 pb-24">
-        <h1 className="text-3xl font-bold">Analytics</h1>
+      <div className="w-full h-full pb-24">
+        <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl my-10">
+          Grocery Lists
+        </h1>
         <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="aspect-square">
             <h2 className="text-xl font-bold">Purchase Categories:</h2>

@@ -10,6 +10,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { TLog } from "@/types/Log";
 import { apiService } from "@/utils/api";
+import { timeConverter } from "@/utils/timeConverter";
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 export const Logs = () => {
@@ -45,7 +46,7 @@ export const Logs = () => {
 
   return (
     <DefaultLayout>
-      <div className="mx-10">
+      <div>
         <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl my-10">
           Member Activity Logs
         </h1>
@@ -70,9 +71,7 @@ export const Logs = () => {
                     <TableRow key={log.id}>
                       <TableCell>{log.action}</TableCell>
                       <TableCell>{log.details}</TableCell>
-                      <TableCell>
-                        {new Date(log.created_at).toLocaleString()}
-                      </TableCell>
+                      <TableCell>{timeConverter(log.created_at)}</TableCell>
                     </TableRow>
                   );
                 })

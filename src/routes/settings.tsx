@@ -96,7 +96,7 @@ const Settings = () => {
 
   return (
     <DefaultLayout>
-      <div className="px-10 py-6">
+      <div className="py-6">
         <h1 className="text-3xl font-bold">Settings</h1>
         <Space s="h-4" />
         <p className="text-black text-sm md:text-base">

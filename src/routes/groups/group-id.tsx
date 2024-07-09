@@ -22,7 +22,7 @@ const GroupPage = () => {
 
   return (
     <DefaultLayout>
-      <div className="w-full h-full px-6 py-4">
+      <div className="w-full h-full py-4">
         <h1 className="text-3xl font-bold">{data.name}</h1>
 
         <Space s="h-4" />

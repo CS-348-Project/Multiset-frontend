@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { apiService } from "@/utils/api";
+import { timeConverter } from "@/utils/timeConverter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -87,10 +88,7 @@ export const GroceryList = () => {
       >
         <h2 className="font-semibold text-black text-xl">{groceryList.name}</h2>
         <h2 className="text-muted-foreground">
-          Created on{" "}
-          {new Date(
-            `${groceryList.created_at.replace("T", " ")} UTC`
-          ).toLocaleString()}
+          Created on {timeConverter(groceryList.created_at)}
         </h2>
       </div>
     );
@@ -146,7 +144,7 @@ export const GroceryList = () => {
 
   return (
     <DefaultLayout>
-      <div className="w-full px-10">
+      <div className="w-full">
         <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl my-10">
           Grocery Lists
         </h1>

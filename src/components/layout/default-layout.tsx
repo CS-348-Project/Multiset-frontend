@@ -266,7 +266,7 @@ const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
           </DropdownMenu>
         )}
       </div>
-      {children}
+      <div className="px-10 py-8 lg:pb-24 lg:py-0 lg:px-20">{children}</div>
     </div>
   );
 };

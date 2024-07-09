@@ -33,6 +33,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/components/ui/use-toast";
 import { Trash2 } from "lucide-react";
 import { useParams } from "react-router-dom";
+import { timeConverter } from "@/utils/timeConverter";
 
 interface TGroceryListFormProps {
   isOpen: boolean;
@@ -183,10 +184,7 @@ export const GroceryListForm = ({
             <DialogHeader>
               <DialogTitle>{groceryList.name}</DialogTitle>
               <p className="text-muted-foreground text-sm">
-                Grocery list created on{" "}
-                {new Date(
-                  `${groceryList.created_at.replace("T", " ")} UTC`
-                ).toLocaleString()}
+                Grocery list created on {timeConverter(groceryList.created_at)}
               </p>
               <Separator className="my-3" />
               {loading ? (

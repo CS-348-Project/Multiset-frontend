@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { apiService } from "@/utils/api";
+import { timeConverter } from "@/utils/timeConverter";
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -48,7 +49,7 @@ export const Settlement = () => {
 
   return (
     <DefaultLayout>
-      <div className="w-full px-10">
+      <div className="w-full">
         <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl my-10">
           Settlements
         </h1>
@@ -88,7 +89,7 @@ export const Settlement = () => {
                         ${(settlement.amount / 100).toFixed(2)}
                       </TableCell>
                       <TableCell>
-                        {new Date(settlement.created_at).toLocaleString()}
+                        {timeConverter(settlement.created_at)}
                       </TableCell>
                     </TableRow>
                   );
