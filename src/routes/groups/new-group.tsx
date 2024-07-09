@@ -17,6 +17,7 @@ import { UserInfo } from "@/types/UserInfo";
 import { CornerUpLeftIcon, PlusIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { set } from "date-fns";
 
 const NewGroup = () => {
   const { toast } = useToast();
@@ -26,6 +27,7 @@ const NewGroup = () => {
   const [groupName, setGroupName] = useState("");
   const [email, setEmail] = useState("");
   const [accounts, setAccounts] = useState<UserInfo[]>([]);
+  const [optimizePayments, setOptimizePayments] = useState(false);
 
   useEffect(() => {
     if (!profile) return;
@@ -89,7 +91,7 @@ const NewGroup = () => {
       .post("/api/groups/create", {
         group: {
           name: groupName,
-          optimize_payments: false,
+          optimize_payments: optimizePayments,
         },
         user_ids: accounts.map((account) => account.id),
       })
@@ -205,7 +207,21 @@ const NewGroup = () => {
               <CardTitle>Group Settings</CardTitle>
               <CardDescription>Adjust settings for the group</CardDescription>
             </CardHeader>
-            <CardContent>Bonk</CardContent>
+            <CardContent>
+              <div className="flex items-center gap-4">
+                <p className="text-dusk text-sm md:text-base">
+                  Optimize Payments
+                </p>
+                <input
+                  type="checkbox"
+                  className="form-checkbox h-5 w-5 text-blue-600"
+                  checked={optimizePayments}
+                  onChange={() => {
+                    setOptimizePayments((p) => !p);
+                  }}
+                />
+              </div>
+            </CardContent>
           </TabsContent>
         </Tabs>
       </Card>
