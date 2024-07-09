@@ -80,7 +80,9 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
 
   return (
     <div className="mr-10 mb-10">
-      <h2 className="font-semibold text-black text-xl my-5">View Payments</h2>
+      <h2 className="font-semibold text-black text-xl mt-8 mb-4">
+        View Payments
+      </h2>
 
       <p className="text-black text-sm md:text-base mb-10">
         Click the button below to view the payments for the group. You can see
