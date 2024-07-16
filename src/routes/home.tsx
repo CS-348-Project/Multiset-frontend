@@ -35,10 +35,6 @@ const Home = () => {
             <h1 className="font-semibold text-dusk text-2xl md:text-3xl lg:text-4xl">
               Welcome Back, {profile?.first_name}!
             </h1>
-            <p className="text-dusk text-sm md:text-base">
-              {/* TODO: You have <span className="text-coral font-bold">$20.00</span> in
-              unsettled payments. */}
-            </p>
           </div>
         </div>
 

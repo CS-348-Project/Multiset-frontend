@@ -21,13 +21,11 @@ const Root = () => {
   };
 
   const handleLogin = (response: any) => {
-    console.log(response);
     apiService
       .post("api/auth/google", { token: response.credential })
       .then((res) => {
         localStorage.setItem("token", res.data.token);
         setIsLoggedIn(true);
-        navigate("/home");
       })
       .catch((err) => {
         console.error(err);
@@ -52,14 +50,9 @@ const Root = () => {
               </a>
             ) : (
               <div className="flex flex-col">
-                <h2 className="text-left text-2xl font-medium tracking-tight text-foreground">
-                  Log in to your account
+                <h2 className="text-left text-2xl font-medium tracking-tight text-foreground mb-2">
+                  Log in via Google
                 </h2>
-                <p className="text-left text-md text-muted-foreground">
-                  <span className="font-medium text-primary">
-                    Sign up via Google
-                  </span>
-                </p>
               </div>
             )}
           </div>
