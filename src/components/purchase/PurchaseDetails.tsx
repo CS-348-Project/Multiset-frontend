@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -13,8 +13,12 @@ import { centsToDollars } from "@/utils/currencyConverter";
 import DefaultLayout from "../layout/default-layout";
 import { TPurchase } from "@/types/Purchase";
 import { timeConverter } from "@/utils/timeConverter";
+import { Button } from "@/components/ui/button";
+import { useToast } from "../ui/use-toast";
 
 export const PurchaseDetails = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const params = useParams<{ id: string; purchaseId: string }>();
   const purchase_id = Number(params.purchaseId);
   const [loading, setLoading] = useState(true);
@@ -69,6 +73,31 @@ export const PurchaseDetails = () => {
           <h2 className="font-semibold text-black text-3xl my-10">
             {purchase.name}
           </h2>
+          <Button
+            onClick={() =>
+              apiService
+                .delete(`/api/purchases/delete_purchase`, {
+                  params: { purchase_id },
+                })
+                .then(() => {
+                  toast({
+                    title: "Success",
+                    description: "Item deleted successfully",
+                    variant: "success",
+                  });
+                  navigate(`/groups/${params.id}`);
+                })
+                .catch((error) => {
+                  toast({
+                    title: "Error",
+                    description: `Item could not be deleted: ${error}`,
+                    variant: "destructive",
+                  });
+                })
+            }
+          >
+            Delete Purchase
+          </Button>
           <p className=" text-black text-lg mt-10">
             Total Amount: ${centsToDollars(purchase.total_cost)}
           </p>
