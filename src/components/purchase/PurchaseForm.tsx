@@ -27,14 +27,14 @@ const FormSchema = z.object({
   category: z.string(),
   total_cost: z.coerce
     .number()
+    .refine((value) => value > 0, { message: "Amount must be greater than 0" })
     .refine(
       (value) => {
         const decimalPlaces = value.toString().split(".")[1]?.length || 0;
         return decimalPlaces <= 2;
       },
       { message: "Maximum of 2 decimal places allowed" }
-    )
-    .refine((value) => value > 0, { message: "Amount must be greater than 0" }),
+    ),
   purchase_splits: z.array(
     z.object({
       borrower: z.number(),
