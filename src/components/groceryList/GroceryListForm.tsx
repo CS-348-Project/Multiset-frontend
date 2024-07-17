@@ -151,7 +151,9 @@ export const GroceryListForm = ({
 
   const deleteItem = (id: number) => {
     apiService
-      .delete(`/api/grocery-lists/delete-item?item_id=${id}`)
+      .delete(
+        `/api/grocery-lists/delete-item?item_id=${id}&grocery_list_id=${groceryList?.id}`
+      )
       .then(() => {
         fetchItems();
         toast({

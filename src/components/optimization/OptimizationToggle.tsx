@@ -33,7 +33,7 @@ export const OptimizationToggle: React.FC<OptimizationToggleProps> = (
       .patch(`/api/optimization/toggle?group_id=${id}`)
       .then(() => {})
       // if it fails, revert the state and show an alert
-      .catch((err) => {
+      .catch(() => {
         const newGroups = data.groups?.map((group: Group) => {
           if (group.id === id) {
             return {
@@ -46,8 +46,6 @@ export const OptimizationToggle: React.FC<OptimizationToggleProps> = (
         });
 
         data.setGroups(newGroups);
-
-        console.error(err);
         toast({
           variant: "destructive",
           description: (

@@ -60,8 +60,7 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
         setOptimizationData(res.data.transfers);
         setLoadingOptimizationData(false);
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
         toast({
           variant: "destructive",
           description: (
