@@ -44,11 +44,19 @@ export const Analytics = () => {
   const construct_purchase_categories_graph_data = (data: CategoryCount[]) => {
     const newpurchaseCategoriesData = [];
     for (const entry of data) {
-      newpurchaseCategoriesData.push({
-        id: entry.category,
-        label: entry.category,
-        value: entry.count,
-      });
+      if(entry.category == ""){
+        newpurchaseCategoriesData.push({
+          id: "N/A",
+          label: "N/A",
+          value: entry.count,
+        });
+      }else{
+        newpurchaseCategoriesData.push({
+          id: entry.category,
+          label: entry.category,
+          value: entry.count,
+        });
+      }
     }
     return newpurchaseCategoriesData;
   };
