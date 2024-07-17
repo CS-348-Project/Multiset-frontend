@@ -20,6 +20,7 @@ export const PurchaseDetails = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const params = useParams<{ id: string; purchaseId: string }>();
+  const group_id = Number(params.id);
   const purchase_id = Number(params.purchaseId);
   const [loading, setLoading] = useState(true);
   const [purchase_splits, setPurchaseSplits] = useState([]);
@@ -74,6 +75,7 @@ export const PurchaseDetails = () => {
             {purchase.name}
           </h2>
           <Button
+            className="mr-2"
             onClick={() =>
               apiService
                 .delete(`/api/purchases/delete_purchase`, {
@@ -97,6 +99,13 @@ export const PurchaseDetails = () => {
             }
           >
             Delete Purchase
+          </Button>
+          <Button
+            onClick={() =>
+              navigate(`/groups/${group_id}/purchase/edit/${purchase_id}`)
+            }
+          >
+            Edit Purchase Splits
           </Button>
           <p className=" text-black text-lg mt-10">
             Total Amount: ${centsToDollars(purchase.total_cost)}
