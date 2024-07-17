@@ -102,7 +102,7 @@ export const PurchaseDetails = () => {
             Total Amount: ${centsToDollars(purchase.total_cost)}
           </p>
           <p className="text-black text-lg">
-            Purhcase Date: {timeConverter(purchase.created_at)}
+            Purchase Date: {timeConverter(purchase.created_at)}
           </p>
           <p className="text-black text-lg mb-10">
             Category: {purchase.category}
