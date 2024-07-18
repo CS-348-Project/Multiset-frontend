@@ -25,8 +25,8 @@ const UserBadgeDisplay = ({ user }: { user: UserInfo }) => {
       </div>
       <div className="text-right">
         {
-          user.balance && user.balance > 0 ? (
-            <span className="text-lg font-medium">+${user.balance.toFixed(2)}</span>
+          (user.balance ?? 0) >= 0 ? (
+            <span className="text-lg font-medium">${(user.balance ?? 0).toFixed(2)}</span>
           ) : (
             <span className="text-lg font-medium text-red-500">-${Math.abs(user.balance ?? 0).toFixed(2)}</span>
           )
