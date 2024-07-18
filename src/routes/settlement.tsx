@@ -1,5 +1,6 @@
 import DefaultLayout from "@/components/layout/default-layout";
 import { SettlementForm } from "@/components/settlement/SettlementForm";
+import { OptimalPaymentTable } from "@/components/settlement/OptimalPaymentTable";
 import { TSettlement } from "@/components/settlement/types/SettlementTypes";
 import {
   Table,
@@ -54,6 +55,7 @@ export const Settlement = () => {
           Settlements
         </h1>
         <SettlementForm submit={fetchSettlements} />
+        <OptimalPaymentTable />
         <div>
           <h2 className="font-semibold text-black text-xl my-5">
             Settlement History

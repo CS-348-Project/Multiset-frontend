@@ -100,11 +100,6 @@ const MenuList = () => {
       href: isGroup ? `${groupPath}/purchase` : `#`,
     },
     {
-      icon: <TangentIcon className="h-4 w-4" />,
-      label: "Optimization",
-      href: isGroup ? `${groupPath}/optimization` : `#`,
-    },
-    {
       icon: <HandCoinsIcon className="h-4 w-4" />,
       label: "Settlements",
       href: isGroup ? `${groupPath}/settlement` : `#`,
