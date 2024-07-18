@@ -25,7 +25,7 @@ export const Optimization = () => {
         </h1>
 
         <OptimizationToggle groups={group!} setGroups={setGroup} />
-        <OptimalPaymentTable groups={group} />
+        <OptimalPaymentTable />
       </div>
     </DefaultLayout>
   );

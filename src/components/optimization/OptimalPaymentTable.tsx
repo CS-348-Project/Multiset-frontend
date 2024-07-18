@@ -1,23 +1,7 @@
 import { useState } from "react";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableHead,
@@ -26,32 +10,22 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { Group } from "@/types/Group";
 import { OptimalSettlement } from "@/types/OptimalSettlement";
 import { apiService } from "@/utils/api";
 import { toast } from "../ui/use-toast";
-import { useLocation } from "react-router-dom";
 
-interface OptimalPaymentTableProps {
-  groups: Group[] | undefined;
-}
+export const OptimalPaymentTable = () => {
+  const params = useParams<{ id: string }>();
+  const groupId = Number(params.id);
 
-export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
   const [optimizationData, setOptimizationData] = useState<
     OptimalSettlement[] | undefined
   >(undefined);
   const [loadingOptimizationData, setLoadingOptimizationData] =
     useState<boolean>(false);
 
-  const location = useLocation();
-  const FormSchema = z.object({
-    group_id: z.coerce.number({ message: "Group required" }),
-  });
-
   const onSubmit = () => {
     setLoadingOptimizationData(true);
-    const pathname = location.pathname.split("/");
-    const groupId = pathname[pathname.findIndex((s) => s === "groups") + 1];
     // try to get the optimal payments
 
     apiService
@@ -69,13 +43,6 @@ export const OptimalPaymentTable = (props: OptimalPaymentTableProps) => {
         });
       });
   };
-
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      group_id: undefined,
-    },
-  });
 
   return (
     <div className="mr-10 mb-10">
