@@ -16,7 +16,7 @@ import {
 import { Button } from "../ui/button";
 import { useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useProfile from "@/context/profile-context";
 import NotificationDropdown from "../notifications/NotificationDropdown";
 import {
@@ -35,9 +35,10 @@ type MenuHeaderProps = {
 };
 const MenuHeader = ({ children }: MenuHeaderProps) => {
   return (
-    <div className="w-full flex h-[40px] items-center justify-center p-6 pt-16">
+    <div className="w-full flex h-[40px] items-center justify-start p-6 pt-16">
       <a href="/home" className="flex items-center gap-2 font-semibold">
         <PiIcon className="h-6 w-6 text-creme" />
+        <span className="text-creme text-3xl">Multiset</span>
       </a>
     </div>
   );
@@ -83,17 +84,26 @@ const MenuWrapper = ({ children }: MenuWrapperProps) => {
 
 const MenuList = () => {
   const location = useLocation();
+  const { groups } = useProfile();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const isGroup = location.pathname.includes("groups");
   const groupPath = isGroup
     ? location.pathname.split("/").slice(0, 3).join("/")
     : null;
+  const groupId = location.pathname.split("/")[2];
+  const buttonRef = useRef<HTMLDivElement>(null);
 
-  const MENU_ITEMS = [
+  console.log("wompwomp", groupId);
+
+  const KEY_ITEMS = [
     {
       icon: <LayoutDashboardIcon className="h-4 w-4" />,
-      label: "Dashboard",
+      label: "Group Dashboard",
       href: `${groupPath}`,
     },
+  ];
+
+  const MENU_ITEMS = [
     {
       icon: <WalletIcon className="h-4 w-4" />,
       label: "Purchases",
@@ -133,12 +143,75 @@ const MenuList = () => {
 
   return (
     <div className="flex-1 overflow-auto py-2">
-      <nav className="grid items-start px-4 text-sm font-medium">
+      <nav className="flex flex-col items-start px-4 text-sm font-medium">
+        <div
+          className="relative w-full flex rounded-md my-2 ring-1 ring-creme/40 overflow-hidden"
+          ref={buttonRef}
+        >
+          <a
+            href="/home"
+            className="flex items-center gap-3 px-3 py-2 text-creme transition-all hover:text-creme/90 bg-creme/10 hover:bg-creme/20 text-lg leading-none"
+          >
+            <HomeIcon className="h-4 w-4" />
+          </a>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="border-none rounded-none border-primary w-full hover:bg-creme/20 text-creme/80 hover:text-creme/80 justify-start p-4 text-base"
+            onClick={() => setDropdownOpen((prev) => !prev)}
+          >
+            {groups?.find((group) => group.id === parseInt(groupId))?.name}
+            <span className="sr-only">Toggle user menu</span>
+          </Button>
+        </div>
+        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+          <DropdownMenuTrigger asChild>
+            <div className="w-full h-0"></div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            asChild
+            className="p-0 bg-navy min-h-40 h-40 overflow-scroll"
+          >
+            <div
+              style={{
+                width: buttonRef.current?.offsetWidth,
+              }}
+            >
+              <div className="w-full text-sm text-creme/60 px-3 py-1">
+                Groups
+              </div>
+              <div className="w-full bg-creme/20 h-[1px]" />
+              {groups?.map((group) => (
+                <a
+                  key={group.id}
+                  href={`/groups/${group.id}`}
+                  className="flex items-center w-full gap-3 text-creme transition-all hover:bg-creme/10 leading-none"
+                >
+                  <div className="px-3 py-2 text-base">{group.name}</div>
+                </a>
+              ))}
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {KEY_ITEMS.map(({ icon, label, href }, i) => (
+          <a
+            key={i}
+            href={href}
+            className="flex items-center w-full gap-3 rounded-lg px-3 py-2 text-creme transition-all hover:text-creme/90 hover:bg-creme/10 text-lg leading-none"
+          >
+            <div>{icon}</div>
+            <div className="pt-1">{label}</div>
+          </a>
+        ))}
+
+        <div className="w-24 h-[1px] mx-3 bg-creme/60 mt-3 mb-6" />
+
         {MENU_ITEMS.map(({ icon, label, href }, i) => (
           <a
             key={i}
             href={href}
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-creme transition-all hover:text-creme/90 hover:bg-creme/10 text-lg leading-none"
+            className="flex items-center w-full gap-3 rounded-lg px-3 py-2 text-creme transition-all hover:text-creme/90 hover:bg-creme/10 text-lg leading-none"
           >
             <div>{icon}</div>
             <div className="pt-1">{label}</div>

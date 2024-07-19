@@ -5,7 +5,6 @@ export interface Group {
   name: string;
   optimize_payments: boolean;
   created_at: string;
-  budget: number | null;
 }
 
 export interface DetailedGroup extends Group {
