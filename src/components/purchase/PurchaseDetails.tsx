@@ -11,12 +11,14 @@ import { useEffect, useState } from "react";
 import { apiService } from "@/utils/api";
 import { centsToDollars } from "@/utils/currencyConverter";
 import DefaultLayout from "../layout/default-layout";
-import { TPurchase } from "@/types/Purchase";
+import { TPurchaseDetails } from "@/types/Purchase";
 import { timeConverter } from "@/utils/timeConverter";
 import { Button } from "@/components/ui/button";
 import { useToast } from "../ui/use-toast";
+import useProfile from "@/context/profile-context";
 
 export const PurchaseDetails = () => {
+  const { profile } = useProfile();
   const { toast } = useToast();
   const navigate = useNavigate();
   const params = useParams<{ id: string; purchaseId: string }>();
@@ -24,7 +26,7 @@ export const PurchaseDetails = () => {
   const purchase_id = Number(params.purchaseId);
   const [loading, setLoading] = useState(true);
   const [purchase_splits, setPurchaseSplits] = useState([]);
-  const [purchase, setPurchase] = useState<TPurchase>();
+  const [purchase, setPurchase] = useState<TPurchaseDetails>();
 
   useEffect(() => {
     const fetchPurchaseSplits = async () => {
@@ -74,32 +76,35 @@ export const PurchaseDetails = () => {
           <h2 className="font-semibold text-black text-3xl my-10">
             {purchase.name}
           </h2>
-          <Button
-            className="mr-2"
-            onClick={() =>
-              apiService
-                .delete(`/api/purchases/delete_purchase`, {
-                  params: { purchase_id },
-                })
-                .then(() => {
-                  toast({
-                    title: "Success",
-                    description: "Item deleted successfully",
-                    variant: "success",
-                  });
-                  navigate(`/groups/${params.id}`);
-                })
-                .catch((error) => {
-                  toast({
-                    title: "Error",
-                    description: `Item could not be deleted: ${error}`,
-                    variant: "destructive",
-                  });
-                })
-            }
-          >
-            Delete Purchase
-          </Button>
+          {purchase.purchaser_user_id === profile?.id && (
+            <Button
+              className="mr-2"
+              onClick={() =>
+                apiService
+                  .delete(`/api/purchases/delete_purchase`, {
+                    params: { purchase_id },
+                  })
+                  .then(() => {
+                    toast({
+                      title: "Success",
+                      description: "Item deleted successfully",
+                      variant: "success",
+                    });
+                    navigate(`/groups/${params.id}`);
+                  })
+                  .catch((error) => {
+                    toast({
+                      title: "Error",
+                      description: `Item could not be deleted: ${error}`,
+                      variant: "destructive",
+                    });
+                  })
+              }
+              variant="destructive"
+            >
+              Delete Purchase
+            </Button>
+          )}
           <Button
             onClick={() =>
               navigate(`/groups/${group_id}/purchase/edit/${purchase_id}`)
