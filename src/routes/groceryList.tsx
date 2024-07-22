@@ -114,16 +114,7 @@ export const GroceryList = () => {
       group_id,
     };
     setAddListLoading(true);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
     apiService.post("/api/grocery-lists/create", data).then((response) => {
-      console.log(response.data);
       toast({
         title: "Success",
         description: "Item added successfully",

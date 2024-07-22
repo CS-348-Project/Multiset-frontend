@@ -7,7 +7,7 @@ const NewGroupButton = () => {
     <Link to="/groups/new">
       <Button
         variant="outline"
-        className="w-full h-full flex flex-col font-normal text-creme/80"
+        className="w-full h-full flex flex-col font-normal"
       >
         <PlusIcon className="h-16 w-16" />
       </Button>
