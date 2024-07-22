@@ -106,7 +106,7 @@ export function PurchaseForm({
   }, []);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (purchase_id) {
+    if (purchase_id !== undefined) {
       data = {
         ...data,
         purchase_splits: data.purchase_splits.map((split: any) => ({
@@ -214,7 +214,12 @@ export function PurchaseForm({
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      readOnly={purchase_id !== null}
+                      readOnly={purchase_id !== undefined}
+                      className={`placeholder-gray-400 ${
+                        purchase_id !== undefined
+                          ? "bg-gray-100 text-gray-400 cursor-default"
+                          : "bg-white"
+                      }`}
                       placeholder="Ex: Apples"
                       {...field}
                     />
@@ -234,7 +239,12 @@ export function PurchaseForm({
                   <FormLabel>Category</FormLabel>
                   <FormControl>
                     <Input
-                      readOnly={purchase_id !== null}
+                      readOnly={purchase_id !== undefined}
+                      className={`placeholder-gray-400 ${
+                        purchase_id !== undefined
+                          ? "bg-gray-100 text-gray-400 cursor-default"
+                          : "bg-white"
+                      }`}
                       placeholder="Ex: Groceries"
                       {...field}
                     />
@@ -251,7 +261,12 @@ export function PurchaseForm({
                   <FormLabel>Total Cost</FormLabel>
                   <FormControl>
                     <Input
-                      readOnly={purchase_id !== null}
+                      readOnly={purchase_id !== undefined}
+                      className={`placeholder-gray-400 ${
+                        purchase_id !== undefined
+                          ? "bg-gray-100 text-gray-400 cursor-default"
+                          : "bg-white"
+                      }`}
                       {...field}
                       onChange={(e) => {
                         if (!isNaN(parseFloat(e.target.value))) {
