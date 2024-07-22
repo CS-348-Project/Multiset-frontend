@@ -73,7 +73,7 @@ export const Analytics = () => {
     <DefaultLayout>
       <div className="w-full h-full pb-24">
         <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl my-10">
-          Grocery Lists
+          Purchase Statistics
         </h1>
         {purchaseCategoriesData.length === 0 ||
         topSpendersLeaderboardData.length === 0 ||
