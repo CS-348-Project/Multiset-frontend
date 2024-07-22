@@ -170,7 +170,7 @@ const MenuList = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             asChild
-            className="p-0 bg-navy min-h-40 h-40 overflow-scroll"
+            className="p-0 bg-navy min-h-40 h-40 overflow-auto multiset-scroll"
           >
             <div
               style={{
@@ -339,7 +339,7 @@ const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
           </DropdownMenu>
         )}
       </div>
-      <div className="px-10 py-8 lg:pb-24 lg:py-0 lg:px-20">{children}</div>
+      <div className="px-4 py-8 lg:pb-24 lg:py-0 lg:px-20">{children}</div>
     </div>
   );
 };

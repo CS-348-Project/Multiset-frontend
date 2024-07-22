@@ -13,6 +13,7 @@ import { centsToDollars } from "@/utils/currencyConverter";
 import DefaultLayout from "../layout/default-layout";
 import { TPurchase } from "@/types/Purchase";
 import { timeConverter } from "@/utils/timeConverter";
+import { ArrowLeftIcon } from "lucide-react";
 
 export const PurchaseDetails = () => {
   const params = useParams<{ id: string; purchaseId: string }>();
@@ -64,18 +65,27 @@ export const PurchaseDetails = () => {
 
   return (
     <DefaultLayout>
+      <div className="absolute top-20 left-4 lg:top-14 lg:left-8">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => window.history.back()}
+        >
+          <ArrowLeftIcon className="w-6 h-6" />
+          <p className="text-black">Back to Purchases</p>
+        </div>
+      </div>
       {purchase && (
         <div>
-          <h2 className="font-semibold text-black text-3xl my-10">
+          <h2 className="font-semibold text-black text-3xl mt-12 my-6">
             {purchase.name}
           </h2>
-          <p className=" text-black text-lg mt-10">
+          <p className=" text-black text-base lg:text-lg">
             Total Amount: ${centsToDollars(purchase.total_cost)}
           </p>
-          <p className="text-black text-lg">
+          <p className="text-black text-base lg:text-lg">
             Purhcase Date: {timeConverter(purchase.created_at)}
           </p>
-          <p className="text-black text-lg mb-10">
+          <p className="text-black text-base lg:text-lg mb-10">
             Category: {purchase.category}
           </p>
         </div>

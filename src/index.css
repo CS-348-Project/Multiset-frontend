@@ -100,3 +100,12 @@ body::before {
   filter: url(#noiseFilter);
   z-index: 9999;
 }
+
+.multiset-scroll::-webkit-scrollbar {
+  background: transparent;
+  width: 6px;
+}
+.multiset-scroll::-webkit-scrollbar-thumb {
+  background: rgba(247, 241, 227, 0.2) !important;
+  border-radius: 3px;
+}
