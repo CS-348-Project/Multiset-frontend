@@ -26,13 +26,16 @@ const FormSchema = z.object({
     message: "Name must be at least 2 characters.",
   }),
   category: z.string(),
-  total_cost: z.coerce.number().refine(
-    (value) => {
-      const decimalPlaces = value.toString().split(".")[1]?.length || 0;
-      return decimalPlaces <= 2;
-    },
-    { message: "Maximum of 2 decimal places allowed" }
-  ),
+  total_cost: z.coerce
+    .number()
+    .refine((value) => value > 0, { message: "Amount must be greater than 0" })
+    .refine(
+      (value) => {
+        const decimalPlaces = value.toString().split(".")[1]?.length || 0;
+        return decimalPlaces <= 2;
+      },
+      { message: "Maximum of 2 decimal places allowed" }
+    ),
   purchase_splits: z.array(
     z.object({
       borrower: z.number(),
@@ -269,7 +272,10 @@ export function PurchaseForm({
                       }`}
                       {...field}
                       onChange={(e) => {
-                        if (!isNaN(parseFloat(e.target.value))) {
+                        if (
+                          e.target.value == "" ||
+                          !isNaN(parseFloat(e.target.value))
+                        ) {
                           field.onChange(e.target.value);
                         }
                       }}
