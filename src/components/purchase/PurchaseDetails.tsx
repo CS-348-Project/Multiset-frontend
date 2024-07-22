@@ -142,7 +142,7 @@ export const PurchaseDetails = () => {
                 return (
                   <TableRow
                     key={split["id"]}
-                    className="cursor-pointer"
+                    className="cursor-default"
                     tabIndex={0}
                     role="button"
                   >
