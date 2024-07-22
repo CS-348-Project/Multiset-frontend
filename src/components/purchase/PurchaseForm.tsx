@@ -112,10 +112,12 @@ export function PurchaseForm({
     if (purchase_id !== undefined) {
       data = {
         ...data,
-        purchase_splits: data.purchase_splits.map((split: any) => ({
-          ...split,
-          amount: split.amount ? dollarsToCents(split.amount) : 0,
-        })),
+        purchase_splits: data.purchase_splits
+          .filter((split: any) => split.amount > 0)
+          .map((split: any) => ({
+            ...split,
+            amount: split.amount ? dollarsToCents(split.amount) : 0,
+          })),
         total_cost: data.total_cost ? dollarsToCents(data.total_cost) : 0,
         purchase_id: purchase_id,
       };
@@ -139,10 +141,12 @@ export function PurchaseForm({
     } else {
       data = {
         ...data,
-        purchase_splits: data.purchase_splits.map((split: any) => ({
-          ...split,
-          amount: split.amount ? dollarsToCents(split.amount) : 0,
-        })),
+        purchase_splits: data.purchase_splits
+          .filter((split: any) => split.amount > 0)
+          .map((split: any) => ({
+            ...split,
+            amount: split.amount ? dollarsToCents(split.amount) : 0,
+          })),
         total_cost: data.total_cost ? dollarsToCents(data.total_cost) : 0,
         group_id: group_id,
       };
