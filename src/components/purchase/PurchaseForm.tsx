@@ -21,14 +21,26 @@ import { UserInfo } from "@/types/UserInfo";
 import { dollarsToCents } from "@/utils/currencyConverter";
 import { centsToDollars } from "@/utils/currencyConverter";
 import { useParams } from "react-router-dom";
-import { AutoComplete, AutoCompleteCompleteEvent } from "primereact/autocomplete";
+import {
+  AutoComplete,
+  AutoCompleteCompleteEvent,
+} from "primereact/autocomplete";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
   category: z.string(),
-  total_cost: z.number(),
+  total_cost: z.coerce
+    .number()
+    .refine((value) => value > 0, { message: "Amount must be greater than 0" })
+    .refine(
+      (value) => {
+        const decimalPlaces = value.toString().split(".")[1]?.length || 0;
+        return decimalPlaces <= 2;
+      },
+      { message: "Maximum of 2 decimal places allowed" }
+    ),
   purchase_splits: z.array(
     z.object({
       borrower: z.number(),
@@ -50,8 +62,12 @@ interface FormProps {
   recurringPurchases: RecurringPurchase[];
 }
 
-export function PurchaseForm({ submit, initialData, recurringPurchases }: FormProps) {
-  const [value, setValue] = useState<string>('');
+export function PurchaseForm({
+  submit,
+  initialData,
+  recurringPurchases,
+}: FormProps) {
+  const [value, setValue] = useState<string>("");
   const [items, setItems] = useState<string[]>([]);
 
   const search = (event: AutoCompleteCompleteEvent) => {
@@ -59,21 +75,24 @@ export function PurchaseForm({ submit, initialData, recurringPurchases }: FormPr
       setItems([]);
       return;
     }
-    
+
     const filtered = recurringPurchases.filter((purchase) =>
       purchase.name.toLowerCase().includes(event.query.toLowerCase())
     );
-    setItems(filtered.map(p => p.name));
+    setItems(filtered.map((p) => p.name));
   };
-  
+
   const onSelect = (e: { value: string }) => {
     if (!recurringPurchases || recurringPurchases.length === 0) return;
-  
-    const selectedPurchase = recurringPurchases.find(p => p.name === e.value);
+
+    const selectedPurchase = recurringPurchases.find((p) => p.name === e.value);
     if (selectedPurchase) {
       form.setValue("name", selectedPurchase.name);
       form.setValue("category", selectedPurchase.category);
-      form.setValue("total_cost", parseFloat(centsToDollars(selectedPurchase.total_cost)));
+      form.setValue(
+        "total_cost",
+        parseFloat(centsToDollars(selectedPurchase.total_cost))
+      );
       console.log("Selected purchase:", selectedPurchase);
     }
   };
@@ -113,11 +132,13 @@ export function PurchaseForm({ submit, initialData, recurringPurchases }: FormPr
   function onSubmit(data: z.infer<typeof FormSchema>) {
     data = {
       ...data,
-      purchase_splits: data.purchase_splits.map((split: any) => ({
-        ...split,
-        amount: dollarsToCents(split.amount),
-      })),
-      total_cost: dollarsToCents(data.total_cost),
+      purchase_splits: data.purchase_splits
+        .filter((split: any) => split.amount > 0)
+        .map((split: any) => ({
+          ...split,
+          amount: split.amount ? dollarsToCents(split.amount) : 0,
+        })),
+      total_cost: data.total_cost ? dollarsToCents(data.total_cost) : 0,
       group_id: group_id,
     };
     apiService
@@ -157,15 +178,15 @@ export function PurchaseForm({ submit, initialData, recurringPurchases }: FormPr
                   <FormLabel htmlFor="purchase-name">Name</FormLabel>
                   <FormControl>
                     <div>
-                    <AutoComplete 
-                      id="purchase-name"
-                      value={field.value}
-                      suggestions={items} 
-                      completeMethod={search} 
-                      onChange={(e) => field.onChange(e.value)}
-                      onSelect={onSelect}
-                      placeholder="Ex: Apples"
-                    />
+                      <AutoComplete
+                        id="purchase-name"
+                        value={field.value}
+                        suggestions={items}
+                        completeMethod={search}
+                        onChange={(e) => field.onChange(e.value)}
+                        onSelect={onSelect}
+                        placeholder="Ex: Apples"
+                      />
                     </div>
                   </FormControl>
                   <FormDescription>
@@ -199,10 +220,18 @@ export function PurchaseForm({ submit, initialData, recurringPurchases }: FormPr
                       type="number"
                       step="0.01"
                       {...field}
-                      value={field.value === 0 || isNaN(field.value) ? '' : field.value}
+                      value={
+                        field.value === 0 || isNaN(field.value)
+                          ? ""
+                          : field.value
+                      }
                       onChange={(e) => {
-                        const value = e.target.value;
-                        field.onChange(value === '' ? 0 : Number(value));
+                        if (
+                          e.target.value == "" ||
+                          !isNaN(parseFloat(e.target.value))
+                        ) {
+                          field.onChange(e.target.value);
+                        }
                       }}
                     />
                   </FormControl>
