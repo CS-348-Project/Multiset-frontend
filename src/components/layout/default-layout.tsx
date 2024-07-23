@@ -1,13 +1,10 @@
 import {
   HomeIcon,
-  LandmarkIcon,
   LineChartIcon,
   WalletIcon,
-  PanelRightIcon,
   PiIcon,
   MenuIcon,
   LayoutDashboardIcon,
-  TangentIcon,
   HandCoinsIcon,
   SettingsIcon,
   HistoryIcon,
