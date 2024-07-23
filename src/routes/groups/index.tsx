@@ -7,6 +7,7 @@ import { Logs } from "@/routes/logs";
 import { Settlement } from "@/routes/settlement";
 import { PurchaseDetails } from "@/components/purchase/PurchaseDetails";
 import Settings from "../settings";
+import { EditPurchase } from "@/components/purchase/EditPurchase";
 
 const groupsRoutes = {
   path: "groups",
@@ -46,6 +47,10 @@ const groupsRoutes = {
     {
       path: ":id/settings",
       element: <Settings />,
+    },
+    {
+      path: ":id/purchase/edit/:purchaseId",
+      element: <EditPurchase />,
     },
   ],
 };
