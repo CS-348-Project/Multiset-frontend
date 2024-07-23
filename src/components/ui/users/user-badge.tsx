@@ -1,6 +1,6 @@
 import useUser from "@/hooks/useUser";
 import { Skeleton } from "../skeleton";
-import { UserInfo } from "@/types/UserInfo"
+import { UserInfo } from "@/types/UserInfo";
 
 type UserBadgeProps = {
   id?: number;
@@ -9,28 +9,28 @@ type UserBadgeProps = {
 
 const UserBadgeDisplay = ({ user }: { user: UserInfo }) => {
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-4">
-        <img
-          src={`https://ui-avatars.com/api/?name=${user.first_name}+${user.last_name}&background=000&color=fff`}
-          alt="avatar"
-          className="h-8 w-8 rounded-full"
-        />
-        <div>
-          <h3 className="text-lg font-medium">
-            {user.first_name} {user.last_name}
-          </h3>
-          <p className="text-dusk">{user.email}</p>
-        </div>
+    <div className="w-full items-center grid grid-cols-3">
+      <img
+        src={`https://ui-avatars.com/api/?name=${user.first_name}+${user.last_name}&background=000&color=fff`}
+        alt="avatar"
+        className="h-8 w-8 rounded-full"
+      />
+      <div>
+        <h3 className="text-lg font-medium text-ellipsis overflow-hidden">
+          {user.first_name} {user.last_name}
+        </h3>
+        <p className="text-dusk text-ellipsis overflow-hidden">{user.email}</p>
       </div>
       <div className="text-right">
-        {
-          (user.balance ?? 0) >= 0 ? (
-            <span className="text-lg font-medium">${(user.balance ?? 0).toFixed(2)}</span>
-          ) : (
-            <span className="text-lg font-medium text-red-500">-${Math.abs(user.balance ?? 0).toFixed(2)}</span>
-          )
-        }
+        {(user.balance ?? 0) >= 0 ? (
+          <span className="text-lg font-medium">
+            ${(user.balance ?? 0).toFixed(2)}
+          </span>
+        ) : (
+          <span className="text-lg font-medium text-red-500">
+            -${Math.abs(user.balance ?? 0).toFixed(2)}
+          </span>
+        )}
       </div>
     </div>
   );

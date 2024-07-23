@@ -2,11 +2,9 @@ import { apiService } from "@/utils/api";
 import { GoogleLogin } from "@react-oauth/google";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 
 const Root = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -26,6 +24,7 @@ const Root = () => {
       .then((res) => {
         localStorage.setItem("token", res.data.token);
         setIsLoggedIn(true);
+        window.location.href = "/home";
       })
       .catch((err) => {
         console.error(err);

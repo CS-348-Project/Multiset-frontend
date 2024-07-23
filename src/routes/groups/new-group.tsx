@@ -22,7 +22,7 @@ import { set } from "date-fns";
 const NewGroup = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { profile } = useProfile();
+  const { profile, refetchGroups } = useProfile();
 
   const [groupName, setGroupName] = useState("");
   const [email, setEmail] = useState("");
@@ -109,7 +109,7 @@ const NewGroup = () => {
         });
         setGroupName("");
         setAccounts([]);
-
+        refetchGroups();
         navigate(`/groups/${groupId}`);
       })
       .catch((error) => {

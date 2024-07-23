@@ -1,10 +1,13 @@
 import { apiService } from "@/utils/api";
 import { UserInfo } from "@/types/UserInfo";
 import { createContext, useContext, useEffect, useState } from "react";
+import { Group } from "@/types/Group";
 
 type ProfileContextType = {
   profile: UserInfo | null;
   refetchProfile: () => void;
+  groups: Group[] | null;
+  refetchGroups: () => void;
 };
 
 const ProfileContext = createContext({} as ProfileContextType);
@@ -15,29 +18,46 @@ const ProfileContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [profile, setProfile] = useState<UserInfo | null>(null);
+  const [groups, setGroups] = useState<Group[] | null>(null);
 
-  const refetchProfile = () => {
-    apiService.get("/api/auth/user").then((response) => {
-      if (!response) {
-        console.error("Problem fetching profile");
-        return;
-      }
+  const fetchProfile = async () => {
+    try {
+      const response = await apiService.get("/api/auth/user");
       setProfile(response.data[0]);
-    });
+    } catch {
+      console.error("Problem fetching profile");
+    }
+  };
+  const refetchProfile = fetchProfile;
+
+  const fetchGroups = async (user_id: number) => {
+    try {
+      const response = await apiService.get("/api/groups", {
+        params: { user_id: user_id },
+      });
+      setGroups(response.data);
+    } catch {
+      console.error("Problem fetching groups");
+    }
+  };
+  const refetchGroups = () => {
+    if (!profile) return;
+    fetchGroups(profile.id);
   };
 
   useEffect(() => {
-    apiService.get("/api/auth/user").then((response) => {
-      if (!response) {
-        console.error("Problem fetching profile");
-        return;
-      }
-      setProfile(response.data[0]);
-    });
+    fetchProfile();
   }, []);
 
+  useEffect(() => {
+    if (!profile) return;
+    fetchGroups(profile.id);
+  }, [profile]);
+
   return (
-    <ProfileContext.Provider value={{ profile, refetchProfile }}>
+    <ProfileContext.Provider
+      value={{ profile, refetchProfile, groups, refetchGroups }}
+    >
       {children}
     </ProfileContext.Provider>
   );

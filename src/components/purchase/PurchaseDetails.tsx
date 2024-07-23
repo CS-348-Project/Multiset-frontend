@@ -13,6 +13,7 @@ import { centsToDollars } from "@/utils/currencyConverter";
 import DefaultLayout from "../layout/default-layout";
 import { TPurchaseDetails } from "@/types/Purchase";
 import { timeConverter } from "@/utils/timeConverter";
+import { ArrowLeftIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "../ui/use-toast";
 import useProfile from "@/context/profile-context";
@@ -71,9 +72,18 @@ export const PurchaseDetails = () => {
 
   return (
     <DefaultLayout>
+      <div className="absolute top-20 left-4 lg:top-14 lg:left-20">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => navigate(`/groups/${params.id}/purchase`)}
+        >
+          <ArrowLeftIcon className="w-6 h-6" />
+          <p className="text-black">Back to Purchases</p>
+        </div>
+      </div>
       {purchase && (
         <div>
-          <h2 className="font-semibold text-black text-3xl my-10">
+          <h2 className="font-semibold text-black text-3xl mt-12 my-6">
             {purchase.name}
           </h2>
           {purchase.purchaser_user_id === profile?.id && (
@@ -118,7 +128,7 @@ export const PurchaseDetails = () => {
           <p className="text-black text-lg">
             Purchase Date: {timeConverter(purchase.created_at)}
           </p>
-          <p className="text-black text-lg mb-10">
+          <p className="text-black text-base lg:text-lg mb-10">
             Category: {purchase.category}
           </p>
         </div>

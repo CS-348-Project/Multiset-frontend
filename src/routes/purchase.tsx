@@ -14,7 +14,7 @@ export const Purchase = () => {
   return (
     <DefaultLayout>
       <div className="w-full">
-        <h1 className="font-semibold text-black text-2xl my-10">
+        <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl my-10">
           New Purchase
         </h1>
         <PurchaseForm onSubmitRefresh={handleUpdate} />
