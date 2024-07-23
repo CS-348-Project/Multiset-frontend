@@ -93,8 +93,6 @@ const MenuList = () => {
   const groupId = location.pathname.split("/")[2];
   const buttonRef = useRef<HTMLDivElement>(null);
 
-  console.log("wompwomp", groupId);
-
   const KEY_ITEMS = [
     {
       icon: <LayoutDashboardIcon className="h-4 w-4" />,

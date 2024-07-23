@@ -72,10 +72,10 @@ export const PurchaseDetails = () => {
 
   return (
     <DefaultLayout>
-      <div className="absolute top-20 left-4 lg:top-14 lg:left-8">
+      <div className="absolute top-20 left-4 lg:top-14 lg:left-20">
         <div
           className="flex items-center gap-2 cursor-pointer"
-          onClick={() => window.history.back()}
+          onClick={() => navigate(`/groups/${params.id}/purchase`)}
         >
           <ArrowLeftIcon className="w-6 h-6" />
           <p className="text-black">Back to Purchases</p>
