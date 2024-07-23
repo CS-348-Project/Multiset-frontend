@@ -2,7 +2,7 @@ import DefaultLayout from "@/components/layout/default-layout";
 import { PurchaseForm } from "@/components/purchase/PurchaseForm";
 import { PurchaseHistory } from "@/components/purchase/PurchaseHistory";
 import Space from "@/components/ui/space";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const Purchase = () => {
   const [key, setKey] = useState(0);

@@ -1,6 +1,7 @@
 import { apiService } from "@/utils/api";
-import { DetailedGroup } from "@/utils/types";
+import { DetailedGroup } from "@/types/Group";
 import { useQuery } from "@tanstack/react-query";
+import { UserInfo } from "@/types/UserInfo";
 
 const useDetailedGroup = (id: number) => {
   return useQuery<DetailedGroup>({
@@ -9,7 +10,16 @@ const useDetailedGroup = (id: number) => {
       const response = await apiService.get(
         `/api/groups/?group_id=${id}&detailed=true`
       );
-      return response.data;
+
+      const debts = await apiService.get(`api/optimization/debts?group_id=${id}`);
+
+      return {
+        ...response.data, users: debts.data.map(
+          (debt: UserInfo) => {
+            return { ...debt, balance: (debt.balance ?? 0) / 100 } // Convert cents to dollars
+          }
+        )
+      };
     },
   });
 };
