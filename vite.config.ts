@@ -30,25 +30,6 @@ export default defineConfig({
         display: "standalone",
         background_color: "#ffffff",
       },
-      workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/api\.example\.com\//,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "api-cache",
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-        ],
-      },
-      devOptions: {
-        enabled: true,
-        type: "module",
-      },
     }),
   ],
   resolve: {
