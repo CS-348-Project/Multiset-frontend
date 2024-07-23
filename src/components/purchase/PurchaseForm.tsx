@@ -18,20 +18,24 @@ import { Checkbox } from "../ui/checkbox";
 import { useEffect, useState } from "react";
 import { UserInfo } from "@/types/UserInfo";
 import { dollarsToCents } from "@/utils/currencyConverter";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const FormSchema = z.object({
+  purchase_id: z.number().optional(),
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
   category: z.string(),
-  total_cost: z.coerce.number().refine(
-    (value) => {
-      const decimalPlaces = value.toString().split(".")[1]?.length || 0;
-      return decimalPlaces <= 2;
-    },
-    { message: "Maximum of 2 decimal places allowed" }
-  ),
+  total_cost: z.coerce
+    .number()
+    .refine((value) => value > 0, { message: "Amount must be greater than 0" })
+    .refine(
+      (value) => {
+        const decimalPlaces = value.toString().split(".")[1]?.length || 0;
+        return decimalPlaces <= 2;
+      },
+      { message: "Maximum of 2 decimal places allowed" }
+    ),
   purchase_splits: z.array(
     z.object({
       borrower: z.number(),
@@ -49,12 +53,15 @@ const FormSchema = z.object({
 
 type PurchaseFormProps = {
   onSubmitRefresh?: () => void;
+  purchase_id?: number;
 };
 
 export function PurchaseForm({
   onSubmitRefresh,
+  purchase_id,
 }: PurchaseFormProps): JSX.Element {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [loading, setIsLoading] = useState(false);
   const [usersInGroup, setUsersInGroup] = useState<UserInfo[]>([]);
 
@@ -85,35 +92,82 @@ export function PurchaseForm({
         setUsersInGroup(response.data);
         setIsLoading(false);
       });
+    if (purchase_id) {
+      setIsLoading(true);
+      apiService
+        .get(`/api/purchases/purchase_form_details`, {
+          params: {
+            purchase_id,
+          },
+        })
+        .then((response) => {
+          form.reset(response.data);
+          setIsLoading(false);
+        });
+    }
+    setIsLoading(false);
   }, []);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    data = {
-      ...data,
-      purchase_splits: data.purchase_splits.map((split: any) => ({
-        ...split,
-        amount: split.amount ? dollarsToCents(split.amount) : 0,
-      })),
-      total_cost: data.total_cost ? dollarsToCents(data.total_cost) : 0,
-      group_id: group_id,
-    };
-    apiService
-      .post("/api/purchases/new-purchase", data)
-      .then(() => {
-        toast({
-          title: "Success",
-          description: "Purchase submitted successfully",
-          variant: "success",
+    if (purchase_id !== undefined) {
+      data = {
+        ...data,
+        purchase_splits: data.purchase_splits
+          .filter((split: any) => split.amount > 0)
+          .map((split: any) => ({
+            ...split,
+            amount: split.amount ? dollarsToCents(split.amount) : 0,
+          })),
+        total_cost: data.total_cost ? dollarsToCents(data.total_cost) : 0,
+        purchase_id: purchase_id,
+      };
+      apiService
+        .put(`/api/purchases/update_purchase/`, data)
+        .then(() => {
+          toast({
+            title: "Success",
+            description: "Purchase updated successfully",
+            variant: "success",
+          });
+          navigate(`/groups/${group_id}/purchase/${purchase_id}`);
+        })
+        .catch((e) => {
+          toast({
+            title: "Error",
+            description: e.response.data.message,
+            variant: "destructive",
+          });
         });
-        onSubmitRefresh?.();
-      })
-      .catch((e) => {
-        toast({
-          title: "Error",
-          description: e.response.data.message,
-          variant: "destructive",
+    } else {
+      data = {
+        ...data,
+        purchase_splits: data.purchase_splits
+          .filter((split: any) => split.amount > 0)
+          .map((split: any) => ({
+            ...split,
+            amount: split.amount ? dollarsToCents(split.amount) : 0,
+          })),
+        total_cost: data.total_cost ? dollarsToCents(data.total_cost) : 0,
+        group_id: group_id,
+      };
+      apiService
+        .post("/api/purchases/new-purchase", data)
+        .then(() => {
+          toast({
+            title: "Success",
+            description: "Purchase submitted successfully",
+            variant: "success",
+          });
+          onSubmitRefresh?.();
+        })
+        .catch((e) => {
+          toast({
+            title: "Error",
+            description: e.response.data.message,
+            variant: "destructive",
+          });
         });
-      });
+    }
   }
 
   const splitEvenly = (e: any) => {
@@ -166,7 +220,16 @@ export function PurchaseForm({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Apples" {...field} />
+                    <Input
+                      readOnly={purchase_id !== undefined}
+                      className={`placeholder-gray-400 ${
+                        purchase_id !== undefined
+                          ? "bg-gray-100 text-gray-400 cursor-default"
+                          : "bg-white"
+                      }`}
+                      placeholder="Ex: Apples"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     A short description of what you purchased!
@@ -182,7 +245,16 @@ export function PurchaseForm({
                 <FormItem>
                   <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Groceries" {...field} />
+                    <Input
+                      readOnly={purchase_id !== undefined}
+                      className={`placeholder-gray-400 ${
+                        purchase_id !== undefined
+                          ? "bg-gray-100 text-gray-400 cursor-default"
+                          : "bg-white"
+                      }`}
+                      placeholder="Ex: Groceries"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -196,9 +268,18 @@ export function PurchaseForm({
                   <FormLabel>Total Cost</FormLabel>
                   <FormControl>
                     <Input
+                      readOnly={purchase_id !== undefined}
+                      className={`placeholder-gray-400 ${
+                        purchase_id !== undefined
+                          ? "bg-gray-100 text-gray-400 cursor-default"
+                          : "bg-white"
+                      }`}
                       {...field}
                       onChange={(e) => {
-                        if (!isNaN(parseFloat(e.target.value))) {
+                        if (
+                          e.target.value == "" ||
+                          !isNaN(parseFloat(e.target.value))
+                        ) {
                           field.onChange(e.target.value);
                         }
                       }}

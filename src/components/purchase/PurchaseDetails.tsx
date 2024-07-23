@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -11,16 +11,23 @@ import { useEffect, useState } from "react";
 import { apiService } from "@/utils/api";
 import { centsToDollars } from "@/utils/currencyConverter";
 import DefaultLayout from "../layout/default-layout";
-import { TPurchase } from "@/types/Purchase";
+import { TPurchaseDetails } from "@/types/Purchase";
 import { timeConverter } from "@/utils/timeConverter";
 import { ArrowLeftIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "../ui/use-toast";
+import useProfile from "@/context/profile-context";
 
 export const PurchaseDetails = () => {
+  const { profile } = useProfile();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const params = useParams<{ id: string; purchaseId: string }>();
+  const group_id = Number(params.id);
   const purchase_id = Number(params.purchaseId);
   const [loading, setLoading] = useState(true);
   const [purchase_splits, setPurchaseSplits] = useState([]);
-  const [purchase, setPurchase] = useState<TPurchase>();
+  const [purchase, setPurchase] = useState<TPurchaseDetails>();
 
   useEffect(() => {
     const fetchPurchaseSplits = async () => {
@@ -79,11 +86,47 @@ export const PurchaseDetails = () => {
           <h2 className="font-semibold text-black text-3xl mt-12 my-6">
             {purchase.name}
           </h2>
-          <p className=" text-black text-base lg:text-lg">
+          {purchase.purchaser_user_id === profile?.id && (
+            <Button
+              className="mr-2"
+              onClick={() =>
+                apiService
+                  .delete(`/api/purchases/delete_purchase`, {
+                    params: { purchase_id },
+                  })
+                  .then(() => {
+                    toast({
+                      title: "Success",
+                      description: "Item deleted successfully",
+                      variant: "success",
+                    });
+                    navigate(`/groups/${params.id}`);
+                  })
+                  .catch((error) => {
+                    toast({
+                      title: "Error",
+                      description: `Item could not be deleted: ${error}`,
+                      variant: "destructive",
+                    });
+                  })
+              }
+              variant="destructive"
+            >
+              Delete Purchase
+            </Button>
+          )}
+          <Button
+            onClick={() =>
+              navigate(`/groups/${group_id}/purchase/edit/${purchase_id}`)
+            }
+          >
+            Edit Purchase Splits
+          </Button>
+          <p className=" text-black text-lg mt-10">
             Total Amount: ${centsToDollars(purchase.total_cost)}
           </p>
-          <p className="text-black text-base lg:text-lg">
-            Purhcase Date: {timeConverter(purchase.created_at)}
+          <p className="text-black text-lg">
+            Purchase Date: {timeConverter(purchase.created_at)}
           </p>
           <p className="text-black text-base lg:text-lg mb-10">
             Category: {purchase.category}
@@ -109,7 +152,7 @@ export const PurchaseDetails = () => {
                 return (
                   <TableRow
                     key={split["id"]}
-                    className="cursor-pointer"
+                    className="cursor-default"
                     tabIndex={0}
                     role="button"
                   >

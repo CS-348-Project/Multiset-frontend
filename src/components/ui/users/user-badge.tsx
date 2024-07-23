@@ -22,7 +22,15 @@ const UserBadgeDisplay = ({ user }: { user: UserInfo }) => {
         <p className="text-dusk text-ellipsis overflow-hidden">{user.email}</p>
       </div>
       <div className="text-right">
-        <span className="text-lg font-medium text-red-500">-$25.00</span>
+        {(user.balance ?? 0) >= 0 ? (
+          <span className="text-lg font-medium">
+            ${(user.balance ?? 0).toFixed(2)}
+          </span>
+        ) : (
+          <span className="text-lg font-medium text-red-500">
+            -${Math.abs(user.balance ?? 0).toFixed(2)}
+          </span>
+        )}
       </div>
     </div>
   );
