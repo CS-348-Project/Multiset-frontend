@@ -13,7 +13,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { apiService } from "@/utils/api";
 import { timeConverter } from "@/utils/timeConverter";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export const Settlement = () => {
@@ -22,6 +22,12 @@ export const Settlement = () => {
   const [loading, setLoading] = React.useState(true);
   const params = useParams<{ id: string }>();
   const group_id = Number(params.id);
+  const [key, setKey] = useState(0);
+
+  const handleUpdate = () => {
+    setKey((prev) => prev + 1);
+    fetchSettlements();
+  };
 
   const fetchSettlements = () => {
     setLoading(true);
@@ -54,8 +60,8 @@ export const Settlement = () => {
         <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl my-10">
           Settlements
         </h1>
-        <SettlementForm submit={fetchSettlements} />
-        <OptimalPaymentTable />
+        <SettlementForm submit={handleUpdate} />
+        <OptimalPaymentTable key={key} />
         <div>
           <h2 className="font-semibold text-black text-xl my-5">
             Settlement History

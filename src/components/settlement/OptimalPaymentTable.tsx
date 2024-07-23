@@ -14,7 +14,11 @@ import { apiService } from "@/utils/api";
 import { toast } from "../ui/use-toast";
 import useProfile from "@/context/profile-context";
 
-export const OptimalPaymentTable = () => {
+type OptimalPaymentTableProps = {
+  key?: number;
+};
+
+export const OptimalPaymentTable = ({ _key = 0 }: OptimalPaymentTableProps) => {
   const params = useParams<{ id: string }>();
   const groupId = Number(params.id);
   const profile = useProfile();
@@ -93,27 +97,24 @@ export const OptimalPaymentTable = () => {
               )
               .map((settlement: OptimalSettlement) => {
                 return (
-                  <TableRow key={`${settlement.to_user_id} ${settlement.from_user_id}`}>
+                  <TableRow
+                    key={`${settlement.to_user_id} ${settlement.from_user_id}`}
+                  >
+                    {settlement.from_user_id === profile.profile?.id ? (
+                      <TableCell className="font-semibold">You</TableCell>
+                    ) : (
+                      <TableCell>
+                        {settlement.from_first_name} {settlement.from_last_name}
+                      </TableCell>
+                    )}
 
-                    {
-                      settlement.from_user_id === profile.profile?.id ? (
-                        <TableCell className="font-semibold">You</TableCell>
-                      ) : (
-                        <TableCell>
-                          {settlement.from_first_name} {settlement.from_last_name}
-                        </TableCell>
-                      )
-                    }
-
-                    {
-                      settlement.to_user_id === profile.profile?.id ? (
-                        <TableCell className="font-semibold">You</TableCell>
-                      ) : (
-                        <TableCell>
-                          {settlement.to_first_name} {settlement.to_last_name}
-                        </TableCell>
-                      )
-                    }
+                    {settlement.to_user_id === profile.profile?.id ? (
+                      <TableCell className="font-semibold">You</TableCell>
+                    ) : (
+                      <TableCell>
+                        {settlement.to_first_name} {settlement.to_last_name}
+                      </TableCell>
+                    )}
 
                     <TableCell>
                       ${(settlement.amount / 100).toFixed(2)}
