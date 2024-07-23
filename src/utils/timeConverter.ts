@@ -1,5 +1,5 @@
 export const timeConverter = (UNIX_timestamp: string) => {
-  const date = new Date(`${UNIX_timestamp.replace("T", " ")} UTC`);
+  const date = new Date(`${UNIX_timestamp}Z`);
 
   // Extract individual components
   const year = date.getFullYear();

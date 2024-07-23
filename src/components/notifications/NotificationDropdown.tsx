@@ -55,7 +55,7 @@ const NotificationDropdown = () => {
   };
 
   const getTime = (date: string) => {
-    const notifDate = new Date(`${date.replace("T", " ")} UTC`);
+    const notifDate = new Date(`${date}Z`);
 
     const currentDate = new Date();
 
