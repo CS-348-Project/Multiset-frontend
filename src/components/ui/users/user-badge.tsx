@@ -1,21 +1,21 @@
 import useUser from "@/hooks/useUser";
 import { Skeleton } from "../skeleton";
-import { User } from "@/utils/types";
+import { UserInfo } from "@/types/UserInfo";
 
 type UserBadgeProps = {
   id?: number;
-  user?: User;
+  user?: UserInfo;
 };
 
-const UserBadgeDisplay = ({ user }: { user: User }) => {
+const UserBadgeDisplay = ({ user }: { user: UserInfo }) => {
   return (
-    <div className="w-full flex items-center justify-between gap-4">
+    <div className="w-full items-center grid grid-cols-3">
       <img
         src={`https://ui-avatars.com/api/?name=${user.first_name}+${user.last_name}&background=000&color=fff`}
         alt="avatar"
         className="h-8 w-8 rounded-full"
       />
-      <div className="flex-shrink overflow-hidden">
+      <div>
         <h3 className="text-lg font-medium text-ellipsis overflow-hidden">
           {user.first_name} {user.last_name}
         </h3>
