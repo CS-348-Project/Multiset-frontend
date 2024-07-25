@@ -192,15 +192,19 @@ export function PurchaseForm({
     }));
 
     // Calculate the sum of the rounded split amounts
-    const totalSplitAmount =
-      Math.round(
-        splits.reduce((acc, curr) => {
-          return acc + Number(curr.amount);
-        }, 0) * 100
-      ) / 100;
+    const totalSplitAmount = splits.reduce((acc, curr) => {
+      return acc + Number(curr.amount);
+    }, 0);
+
+    // Adjust the last split amount to make the total cost correct
+    if (totalSplitAmount !== totalCost) {
+      const lastSplit = splits[splits.length - 1];
+      const difference = totalCost - totalSplitAmount;
+      lastSplit.amount =
+        Math.round((lastSplit.amount + difference) * 100) / 100;
+    }
 
     form.setValue("purchase_splits", splits);
-    form.setValue("total_cost", totalSplitAmount);
   };
 
   return (
