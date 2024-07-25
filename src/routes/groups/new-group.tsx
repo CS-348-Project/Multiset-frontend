@@ -92,13 +92,17 @@ const NewGroup = () => {
       if (accounts.some((user) => user.email == email)) {
         return;
       }
-      await apiService
-        .get<UserInfo[]>(`/api/users/?email=${email}`)
-        .then((response) => {
-          if (response.data.length !== 0) {
-            groupAccounts.push(response.data[0]);
-          }
-        });
+      try {
+        await apiService
+          .get<UserInfo[]>(`/api/users/?email=${email}`)
+          .then((response) => {
+            if (response.data.length !== 0) {
+              groupAccounts.push(response.data[0]);
+            }
+          });
+      } catch (error) {
+        // do nothing
+      }
     }
 
     apiService
