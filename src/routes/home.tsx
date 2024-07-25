@@ -7,15 +7,20 @@ import { useState } from "react";
 import { DetailedGroup } from "@/types/Group";
 import useProfile from "@/context/profile-context";
 import { apiService } from "@/utils/api";
+import { useNavigate } from "react-router-dom";
+import { isLoggedIn } from "@/hooks/withAuth";
 
 const Home = () => {
   // const [groups, setGroups] = useState<DetailedGroup[]>([]);
   const { profile } = useProfile();
   const [groups, setGroups] = useState<DetailedGroup[]>([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!profile) return;
+    if (!isLoggedIn()) {
+      navigate("/");
+    }
     setLoading(true);
     apiService.get(`/api/groups?detailed=true`).then((response) => {
       setGroups(response.data);
@@ -23,7 +28,7 @@ const Home = () => {
     });
   }, [profile]);
 
-  if (!profile || loading) {
+  if (loading) {
     return <LoadingPage />;
   }
 

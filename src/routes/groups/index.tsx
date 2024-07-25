@@ -8,6 +8,7 @@ import { Settlement } from "@/routes/settlement";
 import { PurchaseDetails } from "@/components/purchase/PurchaseDetails";
 import Settings from "../settings";
 import { EditPurchase } from "@/components/purchase/EditPurchase";
+import withAuth from "@/hooks/withAuth";
 
 const groupsRoutes = {
   path: "groups",
@@ -52,7 +53,10 @@ const groupsRoutes = {
       path: ":id/purchase/edit/:purchaseId",
       element: <EditPurchase />,
     },
-  ],
+  ].map((route) => ({
+    ...route,
+    element: withAuth(route.element),
+  })),
 };
 
 export default groupsRoutes;
