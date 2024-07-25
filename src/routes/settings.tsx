@@ -4,8 +4,19 @@ import { apiService } from "@/utils/api";
 import { Group } from "@/types/Group";
 import { useEffect, useState } from "react";
 import Space from "@/components/ui/space";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "@/components/ui/alert-dialog";
 
 type SettingsToggleProps = {
   group: Group;
@@ -85,6 +96,8 @@ export const SettingsToggle: React.FC<SettingsToggleProps> = ({
 const Settings = () => {
   const location = useLocation();
   const [group, setGroup] = useState<Group>({} as Group);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const pathname = location.pathname.split("/");
@@ -94,8 +107,54 @@ const Settings = () => {
     });
   }, []);
 
+  const handleDeleteGroup = () => {
+    if (group.id) {
+      setDeleteDialogOpen(true);
+    }
+  };
+
+  const deleteGroup = () => {
+    if (group.id) {
+      apiService
+        .delete(`/api/groups/delete?group_id=${group.id}`)
+        .then(() => {
+          toast({
+            variant: "success",
+            description: <p>Group successfully deleted.</p>,
+          });
+          navigate("/home");
+        })
+        .catch((err) => {
+          console.error(err);
+          toast({
+            variant: "destructive",
+            description: <p>Failed to delete group. Please try again later.</p>,
+          });
+        });
+    }
+  };
+
   return (
     <DefaultLayout>
+      <AlertDialog open={deleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure you want to delete this group?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              group and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteDialogOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={deleteGroup}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className="py-6">
         <h1 className="text-3xl font-bold">Settings</h1>
         <Space s="h-4" />
@@ -109,6 +168,12 @@ const Settings = () => {
         <Space s="h-6" />
         <div className="w-full lg:w-1/2">
           <SettingsToggle group={group!} setGroup={setGroup} />
+        </div>
+
+        <div className="my-4">
+          <Button variant="destructive" onClick={handleDeleteGroup}>
+            Delete Group
+          </Button>
         </div>
       </div>
     </DefaultLayout>

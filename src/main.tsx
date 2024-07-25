@@ -26,26 +26,20 @@ const router = createBrowserRouter([
     path: "/auth/callback",
     element: <OAuthCallback />,
   },
-  {
-    path: "/analytics",
-    element: <Analytics />,
-  },
   groupsRoutes,
 ]);
 
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-        <ProfileContextProvider>
-          <main className="font-sans">
-            <RouterProvider router={router} />
-            <Toaster />
-          </main>
-        </ProfileContextProvider>
-      </GoogleOAuthProvider>
-    </QueryClientProvider>
-  </React.StrictMode>
+  <QueryClientProvider client={queryClient}>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <ProfileContextProvider>
+        <main className="font-sans">
+          <RouterProvider router={router} />
+          <Toaster />
+        </main>
+      </ProfileContextProvider>
+    </GoogleOAuthProvider>
+  </QueryClientProvider>
 );

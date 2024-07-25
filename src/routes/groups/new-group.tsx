@@ -37,7 +37,7 @@ const NewGroup = () => {
     ]);
   }, [profile]);
 
-  const handleAddAccount = () => {
+  const handleAddAccount = async () => {
     if (!email) return;
     if (accounts.some((user) => user.email == email)) {
       toast({
@@ -73,7 +73,8 @@ const NewGroup = () => {
       });
   };
 
-  const createGroup = () => {
+  const createGroup = async () => {
+    const groupAccounts = [...accounts];
     if (!groupName) {
       toast({
         title: "Group name is required",
@@ -87,13 +88,30 @@ const NewGroup = () => {
       return;
     }
 
+    if (email !== "") {
+      if (accounts.some((user) => user.email == email)) {
+        return;
+      }
+      try {
+        await apiService
+          .get<UserInfo[]>(`/api/users/?email=${email}`)
+          .then((response) => {
+            if (response.data.length !== 0) {
+              groupAccounts.push(response.data[0]);
+            }
+          });
+      } catch (error) {
+        // do nothing
+      }
+    }
+
     apiService
       .post("/api/groups/create", {
         group: {
           name: groupName,
           optimize_payments: optimizePayments,
         },
-        user_ids: accounts.map((account) => account.id),
+        user_ids: groupAccounts.map((account) => account.id),
       })
       .then((response) => {
         const groupId = response.data.id;
