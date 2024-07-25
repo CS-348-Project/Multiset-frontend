@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useLocation } from "react-router-dom";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { useRef, useState } from "react";
 import useProfile from "@/context/profile-context";
 import NotificationDropdown from "../notifications/NotificationDropdown";
@@ -284,6 +284,7 @@ const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
           </div>
         )}
         <Sheet open={sheetOpen} onOpenChange={(open) => setSheetOpen(open)}>
+          <SheetTitle></SheetTitle>
           <SheetTrigger asChild></SheetTrigger>
           <SheetContent
             side="left"
