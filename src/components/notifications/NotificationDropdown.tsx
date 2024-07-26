@@ -138,14 +138,14 @@ const NotificationDropdown = () => {
       </DropdownMenuTrigger>
       {notifications?.length > 0 ? (
         <DropdownMenuContent align="end" className="bg-white">
-          <div className="max-h-80 overflow-y-auto">
+          <div className="max-h-80 overflow-y-auto max-w-60 md:max-w-96">
             {notifications.map((notification) => (
               <DropdownMenuItem
                 key={notification.id}
                 className="flex flex-col items-end text-dusk"
               >
                 <div
-                  className={`block ${notification.read ? "" : "font-bold"}`}
+                  className={`text-right block ${notification.read ? "" : "font-bold"}`}
                 >
                   {notification.message}
                 </div>
