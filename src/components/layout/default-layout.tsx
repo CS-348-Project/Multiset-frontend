@@ -245,7 +245,7 @@ const NotificationToggle = ({
 
   return (
     <div className="flex justify-between gap-5 items-center">
-      <p className="text-creme text-sm md:text-base">Notifications</p>
+      <p className="text-creme text-sm md:text-base">Email notifications</p>
       <div className="flex items-center">
         <input
           type="checkbox"
@@ -319,14 +319,14 @@ const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
                 <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            {/* <DropdownMenuContent align="end">
               <div className="py-2 px-1">
                 <NotificationToggle
                   profile={profile}
                   refetchProfile={refetchProfile}
                 />
               </div>
-            </DropdownMenuContent>
+            </DropdownMenuContent> */}
           </DropdownMenu>
         )}
       </div>
