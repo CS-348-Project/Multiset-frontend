@@ -16,26 +16,18 @@ import { apiService } from "@/utils/api";
 import { UserInfo } from "@/types/UserInfo";
 import { CornerUpLeftIcon, PlusIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { set } from "date-fns";
+import { useNavigate, useParams } from "react-router-dom";
 
-const NewGroup = () => {
+const AddMembers = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { profile, refetchGroups } = useProfile();
+  const params = useParams<{ id: string }>();
+  const groupId = Number(params.id);
 
-  const [groupName, setGroupName] = useState("");
   const [email, setEmail] = useState("");
   const [accounts, setAccounts] = useState<UserInfo[]>([]);
   const [optimizePayments, setOptimizePayments] = useState(false);
-
-  useEffect(() => {
-    if (!profile) return;
-    setAccounts((p) => [
-      profile,
-      ...p.filter((a) => a.email !== profile.email),
-    ]);
-  }, [profile]);
 
   const handleAddAccount = async () => {
     if (!email) return;
@@ -73,17 +65,11 @@ const NewGroup = () => {
       });
   };
 
-  const createGroup = async () => {
+  const addMembersToGroup = async () => {
     const groupAccounts = [...accounts];
-    if (!groupName) {
-      toast({
-        title: "Group name is required",
-      });
-      return;
-    }
     if (accounts.length === 0) {
       toast({
-        title: "Group must have at least one member",
+        title: "You must add at least one email",
       });
       return;
     }
@@ -104,28 +90,16 @@ const NewGroup = () => {
         // do nothing
       }
     }
-
+    const user_ids = groupAccounts.map((account) => account.id);
     apiService
-      .post("/api/groups/create", {
-        group: {
-          name: groupName,
-          optimize_payments: optimizePayments,
-        },
-        user_ids: groupAccounts.map((account) => account.id),
+      .post("/api/groups/add_members", {
+        group_id: groupId,
+        user_ids,
       })
-      .then((response) => {
-        const groupId = response.data.id;
-
-        if (!groupId) {
-          toast({
-            title: "Group creation failed",
-          });
-          return;
-        }
+      .then(() => {
         toast({
-          title: "Group created successfully",
+          title: "Member successfully added",
         });
-        setGroupName("");
         setAccounts([]);
         refetchGroups();
         navigate(`/groups/${groupId}`);
@@ -135,6 +109,21 @@ const NewGroup = () => {
           title: error.response.statusText,
         });
       });
+  };
+
+  const getShareableLink = async () => {
+    try {
+      const shareableLink = `${window.location.origin}/join-group/${groupId}`;
+      await navigator.clipboard.writeText(shareableLink);
+      toast({
+        title: "Shareable link copied to clipboard!",
+      });
+    } catch (error) {
+      console.error("Failed to copy link: ", error);
+      toast({
+        title: "Failed to copy link",
+      });
+    }
   };
 
   if (!profile) return null;
@@ -161,15 +150,10 @@ const NewGroup = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="groupName">Group Name</Label>
-                <Input
-                  id="groupName"
-                  placeholder="Enter group name"
-                  value={groupName}
-                  onChange={(e) => setGroupName(e.target.value)}
-                />
-              </div>
+              <Button className="" onClick={getShareableLink}>
+                Copy Shareable Link
+              </Button>
+
               <div className="space-y-2">
                 <Label htmlFor="memberEmails">Member Emails</Label>
                 <div className="flex items-center gap-2">
@@ -207,15 +191,13 @@ const NewGroup = () => {
                         setAccounts(accounts.filter((_, i) => i !== idx));
                       }}
                     >
-                      {account.email !== profile.email && (
-                        <XIcon className="h-4 w-4" />
-                      )}
+                      {<XIcon className="h-4 w-4" />}
                       <span className="sr-only">Remove email</span>
                     </Button>
                   </div>
                 ))}
               </div>
-              <Button className="w-full" onClick={createGroup}>
+              <Button className="w-full" onClick={addMembersToGroup}>
                 Create Group
               </Button>
             </CardContent>
@@ -247,4 +229,4 @@ const NewGroup = () => {
   );
 };
 
-export default NewGroup;
+export default AddMembers;

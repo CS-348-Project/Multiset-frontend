@@ -10,6 +10,7 @@ import groupsRoutes from "./routes/groups";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProfileContextProvider } from "./context/profile-context";
+import { CreateGroup } from "./routes/groups/create-group";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />,
+  },
+  {
+    path: "new-group",
+    element: <CreateGroup />,
   },
   {
     path: "/auth/callback",
