@@ -198,7 +198,7 @@ const NotificationToggle = ({
 
   return (
     <div className="flex justify-between gap-5 items-center">
-      <p className="text-white text-sm md:text-base">Notifications</p>
+      <p className="text-white text-sm md:text-base">Email notifications</p>
       <div className="flex items-center">
         <input
           type="checkbox"
@@ -254,37 +254,38 @@ const ContentWrapper = ({
         <div className="flex gap-2">
           <NotificationDropdown />
 
-          {profile && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full w-8 h-8"
-                >
-                  <img
-                    src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=000&color=fff`}
-                    width="32"
-                    height="32"
-                    className="rounded-full bg-white"
-                    alt="Avatar"
-                  />
-                  <span className="sr-only">Toggle user menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <div className="py-2 px-1">
-                  <NotificationToggle
-                    profile={profile}
-                    refetchProfile={refetchProfile}
-                  />
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
+        <div className="w-4" />
+
+        {profile && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full border border-primary w-8 h-8"
+              >
+                <img
+                  src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=000&color=fff`}
+                  width="32"
+                  height="32"
+                  className="rounded-full bg-creme"
+                  alt="Avatar"
+                />
+                <span className="sr-only">Toggle user menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            {/* <DropdownMenuContent align="end">
+              <div className="py-2 px-1">
+                <NotificationToggle
+                  profile={profile}
+                  refetchProfile={refetchProfile}
+                />
+              </div>
+            </DropdownMenuContent> */}
+          </DropdownMenu>
+        )}
       </div>
-      <div className="px-4 lg:pb-24 lg:px-20">{children}</div>
+      <div className="px-4 py-8 lg:pb-24 lg:py-0 lg:px-20">{children}</div>
     </div>
   );
 };
