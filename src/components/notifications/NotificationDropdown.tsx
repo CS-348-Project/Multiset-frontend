@@ -128,7 +128,7 @@ const NotificationDropdown = () => {
       }}
     >
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className=" w-8 h-8 relative">
+        <Button variant="ghost" size="icon" className="w-8 h-8 relative">
           <BellIcon className="w-4 h-4" />
           {unread > 0 && (
             <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>

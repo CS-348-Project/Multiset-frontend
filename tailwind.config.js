@@ -105,8 +105,8 @@ module.exports = {
         "pink-blob": "pink-blob 8s ease-in-out infinite",
       },
       fontFamily: {
-        sans: ["Space Grotesk", "sans-serif"],
-        "space-grotesk": ["Space Grotesk", "sans-serif"],
+        sans: ["Inter", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
       },
     },
   },

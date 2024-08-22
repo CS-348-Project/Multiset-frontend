@@ -24,36 +24,22 @@ import {
 import { apiService } from "@/utils/api";
 import { toast } from "../ui/use-toast";
 
-type MenuHeaderProps = {
-  children?: React.ReactNode;
-};
-const MenuHeader = ({ children }: MenuHeaderProps) => {
-  return (
-    <div className="w-full flex h-[40px] items-center justify-start p-6 pt-16">
-      <a href="/home" className="flex items-center gap-2 font-semibold">
-        <PiIcon className="h-6 w-6 text-black" />
-        <span className="text-black text-3xl">Multiset</span>
-      </a>
-    </div>
-  );
-};
+const MenuHeader = () => (
+  <div className="w-full flex h-[40px] items-center justify-start p-6 pt-16">
+    <a href="/home" className="flex items-center gap-2 font-semibold">
+      <PiIcon className="h-6 w-6 text-black" />
+      <span className="text-black text-3xl">Multiset</span>
+    </a>
+  </div>
+);
 
-type MenuWrapperProps = {
-  children?: React.ReactNode;
-};
-
-const MenuWrapper = ({ children }: MenuWrapperProps) => {
-  return (
-    <div className="w-[280px] hidden lg:block bg-grey relative overflow-hidden">
-      <div className="relative flex h-full max-h-screen flex-col gap-2 z-10">
-        {children}
-      </div>
-      <div className="absolute inset-0 opacity-25">
-        <div className="w-full h-full mix-blend-hard-light opacity-30" />
-      </div>
+const MenuWrapper = ({ children }: { children?: React.ReactNode }) => (
+  <div className="w-[280px] hidden lg:block bg-grey relative overflow-hidden">
+    <div className="relative flex h-full max-h-screen flex-col gap-2 z-10">
+      {children}
     </div>
-  );
-};
+  </div>
+);
 
 const MenuList = () => {
   const location = useLocation();
@@ -138,11 +124,7 @@ const MenuList = () => {
             asChild
             className="p-0 bg-purple min-h-40 h-40 overflow-auto multiset-scroll"
           >
-            <div
-              style={{
-                width: buttonRef.current?.offsetWidth,
-              }}
-            >
+            <div style={{ width: buttonRef.current?.offsetWidth }}>
               <div className="w-full text-sm text-white/60 px-3 py-1">
                 Groups
               </div>
@@ -198,15 +180,10 @@ const NotificationToggle = ({
   const handleEmailNotificationsChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    // try to toggle the notification setting
     apiService
       .patch(`/api/notifications/email`)
-      .then(() => {
-        refetchProfile();
-      })
-      // if it fails, revert the state and show an alert
+      .then(() => refetchProfile())
       .catch((err) => {
-        // Change profile state here:
         console.error(err);
         toast({
           variant: "destructive",
@@ -235,18 +212,21 @@ const NotificationToggle = ({
   );
 };
 
-type ContentWrapperProps = {
+const ContentWrapper = ({
+  menu,
+  hideMenu,
+  children,
+}: {
   menu: React.ReactNode;
   hideMenu: boolean;
   children: React.ReactNode;
-};
-const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
+}) => {
   const [sheetOpen, setSheetOpen] = useState(false);
   const { profile, refetchProfile } = useProfile();
 
   return (
-    <div className="relative w-full flex-1 flex flex-col bg-white">
-      <div className="sticky top-0 w-full flex h-14 lg:h-[60px] items-center justify-between bg-white px-4 lg:bg-transparent drop-shadow-md z-[1]">
+    <div className="relative w-full flex flex-col bg-white p-4">
+      <div className="sticky top-0 w-full flex h-14 lg:h-[60px] items-center justify-between bg-white px-4 lg:bg-transparent z-10">
         {!hideMenu && (
           <div className="lg:hidden">
             <Button
@@ -264,77 +244,71 @@ const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
           <SheetTrigger asChild></SheetTrigger>
           <SheetContent
             side="left"
-            className="w-64 bg-navy text-white border-none p-0"
+            className="w-64 bg-white text-white border-none p-0"
           >
             <MenuHeader />
             {menu}
           </SheetContent>
         </Sheet>
 
-        <div className="w-full flex-1" />
+        <div className="flex gap-2">
+          <NotificationDropdown />
 
-        <NotificationDropdown />
-
-        <div className="w-4" />
-
-        {profile && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full border border-black w-8 h-8"
-              >
-                <img
-                  src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=000&color=fff`}
-                  width="32"
-                  height="32"
-                  className="rounded-full bg-white"
-                  alt="Avatar"
-                />
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <div className="py-2 px-1">
-                <NotificationToggle
-                  profile={profile}
-                  refetchProfile={refetchProfile}
-                />
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+          {profile && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full w-8 h-8"
+                >
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=000&color=fff`}
+                    width="32"
+                    height="32"
+                    className="rounded-full bg-white"
+                    alt="Avatar"
+                  />
+                  <span className="sr-only">Toggle user menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <div className="py-2 px-1">
+                  <NotificationToggle
+                    profile={profile}
+                    refetchProfile={refetchProfile}
+                  />
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
-      <div className="px-4 py-8 lg:pb-24 lg:py-0 lg:px-20">{children}</div>
+      <div className="px-4 lg:pb-24 lg:px-20">{children}</div>
     </div>
   );
-};
-
-type DefaultLayoutProps = {
-  menu?: React.ReactNode;
-  hideMenu?: boolean;
-  children?: React.ReactNode;
 };
 
 const DefaultLayout = ({
   menu = <MenuList />,
   hideMenu = false,
   children,
-}: DefaultLayoutProps) => {
-  return (
-    <div className="min-h-screen w-full bg-black flex flex-row">
-      {!hideMenu && (
-        <MenuWrapper>
-          <MenuHeader />
-          {menu}
-        </MenuWrapper>
-      )}
-      <ContentWrapper menu={menu} hideMenu={hideMenu}>
-        {children}
-      </ContentWrapper>
-    </div>
-  );
-};
+}: {
+  menu?: React.ReactNode;
+  hideMenu?: boolean;
+  children?: React.ReactNode;
+}) => (
+  <div className="min-h-screen w-full flex flex-row">
+    {!hideMenu && (
+      <MenuWrapper>
+        <MenuHeader />
+        {menu}
+      </MenuWrapper>
+    )}
+    <ContentWrapper menu={menu} hideMenu={hideMenu}>
+      {children}
+    </ContentWrapper>
+  </div>
+);
 
 export default DefaultLayout;
