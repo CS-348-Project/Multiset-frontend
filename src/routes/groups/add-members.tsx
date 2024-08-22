@@ -121,11 +121,15 @@ const AddMembers = () => {
 
   const getShareableLink = async () => {
     try {
-      const shareableLink = `${window.location.origin}/join-group/${groupId}`;
-      await navigator.clipboard.writeText(shareableLink);
-      toast({
-        title: "Shareable link copied to clipboard!",
-      });
+      apiService
+        .get(`/api/groups/share_code?group_id=${groupId}`)
+        .then((response) => {
+          const shareableLink = `${window.location.origin}/join-group/${response.data.share_code}`;
+          navigator.clipboard.writeText(shareableLink);
+          toast({
+            title: "Shareable link copied to clipboard!",
+          });
+        });
     } catch (error) {
       console.error("Failed to copy link: ", error);
       toast({
