@@ -127,7 +127,7 @@ const MenuList = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             asChild
-            className="bg-white min-h-40 h-auto max-h-80 overflow-auto multiset-scroll w-60"
+            className="bg-white min-h-20 h-auto max-h-80 overflow-auto multiset-scroll w-60"
           >
             <div className="p-2">
               <div className="w-full text-sm font-extralight text-black px-3 py-1">

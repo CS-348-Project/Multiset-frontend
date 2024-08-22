@@ -159,7 +159,7 @@ const NotificationDropdown = () => {
       </DropdownMenuTrigger>
       {notifications?.length > 0 ? (
         <DropdownMenuContent align="end" className="bg-white pt-4">
-          <div className="max-h-80 overflow-y-scroll w-full px-4 grid gap-2">
+          <div className="max-h-80 overflow-y-scroll w-full max-w-80 px-4 grid gap-2">
             {notifications.map((notification) => (
               <DropdownMenuItem
                 key={notification.id}
