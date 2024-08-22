@@ -198,6 +198,12 @@ const AddMembers = () => {
           <Button className="w-full" onClick={addMembersToGroup}>
             Add
           </Button>
+          <Button
+            className="w-full"
+            onClick={() => navigate(`/groups/${groupId}`)}
+          >
+            Back to Group
+          </Button>
         </CardContent>
       </Card>
     </div>
