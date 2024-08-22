@@ -13,6 +13,14 @@
     --lilac: 243.4 100% 82.9%;
     --navy: 222.2 84% 4.9%;
 
+    --primary-black: 0 0% 12%;
+    --primary-white: 0 0% 96%;
+    --primary-purple: 253 76% 66%;
+    --primary-yellow: 44 96% 49%;
+    --primary-pink: 312 92% 56%;
+    --primary-grey: 241 7% 94%;
+    --primary-green: 94 41% 53%;
+
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -97,7 +105,6 @@ body::before {
   pointer-events: none;
   /* background-color: aliceblue; */
   opacity: 0.4;
-  filter: url(#noiseFilter);
   z-index: 9999;
 }
 

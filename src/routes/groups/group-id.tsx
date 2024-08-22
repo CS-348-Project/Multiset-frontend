@@ -42,7 +42,7 @@ const GroupPage = () => {
 
         <Space s="h-8" />
 
-        <div className="bg-creme text-dusk rounded-lg shadow p-6">
+        <div className="bg-white text-black rounded-lg shadow p-6">
           <h2 className="text-xl font-medium mb-4">Members</h2>
           <div className="flex flex-col gap-4">
             {data.users.map((user: UserInfo) => (

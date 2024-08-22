@@ -19,10 +19,7 @@ import NotificationDropdown from "../notifications/NotificationDropdown";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuTrigger,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
 } from "../ui/dropdown";
 import { apiService } from "@/utils/api";
 import { toast } from "../ui/use-toast";
@@ -34,8 +31,8 @@ const MenuHeader = ({ children }: MenuHeaderProps) => {
   return (
     <div className="w-full flex h-[40px] items-center justify-start p-6 pt-16">
       <a href="/home" className="flex items-center gap-2 font-semibold">
-        <PiIcon className="h-6 w-6 text-creme" />
-        <span className="text-creme text-3xl">Multiset</span>
+        <PiIcon className="h-6 w-6 text-black" />
+        <span className="text-black text-3xl">Multiset</span>
       </a>
     </div>
   );
@@ -45,35 +42,14 @@ type MenuWrapperProps = {
   children?: React.ReactNode;
 };
 
-const NoiseFilter = () => (
-  <svg width="0" height="0">
-    <filter id="noiseFilter">
-      <feTurbulence
-        type="fractalNoise"
-        baseFrequency="0.8"
-        numOctaves="4"
-        stitchTiles="stitch"
-      />
-      <feColorMatrix type="saturate" values="0" />
-    </filter>
-  </svg>
-);
-
 const MenuWrapper = ({ children }: MenuWrapperProps) => {
   return (
-    <div className="w-[280px] hidden lg:block bg-navy relative overflow-hidden">
-      <NoiseFilter />
-
+    <div className="w-[280px] hidden lg:block bg-grey relative overflow-hidden">
       <div className="relative flex h-full max-h-screen flex-col gap-2 z-10">
         {children}
       </div>
       <div className="absolute inset-0 opacity-25">
-        <div
-          className="w-full h-full mix-blend-hard-light opacity-30"
-          style={{
-            filter: "url(#noiseFilter)",
-          }}
-        />
+        <div className="w-full h-full mix-blend-hard-light opacity-30" />
       </div>
     </div>
   );
@@ -135,19 +111,19 @@ const MenuList = () => {
     <div className="flex-1 overflow-auto py-2">
       <nav className="flex flex-col items-start px-4 text-sm font-medium">
         <div
-          className="relative w-full flex rounded-md my-2 ring-1 ring-creme/40 overflow-hidden"
+          className="relative w-full flex rounded-md my-2 ring-1 ring-white/40 overflow-hidden"
           ref={buttonRef}
         >
           <a
             href="/home"
-            className="flex items-center gap-3 px-3 py-2 text-creme transition-all hover:text-creme/90 bg-creme/10 hover:bg-creme/20 text-lg leading-none"
+            className="flex items-center gap-3 px-3 py-2 text-black transition-all hover:text-black/90 bg-white/10 hover:bg-white/20 text-lg leading-none"
           >
             <HomeIcon className="h-4 w-4" />
           </a>
           <Button
             variant="ghost"
             size="icon"
-            className="border-none rounded-none border-primary w-full hover:bg-creme/20 text-creme/80 hover:text-creme/80 justify-start p-4 text-base"
+            className="border-none rounded-none border-primary w-full hover:bg-white/20 text-black/80 hover:text-black/80 justify-start p-4"
             onClick={() => setDropdownOpen((prev) => !prev)}
           >
             {groups?.find((group) => group.id === parseInt(groupId))?.name}
@@ -160,22 +136,22 @@ const MenuList = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             asChild
-            className="p-0 bg-navy min-h-40 h-40 overflow-auto multiset-scroll"
+            className="p-0 bg-purple min-h-40 h-40 overflow-auto multiset-scroll"
           >
             <div
               style={{
                 width: buttonRef.current?.offsetWidth,
               }}
             >
-              <div className="w-full text-sm text-creme/60 px-3 py-1">
+              <div className="w-full text-sm text-white/60 px-3 py-1">
                 Groups
               </div>
-              <div className="w-full bg-creme/20 h-[1px]" />
+              <div className="w-full bg-white/20 h-[1px]" />
               {groups?.map((group) => (
                 <a
                   key={group.id}
                   href={`/groups/${group.id}`}
-                  className="flex items-center w-full gap-3 text-creme transition-all hover:bg-creme/10 leading-none"
+                  className="flex items-center w-full gap-3 text-white transition-all hover:bg-white/10 leading-none"
                 >
                   <div className="px-3 py-2 text-base">{group.name}</div>
                 </a>
@@ -188,20 +164,20 @@ const MenuList = () => {
           <a
             key={i}
             href={href}
-            className="flex items-center w-full gap-3 rounded-lg px-3 py-2 text-creme transition-all hover:text-creme/90 hover:bg-creme/10 text-lg leading-none"
+            className="flex items-center w-full gap-3 rounded-lg px-3 py-2 text-black transition-all hover:text-purple/90 hover:bg-white/10 text-lg leading-none"
           >
             <div>{icon}</div>
             <div className="pt-1">{label}</div>
           </a>
         ))}
 
-        <div className="w-24 h-[1px] mx-3 bg-creme/60 mt-3 mb-6" />
+        <div className="w-full h-[1px] px-20 bg-black mt-3 mb-6" />
 
         {MENU_ITEMS.map(({ icon, label, href }, i) => (
           <a
             key={i}
             href={href}
-            className="flex items-center w-full gap-3 rounded-lg px-3 py-2 text-creme transition-all hover:text-creme/90 hover:bg-creme/10 text-lg leading-none"
+            className="flex items-center w-full gap-3 rounded-lg px-3 py-2 text-black transition-all hover:text-black/90 hover:bg-white/10 text-lg leading-none"
           >
             <div>{icon}</div>
             <div className="pt-1">{label}</div>
@@ -245,7 +221,7 @@ const NotificationToggle = ({
 
   return (
     <div className="flex justify-between gap-5 items-center">
-      <p className="text-creme text-sm md:text-base">Notifications</p>
+      <p className="text-white text-sm md:text-base">Notifications</p>
       <div className="flex items-center">
         <input
           type="checkbox"
@@ -269,8 +245,8 @@ const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
   const { profile, refetchProfile } = useProfile();
 
   return (
-    <div className="relative w-full flex-1 flex flex-col bg-creme">
-      <div className="sticky top-0 w-full flex h-14 lg:h-[60px] items-center justify-between bg-creme px-4 lg:bg-transparent drop-shadow-md z-[1]">
+    <div className="relative w-full flex-1 flex flex-col bg-white">
+      <div className="sticky top-0 w-full flex h-14 lg:h-[60px] items-center justify-between bg-white px-4 lg:bg-transparent drop-shadow-md z-[1]">
         {!hideMenu && (
           <div className="lg:hidden">
             <Button
@@ -288,7 +264,7 @@ const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
           <SheetTrigger asChild></SheetTrigger>
           <SheetContent
             side="left"
-            className="w-64 bg-navy text-creme border-none p-0"
+            className="w-64 bg-navy text-white border-none p-0"
           >
             <MenuHeader />
             {menu}
@@ -307,13 +283,13 @@ const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full border border-primary w-8 h-8"
+                className="rounded-full border border-black w-8 h-8"
               >
                 <img
                   src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=000&color=fff`}
                   width="32"
                   height="32"
-                  className="rounded-full bg-creme"
+                  className="rounded-full bg-white"
                   alt="Avatar"
                 />
                 <span className="sr-only">Toggle user menu</span>
@@ -347,7 +323,7 @@ const DefaultLayout = ({
   children,
 }: DefaultLayoutProps) => {
   return (
-    <div className="min-h-screen w-full bg-dusk flex flex-row">
+    <div className="min-h-screen w-full bg-black flex flex-row">
       {!hideMenu && (
         <MenuWrapper>
           <MenuHeader />

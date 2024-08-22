@@ -37,7 +37,7 @@ const Home = () => {
       <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         <div className="flex items-center gap-4">
           <div className="flex flex-col gap-2">
-            <h1 className="font-semibold text-dusk text-2xl md:text-3xl lg:text-4xl">
+            <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl">
               Welcome Back, {profile?.first_name}!
             </h1>
           </div>

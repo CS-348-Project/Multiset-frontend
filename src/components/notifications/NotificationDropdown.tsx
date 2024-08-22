@@ -142,14 +142,14 @@ const NotificationDropdown = () => {
             {notifications.map((notification) => (
               <DropdownMenuItem
                 key={notification.id}
-                className="flex flex-col items-end text-dusk"
+                className="flex flex-col items-end text-black"
               >
                 <div
                   className={`block ${notification.read ? "" : "font-bold"}`}
                 >
                   {notification.message}
                 </div>
-                <div className="text-xs text-dusk block">
+                <div className="text-xs text-black block">
                   {getTime(notification.created_at)}
                 </div>
               </DropdownMenuItem>

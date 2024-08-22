@@ -1,11 +1,5 @@
 import { DetailedGroup } from "@/types/Group";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Card, CardContent, CardTitle } from "../ui/card";
 import { UsersIcon } from "lucide-react";
 import { Button } from "../ui/button";
 
@@ -14,7 +8,7 @@ const GroupCard = ({ group }: { group: DetailedGroup }) => {
     <Card className="w-full h-full flex flex-col aspect-[5/4]">
       <CardContent className="w-full h-full flex flex-col justify-end">
         {/* Horizontal Line */}
-        <div className="w-full h-[1px] bg-dusk my-2" />
+        <div className="w-full h-[1px] bg-black my-2" />
 
         <div className="flex items-center justify-between">
           <CardTitle>{group.name}</CardTitle>

@@ -31,11 +31,11 @@ const Root = () => {
       });
   };
   return (
-    <div className="relative w-screen h-screen bg-creme px-12 lg:px-24 overflow-hidden">
+    <div className="relative w-screen h-screen bg-white px-12 lg:px-24 overflow-hidden">
       <div className="absolute w-full h-full top-0 left-0">
-        <div className="bg-coral absolute filter blur-[60px] h-[200px] w-[200px] animate-coral-blob"></div>
-        <div className="bg-navy absolute filter blur-[60px] h-[200px] w-[200px] animate-navy-blob"></div>
-        <div className="bg-yellow-500 absolute filter blur-[60px] h-[200px] w-[200px] animate-yellow-blob"></div>
+        <div className="bg-pink absolute filter blur-[60px] h-[200px] w-[200px] animate-pink-blob"></div>
+        <div className="bg-purple absolute filter blur-[60px] h-[200px] w-[200px] animate-purple-blob"></div>
+        <div className="bg-yellow absolute filter blur-[60px] h-[200px] w-[200px] animate-yellow-blob"></div>
       </div>
       <div className="relative w-full h-full flex items-center">
         <div className="lg:w-1/3 flex flex-col gap-2">
@@ -57,9 +57,9 @@ const Root = () => {
           </div>
           {isLoggedIn ? (
             <div className="mt-2">
-              <button onClick={handleLogout} className="underline">
+              <Button onClick={handleLogout} variant="secondary">
                 Logout
-              </button>
+              </Button>
             </div>
           ) : (
             <GoogleLogin
