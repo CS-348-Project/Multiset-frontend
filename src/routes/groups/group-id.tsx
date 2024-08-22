@@ -34,10 +34,15 @@ const GroupPage = () => {
           >
             Add Purchase
           </Button>
-          <SettingsIcon
-            className="w-8 h-8 hover:rotate-[90deg] hover:duration-200 hover:repeat-1 cursor-pointer"
-            onClick={() => navigate("settings")}
-          />
+          <div className="flex">
+            <Button onClick={() => navigate(`/groups/${id}/add-members`)}>
+              Add Members
+            </Button>
+            <SettingsIcon
+              className="mx-4 w-8 h-8 hover:rotate-[90deg] hover:duration-200 hover:repeat-1 cursor-pointer"
+              onClick={() => navigate("settings")}
+            />
+          </div>
         </div>
 
         <Space s="h-8" />

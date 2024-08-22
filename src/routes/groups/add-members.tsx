@@ -73,6 +73,14 @@ const AddMembers = () => {
       });
       return;
     }
+    for (const account of groupAccounts) {
+      if (account.email === profile?.email) {
+        toast({
+          title: "You cannot add yourself to the group",
+        });
+        return;
+      }
+    }
 
     if (email !== "") {
       if (accounts.some((user) => user.email == email)) {
@@ -137,93 +145,60 @@ const AddMembers = () => {
         </Button>
       </div>
       <Card className="w-full max-w-lg bg-white drop-shadow-md">
-        <Tabs defaultValue="create" className="text-dusk">
-          <TabsList>
-            <TabsTrigger value="create">Create Group</TabsTrigger>
-            <TabsTrigger value="settings">Group Settings</TabsTrigger>
-          </TabsList>
-          <TabsContent value="create">
-            <CardHeader className="space-y-1.5">
-              <CardTitle>Create Group</CardTitle>
-              <CardDescription>
-                Enter a group name and add member emails to get started.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button className="" onClick={getShareableLink}>
-                Copy Shareable Link
-              </Button>
+        <CardHeader className="space-y-1.5">
+          <CardTitle>Add Members</CardTitle>
+          <CardDescription>
+            Enter a group name and add member emails to get started.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Button className="" onClick={getShareableLink}>
+            Copy Shareable Link
+          </Button>
 
-              <div className="space-y-2">
-                <Label htmlFor="memberEmails">Member Emails</Label>
-                <div className="flex items-center gap-2">
-                  <Input
-                    id="memberEmails"
-                    placeholder="Enter email address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleAddAccount();
-                    }}
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleAddAccount}
-                  >
-                    <PlusIcon className="h-5 w-5" />
-                    <span className="sr-only">Add email</span>
-                  </Button>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {accounts.map((account, idx) => (
-                  <div
-                    className="flex items-center justify-center bg-creme px-2 py-1 rounded-md text-sm text-dusk"
-                    key={account.id}
-                  >
-                    {`${account.email} - ${account.first_name} ${account.last_name}`}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-fit w-fit text-dusk hover:text-lilac hover:bg-transparent px-1"
-                      onClick={() => {
-                        setAccounts(accounts.filter((_, i) => i !== idx));
-                      }}
-                    >
-                      {<XIcon className="h-4 w-4" />}
-                      <span className="sr-only">Remove email</span>
-                    </Button>
-                  </div>
-                ))}
-              </div>
-              <Button className="w-full" onClick={addMembersToGroup}>
-                Create Group
+          <div className="space-y-2">
+            <Label htmlFor="memberEmails">Member Emails</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="memberEmails"
+                placeholder="Enter email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleAddAccount();
+                }}
+              />
+              <Button variant="ghost" size="icon" onClick={handleAddAccount}>
+                <PlusIcon className="h-5 w-5" />
+                <span className="sr-only">Add email</span>
               </Button>
-            </CardContent>
-          </TabsContent>
-          <TabsContent value="settings">
-            <CardHeader className="space-y-1.5">
-              <CardTitle>Group Settings</CardTitle>
-              <CardDescription>Adjust settings for the group</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-4">
-                <p className="text-dusk text-sm md:text-base">
-                  Optimize Payments
-                </p>
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-blue-600"
-                  checked={optimizePayments}
-                  onChange={() => {
-                    setOptimizePayments((p) => !p);
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {accounts.map((account, idx) => (
+              <div
+                className="flex items-center justify-center bg-creme px-2 py-1 rounded-md text-sm text-dusk"
+                key={account.id}
+              >
+                {`${account.email} - ${account.first_name} ${account.last_name}`}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-fit w-fit text-dusk hover:text-lilac hover:bg-transparent px-1"
+                  onClick={() => {
+                    setAccounts(accounts.filter((_, i) => i !== idx));
                   }}
-                />
+                >
+                  {<XIcon className="h-4 w-4" />}
+                  <span className="sr-only">Remove email</span>
+                </Button>
               </div>
-            </CardContent>
-          </TabsContent>
-        </Tabs>
+            ))}
+          </div>
+          <Button className="w-full" onClick={addMembersToGroup}>
+            Add
+          </Button>
+        </CardContent>
       </Card>
     </div>
   );
