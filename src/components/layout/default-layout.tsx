@@ -9,11 +9,12 @@ import {
   SettingsIcon,
   HistoryIcon,
   ClipboardListIcon,
+  ChevronsUpDown,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import useProfile from "@/context/profile-context";
 import NotificationDropdown from "../notifications/NotificationDropdown";
 import {
@@ -21,23 +22,10 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../ui/dropdown";
-import { apiService } from "@/utils/api";
-import { toast } from "../ui/use-toast";
-
-const MenuHeader = () => (
-  <div className="w-full flex h-[40px] items-center justify-start p-6 pt-16">
-    <a href="/home" className="flex items-center gap-2 font-semibold">
-      <PiIcon className="h-6 w-6 text-black" />
-      <span className="text-black text-3xl">Multiset</span>
-    </a>
-  </div>
-);
 
 const MenuWrapper = ({ children }: { children?: React.ReactNode }) => (
-  <div className="w-[280px] hidden lg:block bg-grey relative overflow-hidden">
-    <div className="relative flex h-full max-h-screen flex-col gap-2 z-10">
-      {children}
-    </div>
+  <div className="w-[340px] hidden lg:block bg-grey relative overflow-hidden p-6">
+    <div className="relative flex flex-col gap-2 z-10">{children}</div>
   </div>
 );
 
@@ -50,17 +38,21 @@ const MenuList = () => {
     ? location.pathname.split("/").slice(0, 3).join("/")
     : null;
   const groupId = location.pathname.split("/")[2];
-  const buttonRef = useRef<HTMLDivElement>(null);
 
   const KEY_ITEMS = [
     {
-      icon: <LayoutDashboardIcon className="h-4 w-4" />,
-      label: "Group Dashboard",
-      href: `${groupPath}`,
+      icon: <HomeIcon className="h-4 w-4" />,
+      label: "Multiset",
+      href: `/home`,
     },
   ];
 
   const MENU_ITEMS = [
+    {
+      icon: <LayoutDashboardIcon className="h-4 w-4" />,
+      label: "Group",
+      href: `${groupPath}`,
+    },
     {
       icon: <WalletIcon className="h-4 w-4" />,
       label: "Purchases",
@@ -93,124 +85,124 @@ const MenuList = () => {
     },
   ];
 
+  interface NavLinkProps {
+    href: string;
+    icon: React.ReactNode;
+    label: string;
+    key: string;
+  }
+
+  const NavLink: React.FC<NavLinkProps> = ({ href, icon, label, key }) => {
+    return (
+      <a
+        key={key}
+        href={href}
+        className="flex items-center w-full gap-3 rounded-full px-3 py-3 text-black transition-all hover:bg-white text-lg leading-none duration-200"
+      >
+        <div>{icon}</div>
+        <div>{label}</div>
+      </a>
+    );
+  };
+
   return (
-    <div className="flex-1 overflow-auto py-2">
-      <nav className="flex flex-col items-start px-4 text-sm font-medium">
-        <div
-          className="relative w-full flex rounded-md my-2 ring-1 ring-white/40 overflow-hidden"
-          ref={buttonRef}
-        >
-          <a
-            href="/home"
-            className="flex items-center gap-3 px-3 py-2 text-black transition-all hover:text-black/90 bg-white/10 hover:bg-white/20 text-lg leading-none"
-          >
-            <HomeIcon className="h-4 w-4" />
-          </a>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="border-none rounded-none border-primary w-full hover:bg-white/20 text-black/80 hover:text-black/80 justify-start p-4"
-            onClick={() => setDropdownOpen((prev) => !prev)}
-          >
-            {groups?.find((group) => group.id === parseInt(groupId))?.name}
-            <span className="sr-only">Toggle user menu</span>
-          </Button>
-        </div>
+    <div className="overflow-auto py-2">
+      <nav className="flex flex-col font-medium">
+        {KEY_ITEMS.map(({ icon, label, href }, i) => (
+          <NavLink href={href} icon={icon} label={label} key={`key ${i}`} />
+        ))}
         <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-          <DropdownMenuTrigger asChild>
-            <div className="w-full h-0"></div>
+          <DropdownMenuTrigger className="focus-visible:outline-none">
+            <Button
+              variant="outline"
+              className="rounded-xl text-black/80 p-4 text-lg justify-between w-full gap-2 my-2"
+              onClick={() => setDropdownOpen((prev) => !prev)}
+            >
+              <div className="overflow-x-hidden w-full break-words inline-block whitespace-nowrap text-ellipsis text-left">
+                {groups?.find((group) => group.id === parseInt(groupId))?.name}
+              </div>
+              <ChevronsUpDown className=" inline-block w-4 h-4" />
+              <span className="sr-only">Toggle user menu</span>
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             asChild
-            className="p-0 bg-purple min-h-40 h-40 overflow-auto multiset-scroll"
+            className="bg-white min-h-40 h-auto max-h-80 overflow-auto multiset-scroll w-60"
           >
-            <div style={{ width: buttonRef.current?.offsetWidth }}>
-              <div className="w-full text-sm text-white/60 px-3 py-1">
+            <div className="p-2">
+              <div className="w-full text-sm font-extralight text-black px-3 py-1">
                 Groups
               </div>
-              <div className="w-full bg-white/20 h-[1px]" />
-              {groups?.map((group) => (
-                <a
-                  key={group.id}
-                  href={`/groups/${group.id}`}
-                  className="flex items-center w-full gap-3 text-white transition-all hover:bg-white/10 leading-none"
-                >
-                  <div className="px-3 py-2 text-base">{group.name}</div>
-                </a>
-              ))}
+              <div className="w-auto bg-black/20 h-[1px] m-2 mt-1" />
+              <div className="grid gap-1 w-full">
+                {groups?.map((group) => (
+                  <a
+                    key={group.id}
+                    href={`/groups/${group.id}`}
+                    className="w-full text-white transition-all leading-none flex items-center px-3 pt-3 pb-2 hover:bg-grey rounded-full gap-2"
+                  >
+                    <div className="w-2 h-2 bg-blue rounded-full -mt-1" />
+                    <div className="text-black text-ellipsis overflow-x-hidden w-40 whitespace-nowrap h-5">
+                      {group.name}
+                    </div>
+                  </a>
+                ))}
+              </div>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {KEY_ITEMS.map(({ icon, label, href }, i) => (
-          <a
-            key={i}
-            href={href}
-            className="flex items-center w-full gap-3 rounded-lg px-3 py-2 text-black transition-all hover:text-purple/90 hover:bg-white/10 text-lg leading-none"
-          >
-            <div>{icon}</div>
-            <div className="pt-1">{label}</div>
-          </a>
-        ))}
-
-        <div className="w-full h-[1px] px-20 bg-black mt-3 mb-6" />
+        <div className="w-full h-[1px] bg-black/20 mt-3 mb-6" />
 
         {MENU_ITEMS.map(({ icon, label, href }, i) => (
-          <a
-            key={i}
-            href={href}
-            className="flex items-center w-full gap-3 rounded-lg px-3 py-2 text-black transition-all hover:text-black/90 hover:bg-white/10 text-lg leading-none"
-          >
-            <div>{icon}</div>
-            <div className="pt-1">{label}</div>
-          </a>
+          <NavLink icon={icon} label={label} href={href} key={`menu ${i}`} />
         ))}
       </nav>
     </div>
   );
 };
 
-const NotificationToggle = ({
-  profile,
-  refetchProfile,
-}: {
-  profile: any;
-  refetchProfile: any;
-}) => {
-  const handleEmailNotificationsChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    apiService
-      .patch(`/api/notifications/email`)
-      .then(() => refetchProfile())
-      .catch((err) => {
-        console.error(err);
-        toast({
-          variant: "destructive",
-          description: (
-            <p>
-              Failed to toggle notification settings. Please try again later.
-            </p>
-          ),
-        });
-      });
-  };
+// const NotificationToggle = ({
+//   profile,
+//   refetchProfile,
+// }: {
+//   profile: any;
+//   refetchProfile: any;
+// }) => {
+//   const handleEmailNotificationsChange = (
+//     e: React.ChangeEvent<HTMLInputElement>
+//   ) => {
+//     apiService
+//       .patch(`/api/notifications/email`)
+//       .then(() => refetchProfile())
+//       .catch((err) => {
+//         console.error(err);
+//         toast({
+//           variant: "destructive",
+//           description: (
+//             <p>
+//               Failed to toggle notification settings. Please try again later.
+//             </p>
+//           ),
+//         });
+//       });
+//   };
 
-  return (
-    <div className="flex justify-between gap-5 items-center">
-      <p className="text-white text-sm md:text-base">Email notifications</p>
-      <div className="flex items-center">
-        <input
-          type="checkbox"
-          className="form-checkbox h-5 w-5 text-blue-600"
-          checked={profile.email_notifications}
-          data-profile-id={profile.id}
-          onChange={handleEmailNotificationsChange}
-        />
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="flex justify-between gap-5 items-center">
+//       <p className="text-white text-sm md:text-base">Email notifications</p>
+//       <div className="flex items-center">
+//         <input
+//           type="checkbox"
+//           className="form-checkbox h-5 w-5 text-blue-600"
+//           checked={profile.email_notifications}
+//           data-profile-id={profile.id}
+//           onChange={handleEmailNotificationsChange}
+//         />
+//       </div>
+//     </div>
+//   );
+// };
 
 const ContentWrapper = ({
   menu,
@@ -222,7 +214,7 @@ const ContentWrapper = ({
   children: React.ReactNode;
 }) => {
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { profile, refetchProfile } = useProfile();
+  const { profile } = useProfile();
 
   return (
     <div className="relative w-full flex flex-col bg-white p-4">
@@ -244,9 +236,8 @@ const ContentWrapper = ({
           <SheetTrigger asChild></SheetTrigger>
           <SheetContent
             side="left"
-            className="w-64 bg-white text-white border-none p-0"
+            className="w-64 bg-white text-white border-none"
           >
-            <MenuHeader />
             {menu}
           </SheetContent>
         </Sheet>
@@ -254,27 +245,25 @@ const ContentWrapper = ({
         <div className="flex gap-2">
           <NotificationDropdown />
 
-        <div className="w-4" />
-
-        {profile && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full border border-primary w-8 h-8"
-              >
-                <img
-                  src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=000&color=fff`}
-                  width="32"
-                  height="32"
-                  className="rounded-full bg-creme"
-                  alt="Avatar"
-                />
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            {/* <DropdownMenuContent align="end">
+          {profile && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full w-8 h-8"
+                >
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=489BFC&color=fff`}
+                    width="32"
+                    height="32"
+                    className="rounded-full"
+                    alt="Avatar"
+                  />
+                  <span className="sr-only">Toggle user menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              {/* <DropdownMenuContent align="end"> // TODO: add email notification toggle
               <div className="py-2 px-1">
                 <NotificationToggle
                   profile={profile}
@@ -282,10 +271,11 @@ const ContentWrapper = ({
                 />
               </div>
             </DropdownMenuContent> */}
-          </DropdownMenu>
-        )}
+            </DropdownMenu>
+          )}
+        </div>
       </div>
-      <div className="px-4 py-8 lg:pb-24 lg:py-0 lg:px-20">{children}</div>
+      <div className="px-4 lg:pb-24 lg:py-0 lg:px-20">{children}</div>
     </div>
   );
 };
@@ -300,12 +290,7 @@ const DefaultLayout = ({
   children?: React.ReactNode;
 }) => (
   <div className="min-h-screen w-full flex flex-row">
-    {!hideMenu && (
-      <MenuWrapper>
-        <MenuHeader />
-        {menu}
-      </MenuWrapper>
-    )}
+    {!hideMenu && <MenuWrapper>{menu}</MenuWrapper>}
     <ContentWrapper menu={menu} hideMenu={hideMenu}>
       {children}
     </ContentWrapper>

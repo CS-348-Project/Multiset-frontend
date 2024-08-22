@@ -22,9 +22,10 @@ module.exports = {
         white: "hsl(var(--primary-white))",
         purple: "hsl(var(--primary-purple))",
         yellow: "hsl(var(--primary-yellow))",
-        pink: "hsl(var(--primary-pink))",
         grey: "hsl(var(--primary-grey))",
         green: "hsl(var(--primary-green))",
+        blue: "hsl(var(--primary-blue))",
+        red: "hsl(var(--primary-red))",
 
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

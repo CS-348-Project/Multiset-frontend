@@ -40,7 +40,7 @@ const Home = () => {
           Welcome Back, {profile?.first_name}!
         </h1>
 
-        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] mb-12">
           {/* Existing Groups */}
           {groups?.length > 0 &&
             groups.map((group) => (
@@ -54,7 +54,7 @@ const Home = () => {
           <Link to="/groups/new">
             <Button
               variant="default"
-              className="w-auto h-full bg-yellow hover:bg-yellow/80"
+              className="w-auto h-full bg-blue hover:bg-blue/80"
             >
               <PlusIcon className="h-8 w-8" />
             </Button>
