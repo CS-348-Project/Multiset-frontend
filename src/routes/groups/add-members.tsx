@@ -1,4 +1,3 @@
-import DefaultLayout from "@/components/layout/default-layout";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,7 +8,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import useProfile from "@/context/profile-context";
 import { apiService } from "@/utils/api";
@@ -24,10 +22,17 @@ const AddMembers = () => {
   const { profile, refetchGroups } = useProfile();
   const params = useParams<{ id: string }>();
   const groupId = Number(params.id);
-
   const [email, setEmail] = useState("");
   const [accounts, setAccounts] = useState<UserInfo[]>([]);
-  const [optimizePayments, setOptimizePayments] = useState(false);
+  const [share_code, setShareCode] = useState("");
+
+  useEffect(() => {
+    apiService
+      .get(`/api/groups/share_code?group_id=${groupId}`)
+      .then((response) => {
+        setShareCode(response.data.share_code);
+      });
+  }, []);
 
   const handleAddAccount = async () => {
     if (!email) return;
@@ -121,19 +126,29 @@ const AddMembers = () => {
 
   const getShareableLink = async () => {
     try {
-      apiService
-        .get(`/api/groups/share_code?group_id=${groupId}`)
-        .then((response) => {
-          const shareableLink = `${window.location.origin}/join-group/${response.data.share_code}`;
-          navigator.clipboard.writeText(shareableLink);
-          toast({
-            title: "Shareable link copied to clipboard!",
-          });
-        });
+      const shareableLink = `${window.location.origin}/join-group/${share_code}`;
+      navigator.clipboard.writeText(shareableLink);
+      toast({
+        title: "Shareable link copied to clipboard!",
+      });
     } catch (error) {
       console.error("Failed to copy link: ", error);
       toast({
         title: "Failed to copy link",
+      });
+    }
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      navigator.clipboard.writeText(`${window.origin}/${share_code}`);
+      toast({
+        title: "Copied to clipboard",
+      });
+    } catch (error) {
+      console.error("Failed to copy text: ", error);
+      toast({
+        title: "Failed to copy text",
       });
     }
   };
@@ -156,6 +171,23 @@ const AddMembers = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <Label htmlFor="memberEmails">Shareable Link:</Label>
+          <div>
+            {share_code ? (
+              <span
+                onClick={copyToClipboard}
+                style={{
+                  cursor: "pointer",
+                  // color: "blue",
+                  textDecoration: "underline",
+                }}
+              >
+                {`${window.origin}/${share_code}`}
+              </span>
+            ) : (
+              "Loading..."
+            )}
+          </div>
           <Button className="" onClick={getShareableLink}>
             Copy Shareable Link
           </Button>
