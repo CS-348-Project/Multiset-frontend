@@ -141,7 +141,9 @@ const AddMembers = () => {
 
   const copyToClipboard = async () => {
     try {
-      navigator.clipboard.writeText(`${window.origin}/${share_code}`);
+      navigator.clipboard.writeText(
+        `${window.origin}/join-group/${share_code}`
+      );
       toast({
         title: "Copied to clipboard",
       });
@@ -181,7 +183,7 @@ const AddMembers = () => {
                   textDecoration: "underline",
                 }}
               >
-                {`${window.origin}/${share_code}`}
+                {`${window.origin}/join-group/${share_code}`}
               </span>
             ) : (
               "Loading..."
