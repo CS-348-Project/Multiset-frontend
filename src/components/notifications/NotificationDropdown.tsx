@@ -10,10 +10,20 @@ import { apiService } from "@/utils/api";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { Notification } from "@/types/Notification";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "../ui/drawer";
+import useIsMobile from "@/utils/windowSize";
 
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unread, setUnread] = useState<number>(0);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     apiService
@@ -118,7 +128,7 @@ const NotificationDropdown = () => {
     });
   };
 
-  return (
+  return !isMobile ? (
     <DropdownMenu
       onOpenChange={(open: boolean) => {
         if (!open) {
@@ -128,28 +138,28 @@ const NotificationDropdown = () => {
       }}
     >
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className=" w-8 h-8 relative">
+        <Button variant="ghost" size="icon" className="w-8 h-8 relative">
           <BellIcon className="w-4 h-4" />
           {unread > 0 && (
-            <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+            <span className="absolute top-1 right-1 w-3 h-3 bg-red rounded-full"></span>
           )}
           <span className="sr-only">Toggle user menu</span>
         </Button>
       </DropdownMenuTrigger>
       {notifications?.length > 0 ? (
-        <DropdownMenuContent align="end" className="bg-white">
-          <div className="max-h-80 overflow-y-auto max-w-60 md:max-w-96">
+        <DropdownMenuContent align="end" className="bg-white pt-4">
+          <div className="max-h-80 overflow-y-scroll w-full max-w-80 px-4 grid gap-2">
             {notifications.map((notification) => (
               <DropdownMenuItem
                 key={notification.id}
-                className="flex flex-col items-end text-dusk"
+                className="text-black bg-grey rounded-3xl p-4 gap-1 grid"
               >
                 <div
-                  className={`text-right block ${notification.read ? "" : "font-bold"}`}
+                  className={`block ${notification.read ? "" : "font-bold"}`}
                 >
                   {notification.message}
                 </div>
-                <div className="text-xs text-dusk block">
+                <div className="text-xs font-extralight text-black block">
                   {getTime(notification.created_at)}
                 </div>
               </DropdownMenuItem>
@@ -157,23 +167,72 @@ const NotificationDropdown = () => {
           </div>
 
           <DropdownMenuItem>
-            <Button
-              variant="ghost"
-              className="text-primary flex-grow"
-              onClick={clear}
-            >
+            <Button variant="default" onClick={clear} className="ml-auto">
               Clear all
             </Button>
           </DropdownMenuItem>
         </DropdownMenuContent>
       ) : (
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="text-black p-2">
           <DropdownMenuItem className="text-center">
             You have no notifications
           </DropdownMenuItem>
         </DropdownMenuContent>
       )}
     </DropdownMenu>
+  ) : (
+    <Drawer
+      onOpenChange={(open: boolean) => {
+        if (!open) {
+          // if the dropdown is closing, mark all as read
+          read();
+        }
+      }}
+    >
+      <DrawerTrigger>
+        <Button variant="ghost" size="icon" className="w-8 h-8 relative">
+          <BellIcon className="w-4 h-4" />
+          {unread > 0 && (
+            <span className="absolute top-1 right-1 w-3 h-3 bg-red rounded-full"></span>
+          )}
+          <span className="sr-only">Toggle user menu</span>
+        </Button>
+      </DrawerTrigger>
+      {notifications?.length > 0 ? (
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Notifications</DrawerTitle>
+          </DrawerHeader>
+          <div className="max-h-80 overflow-y-scroll w-full px-4 grid gap-2">
+            {notifications.map((notification) => (
+              <div
+                key={notification.id}
+                className="flex flex-col text-black bg-grey rounded-3xl p-4 gap-1"
+              >
+                <div
+                  className={`block ${notification.read ? "" : "font-bold"}`}
+                >
+                  {notification.message}
+                </div>
+                <div className="text-xs font-extralight text-black block">
+                  {getTime(notification.created_at)}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <DrawerFooter>
+            <Button variant="default" onClick={clear}>
+              Clear all
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      ) : (
+        <DrawerContent>
+          <div className="text-center p-4">You have no notifications</div>
+        </DrawerContent>
+      )}
+    </Drawer>
   );
 };
 

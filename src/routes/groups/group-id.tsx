@@ -2,12 +2,11 @@ import DefaultLayout from "@/components/layout/default-layout";
 import LoadingPage from "@/components/layout/loading-page";
 import { PurchaseHistory } from "@/components/purchase/PurchaseHistory";
 import Space from "@/components/ui/space";
-import UserBadge from "@/components/ui/users/user-badge";
 import useDetailedGroup from "@/hooks/useDetailedGroup";
-import { UserInfo } from "@/types/UserInfo";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
-import { SettingsIcon } from "lucide-react";
+import { PlusIcon, SettingsIcon, UsersIcon } from "lucide-react";
+import { OptimalPaymentTable } from "@/components/settlement/OptimalPaymentTable";
 
 const GroupPage = () => {
   const navigate = useNavigate();
@@ -22,37 +21,48 @@ const GroupPage = () => {
 
   return (
     <DefaultLayout>
-      <div className="w-full h-full py-4">
+      <div className="w-full flex justify-between gap-2">
         <h1 className="text-3xl font-bold">{data.name}</h1>
-
-        <Space s="h-4" />
-
-        <div className="w-full flex justify-between">
-          <Button
-            variant="secondary"
-            onClick={() => navigate(`/groups/${id}/purchase`)}
-          >
-            Add Purchase
-          </Button>
-          <SettingsIcon
-            className="w-8 h-8 hover:rotate-[90deg] hover:duration-200 hover:repeat-1 cursor-pointer"
-            onClick={() => navigate("settings")}
-          />
+        <div className="flex items-start gap-1 mt-2">
+          <UsersIcon className="w-5 h-5" />
+          <span>{data.users.length}</span>
         </div>
-
-        <Space s="h-8" />
-
-        <div className="bg-creme text-dusk rounded-lg shadow p-6">
-          <h2 className="text-xl font-medium mb-4">Members</h2>
-          <div className="flex flex-col gap-4">
-            {data.users.map((user: UserInfo) => (
-              <UserBadge user={user} key={user.id} />
-            ))}
-          </div>
-        </div>
-        <div className="h-8" />
-        <PurchaseHistory />
       </div>
+
+      <Space s="h-4" />
+      <div className="flex gap-3">
+        <Button
+          variant="primary"
+          onClick={() =>
+            navigate(`/groups/${id}/purchase`, {
+              replace: true,
+              state: { isOpen: true },
+            })
+          }
+        >
+          <PlusIcon className="w-4 h-4 mr-2" />
+          Add Purchase
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => alert("not done yet")} // TODO: Implement this
+        >
+          <SettingsIcon className="w-4 h-4 mr-2" />
+          Manage Group
+        </Button>
+      </div>
+
+      <Space s="h-4" />
+
+      <div className="flex flex-col gap-3 lg:flex-row">
+        <div className="bg-grey text-black rounded-3xl p-4 w-full">
+          <OptimalPaymentTable userOwes={true} />
+        </div>
+        <div className="bg-grey text-black rounded-3xl p-4 w-full">
+          <OptimalPaymentTable userOwes={false} />
+        </div>
+      </div>
+      <PurchaseHistory />
     </DefaultLayout>
   );
 };

@@ -2,82 +2,33 @@ import {
   HomeIcon,
   LineChartIcon,
   WalletIcon,
-  PiIcon,
   MenuIcon,
   LayoutDashboardIcon,
   HandCoinsIcon,
   SettingsIcon,
   HistoryIcon,
   ClipboardListIcon,
+  ChevronsUpDown,
+  RotateCw,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import useProfile from "@/context/profile-context";
 import NotificationDropdown from "../notifications/NotificationDropdown";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuTrigger,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
 } from "../ui/dropdown";
-import { apiService } from "@/utils/api";
-import { toast } from "../ui/use-toast";
+import useIsMobile from "@/utils/windowSize";
 
-type MenuHeaderProps = {
-  children?: React.ReactNode;
-};
-const MenuHeader = ({ children }: MenuHeaderProps) => {
-  return (
-    <div className="w-full flex h-[40px] items-center justify-start p-6 pt-16">
-      <a href="/home" className="flex items-center gap-2 font-semibold">
-        <PiIcon className="h-6 w-6 text-creme" />
-        <span className="text-creme text-3xl">Multiset</span>
-      </a>
-    </div>
-  );
-};
-
-type MenuWrapperProps = {
-  children?: React.ReactNode;
-};
-
-const NoiseFilter = () => (
-  <svg width="0" height="0">
-    <filter id="noiseFilter">
-      <feTurbulence
-        type="fractalNoise"
-        baseFrequency="0.8"
-        numOctaves="4"
-        stitchTiles="stitch"
-      />
-      <feColorMatrix type="saturate" values="0" />
-    </filter>
-  </svg>
+const MenuWrapper = ({ children }: { children?: React.ReactNode }) => (
+  <div className="w-[340px] hidden lg:block bg-grey relative overflow-hidden p-6">
+    <div className="relative flex flex-col gap-2 z-10">{children}</div>
+  </div>
 );
-
-const MenuWrapper = ({ children }: MenuWrapperProps) => {
-  return (
-    <div className="w-[280px] hidden lg:block bg-navy relative overflow-hidden">
-      <NoiseFilter />
-
-      <div className="relative flex h-full max-h-screen flex-col gap-2 z-10">
-        {children}
-      </div>
-      <div className="absolute inset-0 opacity-25">
-        <div
-          className="w-full h-full mix-blend-hard-light opacity-30"
-          style={{
-            filter: "url(#noiseFilter)",
-          }}
-        />
-      </div>
-    </div>
-  );
-};
 
 const MenuList = () => {
   const location = useLocation();
@@ -88,17 +39,21 @@ const MenuList = () => {
     ? location.pathname.split("/").slice(0, 3).join("/")
     : null;
   const groupId = location.pathname.split("/")[2];
-  const buttonRef = useRef<HTMLDivElement>(null);
 
   const KEY_ITEMS = [
     {
-      icon: <LayoutDashboardIcon className="h-4 w-4" />,
-      label: "Group Dashboard",
-      href: `${groupPath}`,
+      icon: <HomeIcon className="h-4 w-4" />,
+      label: "Multiset",
+      href: `/home`,
     },
   ];
 
   const MENU_ITEMS = [
+    {
+      icon: <LayoutDashboardIcon className="h-4 w-4" />,
+      label: "Group",
+      href: `${groupPath}`,
+    },
     {
       icon: <WalletIcon className="h-4 w-4" />,
       label: "Purchases",
@@ -131,195 +86,198 @@ const MenuList = () => {
     },
   ];
 
+  interface NavLinkProps {
+    href: string;
+    icon: React.ReactNode;
+    label: string;
+    key: string;
+  }
+
+  const NavLink: React.FC<NavLinkProps> = ({ href, icon, label, key }) => {
+    return (
+      <a
+        key={key}
+        href={href}
+        className="flex items-center w-full gap-3 rounded-full px-3 py-3 text-black transition-all hover:bg-white text-lg leading-none duration-200"
+      >
+        <div>{icon}</div>
+        <div>{label}</div>
+      </a>
+    );
+  };
+
   return (
-    <div className="flex-1 overflow-auto py-2">
-      <nav className="flex flex-col items-start px-4 text-sm font-medium">
-        <div
-          className="relative w-full flex rounded-md my-2 ring-1 ring-creme/40 overflow-hidden"
-          ref={buttonRef}
-        >
-          <a
-            href="/home"
-            className="flex items-center gap-3 px-3 py-2 text-creme transition-all hover:text-creme/90 bg-creme/10 hover:bg-creme/20 text-lg leading-none"
-          >
-            <HomeIcon className="h-4 w-4" />
-          </a>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="border-none rounded-none border-primary w-full hover:bg-creme/20 text-creme/80 hover:text-creme/80 justify-start p-4 text-base"
-            onClick={() => setDropdownOpen((prev) => !prev)}
-          >
-            {groups?.find((group) => group.id === parseInt(groupId))?.name}
-            <span className="sr-only">Toggle user menu</span>
-          </Button>
-        </div>
+    <div className="overflow-auto py-2">
+      <nav className="flex flex-col font-medium">
+        {KEY_ITEMS.map(({ icon, label, href }, i) => (
+          <NavLink href={href} icon={icon} label={label} key={`key ${i}`} />
+        ))}
         <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-          <DropdownMenuTrigger asChild>
-            <div className="w-full h-0"></div>
+          <DropdownMenuTrigger className="focus-visible:outline-none">
+            <Button
+              variant="outline"
+              className="rounded-xl text-black/80 p-4 text-lg justify-between w-full gap-2 my-2"
+              onClick={() => setDropdownOpen((prev) => !prev)}
+            >
+              <div className="overflow-x-hidden w-full break-words inline-block whitespace-nowrap text-ellipsis text-left">
+                {groups?.find((group) => group.id === parseInt(groupId))?.name}
+              </div>
+              <ChevronsUpDown className=" inline-block w-4 h-4" />
+              <span className="sr-only">Toggle user menu</span>
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             asChild
-            className="p-0 bg-navy min-h-40 h-40 overflow-auto multiset-scroll"
+            className="bg-white min-h-20 h-auto max-h-80 overflow-auto multiset-scroll w-60"
           >
-            <div
-              style={{
-                width: buttonRef.current?.offsetWidth,
-              }}
-            >
-              <div className="w-full text-sm text-creme/60 px-3 py-1">
+            <div className="p-2">
+              <div className="w-full text-sm font-extralight text-black px-3 py-1">
                 Groups
               </div>
-              <div className="w-full bg-creme/20 h-[1px]" />
-              {groups?.map((group) => (
-                <a
-                  key={group.id}
-                  href={`/groups/${group.id}`}
-                  className="flex items-center w-full gap-3 text-creme transition-all hover:bg-creme/10 leading-none"
-                >
-                  <div className="px-3 py-2 text-base">{group.name}</div>
-                </a>
-              ))}
+              <div className="w-auto bg-black/20 h-[1px] m-2 mt-1" />
+              <div className="grid gap-1 w-full">
+                {groups?.map((group) => (
+                  <a
+                    key={group.id}
+                    href={`/groups/${group.id}`}
+                    className="w-full text-white transition-all leading-none flex items-center px-3 pt-3 pb-2 hover:bg-grey rounded-full gap-2"
+                  >
+                    <div className="w-2 h-2 bg-blue rounded-full -mt-1" />
+                    <div className="text-black text-ellipsis overflow-x-hidden w-40 whitespace-nowrap h-5">
+                      {group.name}
+                    </div>
+                  </a>
+                ))}
+              </div>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {KEY_ITEMS.map(({ icon, label, href }, i) => (
-          <a
-            key={i}
-            href={href}
-            className="flex items-center w-full gap-3 rounded-lg px-3 py-2 text-creme transition-all hover:text-creme/90 hover:bg-creme/10 text-lg leading-none"
-          >
-            <div>{icon}</div>
-            <div className="pt-1">{label}</div>
-          </a>
-        ))}
-
-        <div className="w-24 h-[1px] mx-3 bg-creme/60 mt-3 mb-6" />
+        <div className="w-full h-[1px] bg-black/20 mt-3 mb-6" />
 
         {MENU_ITEMS.map(({ icon, label, href }, i) => (
-          <a
-            key={i}
-            href={href}
-            className="flex items-center w-full gap-3 rounded-lg px-3 py-2 text-creme transition-all hover:text-creme/90 hover:bg-creme/10 text-lg leading-none"
-          >
-            <div>{icon}</div>
-            <div className="pt-1">{label}</div>
-          </a>
+          <NavLink icon={icon} label={label} href={href} key={`menu ${i}`} />
         ))}
       </nav>
     </div>
   );
 };
 
-const NotificationToggle = ({
-  profile,
-  refetchProfile,
+// const NotificationToggle = ({
+//   profile,
+//   refetchProfile,
+// }: {
+//   profile: any;
+//   refetchProfile: any;
+// }) => {
+//   const handleEmailNotificationsChange = (
+//     e: React.ChangeEvent<HTMLInputElement>
+//   ) => {
+//     apiService
+//       .patch(`/api/notifications/email`)
+//       .then(() => refetchProfile())
+//       .catch((err) => {
+//         console.error(err);
+//         toast({
+//           variant: "destructive",
+//           description: (
+//             <p>
+//               Failed to toggle notification settings. Please try again later.
+//             </p>
+//           ),
+//         });
+//       });
+//   };
+
+//   return (
+//     <div className="flex justify-between gap-5 items-center">
+//       <p className="text-white text-sm md:text-base">Email notifications</p>
+//       <div className="flex items-center">
+//         <input
+//           type="checkbox"
+//           className="form-checkbox h-5 w-5 text-blue-600"
+//           checked={profile.email_notifications}
+//           data-profile-id={profile.id}
+//           onChange={handleEmailNotificationsChange}
+//         />
+//       </div>
+//     </div>
+//   );
+// };
+
+const ContentWrapper = ({
+  menu,
+  hideMenu,
+  children,
 }: {
-  profile: any;
-  refetchProfile: any;
-}) => {
-  const handleEmailNotificationsChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    // try to toggle the notification setting
-    apiService
-      .patch(`/api/notifications/email`)
-      .then(() => {
-        refetchProfile();
-      })
-      // if it fails, revert the state and show an alert
-      .catch((err) => {
-        // Change profile state here:
-        console.error(err);
-        toast({
-          variant: "destructive",
-          description: (
-            <p>
-              Failed to toggle notification settings. Please try again later.
-            </p>
-          ),
-        });
-      });
-  };
-
-  return (
-    <div className="flex justify-between gap-5 items-center">
-      <p className="text-creme text-sm md:text-base">Email notifications</p>
-      <div className="flex items-center">
-        <input
-          type="checkbox"
-          className="form-checkbox h-5 w-5 text-blue-600"
-          checked={profile.email_notifications}
-          data-profile-id={profile.id}
-          onChange={handleEmailNotificationsChange}
-        />
-      </div>
-    </div>
-  );
-};
-
-type ContentWrapperProps = {
   menu: React.ReactNode;
   hideMenu: boolean;
   children: React.ReactNode;
-};
-const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
+}) => {
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { profile, refetchProfile } = useProfile();
+  const { profile } = useProfile();
+  const isMobile = useIsMobile();
+  const handleRefresh = () => window.location.reload();
 
   return (
-    <div className="relative w-full flex-1 flex flex-col bg-creme">
-      <div className="sticky top-0 w-full flex h-14 lg:h-[60px] items-center justify-between bg-creme px-4 lg:bg-transparent drop-shadow-md z-[1]">
-        {!hideMenu && (
-          <div className="lg:hidden">
-            <Button
-              variant="ghost"
-              className="p-0"
-              onClick={() => setSheetOpen(true)}
-            >
-              <MenuIcon className="h-6 w-6" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </div>
-        )}
-        <Sheet open={sheetOpen} onOpenChange={(open) => setSheetOpen(open)}>
-          <SheetTitle></SheetTitle>
-          <SheetTrigger asChild></SheetTrigger>
-          <SheetContent
-            side="left"
-            className="w-64 bg-navy text-creme border-none p-0"
-          >
-            <MenuHeader />
-            {menu}
-          </SheetContent>
-        </Sheet>
-
-        <div className="w-full flex-1" />
-
-        <NotificationDropdown />
-
-        <div className="w-4" />
-
-        {profile && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+    <div className="relative w-full flex flex-col bg-white p-4">
+      <div className="sticky top-0 w-full flex h-14 lg:h-[60px] items-center justify-between bg-white px-4 lg:bg-transparent z-10">
+        <div className="flex gap-2">
+          {!hideMenu && (
+            <div className="lg:hidden">
               <Button
                 variant="ghost"
-                size="icon"
-                className="rounded-full border border-primary w-8 h-8"
+                className="p-0"
+                onClick={() => setSheetOpen(true)}
               >
-                <img
-                  src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=000&color=fff`}
-                  width="32"
-                  height="32"
-                  className="rounded-full bg-creme"
-                  alt="Avatar"
-                />
-                <span className="sr-only">Toggle user menu</span>
+                <MenuIcon className="h-6 w-6" />
+                <span className="sr-only">Toggle menu</span>
               </Button>
-            </DropdownMenuTrigger>
-            {/* <DropdownMenuContent align="end">
+            </div>
+          )}
+          <Sheet open={sheetOpen} onOpenChange={(open) => setSheetOpen(open)}>
+            <SheetTitle></SheetTitle>
+            <SheetTrigger asChild></SheetTrigger>
+            <SheetContent
+              side="left"
+              className="w-64 bg-white text-white border-none"
+            >
+              {menu}
+            </SheetContent>
+          </Sheet>
+          {isMobile && (
+            <Button
+              variant="ghost"
+              className="text-black m-0 p-0"
+              onClick={handleRefresh}
+            >
+              <RotateCw className="w-5 h-5" />
+            </Button>
+          )}
+        </div>
+
+        <div className="flex gap-2">
+          <NotificationDropdown />
+
+          {profile && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full w-8 h-8"
+                >
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${profile?.first_name}+${profile?.last_name}&background=489BFC&color=fff`}
+                    width="32"
+                    height="32"
+                    className="rounded-full"
+                    alt="Avatar"
+                  />
+                  <span className="sr-only">Toggle user menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              {/* <DropdownMenuContent align="end"> // TODO: add email notification toggle
               <div className="py-2 px-1">
                 <NotificationToggle
                   profile={profile}
@@ -327,38 +285,32 @@ const ContentWrapper = ({ menu, hideMenu, children }: ContentWrapperProps) => {
                 />
               </div>
             </DropdownMenuContent> */}
-          </DropdownMenu>
-        )}
+            </DropdownMenu>
+          )}
+        </div>
       </div>
-      <div className="px-4 py-8 lg:pb-24 lg:py-0 lg:px-20">{children}</div>
+      <div className="px-4 lg:pb-24 lg:px-20 w-full h-full py-4 lg:py-0">
+        {children}
+      </div>
     </div>
   );
-};
-
-type DefaultLayoutProps = {
-  menu?: React.ReactNode;
-  hideMenu?: boolean;
-  children?: React.ReactNode;
 };
 
 const DefaultLayout = ({
   menu = <MenuList />,
   hideMenu = false,
   children,
-}: DefaultLayoutProps) => {
-  return (
-    <div className="min-h-screen w-full bg-dusk flex flex-row">
-      {!hideMenu && (
-        <MenuWrapper>
-          <MenuHeader />
-          {menu}
-        </MenuWrapper>
-      )}
-      <ContentWrapper menu={menu} hideMenu={hideMenu}>
-        {children}
-      </ContentWrapper>
-    </div>
-  );
-};
+}: {
+  menu?: React.ReactNode;
+  hideMenu?: boolean;
+  children?: React.ReactNode;
+}) => (
+  <div className="min-h-screen w-full flex flex-row">
+    {!hideMenu && <MenuWrapper>{menu}</MenuWrapper>}
+    <ContentWrapper menu={menu} hideMenu={hideMenu}>
+      {children}
+    </ContentWrapper>
+  </div>
+);
 
 export default DefaultLayout;

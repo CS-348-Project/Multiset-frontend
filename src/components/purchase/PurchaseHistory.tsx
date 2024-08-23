@@ -1,16 +1,10 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { TPurchase } from "@/types/Purchase";
 import { apiService } from "@/utils/api";
 import { centsToDollars } from "@/utils/currencyConverter";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Loading from "../ui/loading";
+import { ShoppingCart } from "lucide-react";
 
 type PurchaseHistoryProps = {
   key?: number;
@@ -44,47 +38,46 @@ export const PurchaseHistory = ({ _key = 0 }: PurchaseHistoryProps) => {
       </h1>
 
       <div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[200px]">Name</TableHead>
-              <TableHead className="w-[200px]">Category</TableHead>
-              <TableHead className="w-[200px]">Amount ($)</TableHead>
-              <TableHead className="w-[300px]">Purchaser</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={4}>Loading...</TableCell>
-              </TableRow>
-            ) : (
-              purchases &&
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="grid gap-2">
+            {purchases &&
               purchases.map((purchase: TPurchase) => {
                 return (
-                  <TableRow
+                  <div
                     key={purchase.id}
                     onClick={() =>
                       navigate(`/groups/${group_id}/purchase/${purchase.id}`)
                     }
-                    className="cursor-pointer"
+                    className="cursor-pointer rounded-3xl bg-grey p-4 flex min-w-0 w-full gap-3 hover:bg-grey/40"
                     tabIndex={0}
                     role="button"
                   >
-                    <TableCell>{purchase.name}</TableCell>
-                    <TableCell>{purchase.category}</TableCell>
-                    <TableCell>{centsToDollars(purchase.total_cost)}</TableCell>
-                    <TableCell>
-                      {purchase.purchaser_first_name +
-                        " " +
-                        purchase.purchaser_last_name}
-                    </TableCell>
-                  </TableRow>
+                    <ShoppingCart className="flex-none w-10 h-10 bg-black/30 p-2 rounded-full text-white" />
+                    <div className="grow min-w-0 hyphens-auto">
+                      <div className="font-medium line-clamp-1">
+                        {purchase.name}
+                      </div>
+                      <div className="text-xs font-light">
+                        {purchase.category}
+                      </div>
+                    </div>
+                    <div className="flex-none w-20 text-right">
+                      <div className="break-words">
+                        ${centsToDollars(purchase.total_cost)}
+                      </div>
+                      <div className="text-xs font-light hyphens-auto line-clamp-1">
+                        {purchase.purchaser_first_name +
+                          " " +
+                          purchase.purchaser_last_name}
+                      </div>
+                    </div>
+                  </div>
                 );
-              })
-            )}
-          </TableBody>
-        </Table>
+              })}
+          </div>
+        )}
       </div>
     </div>
   );

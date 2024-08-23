@@ -17,6 +17,7 @@ import { timeConverter } from "@/utils/timeConverter";
 import { Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Space from "@/components/ui/space";
 
 export const Settlement = () => {
   const { profile } = useProfile();
@@ -87,6 +88,7 @@ export const Settlement = () => {
           Settlements
         </h1>
         <SettlementForm submit={handleUpdate} />
+        <Space s="h-10" />
         <OptimalPaymentTable key={key} />
         <div>
           <h2 className="font-semibold text-black text-xl my-5">

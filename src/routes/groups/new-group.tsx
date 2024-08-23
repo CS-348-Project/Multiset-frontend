@@ -140,7 +140,7 @@ const NewGroup = () => {
   if (!profile) return null;
 
   return (
-    <div className="relative w-full h-screen flex items-center justify-center bg-creme">
+    <div className="relative w-full h-screen flex items-center justify-center bg-white">
       <div className="absolute left-4 top-4">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <CornerUpLeftIcon className="h-6 w-6" />
@@ -148,7 +148,7 @@ const NewGroup = () => {
         </Button>
       </div>
       <Card className="w-full max-w-lg bg-white drop-shadow-md">
-        <Tabs defaultValue="create" className="text-dusk">
+        <Tabs defaultValue="create" className="text-black">
           <TabsList>
             <TabsTrigger value="create">Create Group</TabsTrigger>
             <TabsTrigger value="settings">Group Settings</TabsTrigger>
@@ -195,14 +195,14 @@ const NewGroup = () => {
               <div className="flex flex-wrap gap-2">
                 {accounts.map((account, idx) => (
                   <div
-                    className="flex items-center justify-center bg-creme px-2 py-1 rounded-md text-sm text-dusk"
+                    className="flex items-center justify-center bg-grey px-2 py-1 rounded-md text-sm text-black"
                     key={account.id}
                   >
                     {`${account.email} - ${account.first_name} ${account.last_name}`}
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-fit w-fit text-dusk hover:text-lilac hover:bg-transparent px-1"
+                      className="h-fit w-fit text-black hover:text-pink hover:bg-transparent px-1"
                       onClick={() => {
                         setAccounts(accounts.filter((_, i) => i !== idx));
                       }}
@@ -227,7 +227,7 @@ const NewGroup = () => {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4">
-                <p className="text-dusk text-sm md:text-base">
+                <p className="text-black text-sm md:text-base">
                   Optimize Payments
                 </p>
                 <input

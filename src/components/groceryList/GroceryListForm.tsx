@@ -1,11 +1,5 @@
 import React, { useEffect } from "react";
 import { TGroceryList, TGroceryListItem } from "./types/GroceryListTypes";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { apiService } from "@/utils/api";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -33,20 +27,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/components/ui/use-toast";
 import { Trash2 } from "lucide-react";
 import { useParams } from "react-router-dom";
-import { timeConverter } from "@/utils/timeConverter";
+import Loading from "../ui/loading";
 
 interface TGroceryListFormProps {
-  isOpen: boolean;
-  onClose: () => void;
   groceryList: TGroceryList | null;
   onDelete: (id: number) => void;
+  className?: string;
 }
 
 export const GroceryListForm = ({
-  isOpen,
-  onClose,
   groceryList,
   onDelete,
+  className,
 }: TGroceryListFormProps) => {
   const [items, setItems] = React.useState<TGroceryListItem[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -76,7 +68,7 @@ export const GroceryListForm = ({
     setAddingItem(false);
     form.reset();
     fetchItems();
-  }, [isOpen, groceryList?.id]);
+  }, [groceryList?.id]);
 
   const FormSchema = z.object({
     item_name: z.string().min(2, {
@@ -179,164 +171,161 @@ export const GroceryListForm = ({
   };
 
   return (
-    <>
-      {isOpen && groceryList && (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{groceryList.name}</DialogTitle>
-              <p className="text-muted-foreground text-sm">
-                Grocery list created on {timeConverter(groceryList.created_at)}
-              </p>
-              <Separator className="my-3" />
-              {loading ? (
-                <div>Loading...</div>
-              ) : (
-                <div>
-                  {items?.length > 0 && (
-                    <Table containerClassName="max-h-80 overflow-y-auto h-fit">
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Quantity</TableHead>
-                          <TableHead>Requested by</TableHead>
-                          <TableHead>Notes</TableHead>
-                          <TableHead></TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {items.map((item) => (
-                          <TableRow key={item.id}>
-                            <TableCell>{item.item_name}</TableCell>
-                            <TableCell>{item.quantity}</TableCell>
-                            <TableCell>
-                              {item.member.first_name} {item.member.last_name}
-                            </TableCell>
-                            <TableCell className="break-words max-w-80">
-                              {item.notes}
-                            </TableCell>
-                            <TableCell className="grid grid-cols-2">
-                              <Checkbox
-                                onClick={() => toggleItem(item.id)}
-                                checked={item.completed}
-                              />
-                              <Trash2
-                                size={16}
-                                color="#ef4444"
-                                className="cursor-pointer"
-                                onClick={() => {
-                                  deleteItem(item.id);
+    <div className={className}>
+      {groceryList && (
+        <div className="lg:w-[60vw] lg:mx-auto px-4 w-full">
+          {loading ? (
+            <Loading />
+          ) : (
+            <div>
+              {items?.length > 0 && !addingItem && (
+                <Table containerClassName="max-h-60 overflow-y-auto h-fit">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead></TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Quantity</TableHead>
+                      <TableHead>Requester</TableHead>
+                      <TableHead>Notes</TableHead>
+                      <TableHead></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {items.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell>
+                          <Checkbox
+                            onClick={() => toggleItem(item.id)}
+                            checked={item.completed}
+                          />
+                        </TableCell>
+                        <TableCell>{item.item_name}</TableCell>
+                        <TableCell>{item.quantity}</TableCell>
+                        <TableCell>
+                          {item.member.first_name} {item.member.last_name}
+                        </TableCell>
+                        <TableCell className="break-words max-w-80">
+                          {item.notes}
+                        </TableCell>
+                        <TableCell>
+                          <Trash2
+                            size={16}
+                            color="#ef4444"
+                            className="cursor-pointer"
+                            onClick={() => {
+                              deleteItem(item.id);
+                            }}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+              {addingItem && (
+                <>
+                  <Separator className="my-3" />
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="w-full space-y-3"
+                    >
+                      <FormField
+                        control={form.control}
+                        name="item_name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Ex: Apples" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="quantity"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Quantity</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Ex: 2"
+                                {...field}
+                                onChange={(e) => {
+                                  if (
+                                    !isNaN(Number(e.target.value)) &&
+                                    Number.isInteger(Number(e.target.value))
+                                  ) {
+                                    field.onChange(e.target.value);
+                                  }
                                 }}
                               />
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  )}
-                  {addingItem && (
-                    <>
-                      <Separator className="my-3" />
-                      <Form {...form}>
-                        <form
-                          onSubmit={form.handleSubmit(onSubmit)}
-                          className="w-full space-y-3"
-                        >
-                          <FormField
-                            control={form.control}
-                            name="item_name"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Name</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Ex: Apples" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="quantity"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Quantity</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="Ex: 2"
-                                    {...field}
-                                    onChange={(e) => {
-                                      if (
-                                        !isNaN(Number(e.target.value)) &&
-                                        Number.isInteger(Number(e.target.value))
-                                      ) {
-                                        field.onChange(e.target.value);
-                                      }
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="notes"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Notes</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Ex: Costco" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <div className="mt-4 gap-3 flex">
-                            <Button
-                              type="submit"
-                              variant="secondary"
-                              disabled={addItemLoading}
-                            >
-                              Submit item
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              onClick={() => setAddingItem(false)}
-                              disabled={addItemLoading}
-                            >
-                              Cancel
-                            </Button>
-                          </div>
-                        </form>
-                      </Form>
-                    </>
-                  )}
-                  <div className="flex gap-3">
-                    {!addingItem && (
-                      <Button
-                        onClick={() => setAddingItem(true)}
-                        className="mt-2"
-                      >
-                        Add new item
-                      </Button>
-                    )}
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="notes"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Notes</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Ex: Costco" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="sticky left-0 bottom-0 w-full h-auto text-center py-4 bg-transparent">
+                        <div className="gap-4 flex">
+                          <Button
+                            type="submit"
+                            variant="secondary"
+                            disabled={addItemLoading}
+                          >
+                            Submit item
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() => setAddingItem(false)}
+                            disabled={addItemLoading}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    </form>
+                  </Form>
+                </>
+              )}
+              {!addingItem && (
+                <div className="sticky left-0 bottom-0 w-full h-auto text-center py-4">
+                  <div className="flex gap-4">
+                    <Button
+                      onClick={() => setAddingItem(true)}
+                      variant="primary"
+                    >
+                      Add new item
+                    </Button>
                     <Button
                       type="button"
                       variant="destructive"
                       onClick={deleteList}
-                      className="mt-2"
                     >
                       Delete grocery list
                     </Button>
                   </div>
                 </div>
               )}
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+            </div>
+          )}
+        </div>
       )}
-    </>
+    </div>
   );
 };
