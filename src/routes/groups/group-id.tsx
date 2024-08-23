@@ -33,7 +33,12 @@ const GroupPage = () => {
       <div className="flex gap-3">
         <Button
           variant="primary"
-          onClick={() => navigate(`/groups/${id}/purchase`)}
+          onClick={() =>
+            navigate(`/groups/${id}/purchase`, {
+              replace: true,
+              state: { isOpen: true },
+            })
+          }
         >
           <PlusIcon className="w-4 h-4 mr-2" />
           Add Purchase

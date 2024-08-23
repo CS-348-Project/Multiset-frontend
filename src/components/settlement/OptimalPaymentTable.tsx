@@ -58,12 +58,7 @@ export const OptimalPaymentTable = ({
       });
   }, []);
 
-  if (loadingOptimizationData)
-    return (
-      <div className="flex justify-center">
-        <Loading />
-      </div>
-    );
+  if (loadingOptimizationData) return <Loading />;
 
   return (
     <div>

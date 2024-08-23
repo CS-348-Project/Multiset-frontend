@@ -4,44 +4,63 @@ import { PurchaseHistory } from "@/components/purchase/PurchaseHistory";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { PlusIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const Purchase = () => {
+  const [key, setKey] = useState(0);
+  const location = useLocation();
+  const { isOpen } = location.state || { isOpen: false };
+  const navigate = useNavigate();
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(isOpen);
+
+  const handleUpdate = () => {
+    setKey((prev) => prev + 1);
+    setIsDrawerOpen(false);
+  };
+
+  useEffect(() => {
+    navigate(location.pathname, { replace: true, state: {} });
+  }, [navigate, location.pathname]);
+
   return (
     <DefaultLayout>
-      <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl">
-        Purchases
-      </h1>
-      <Drawer>
+      <h1 className="text-3xl font-bold mb-4">Purchases</h1>
+      <Drawer
+        open={isDrawerOpen}
+        onOpenChange={(e) => {
+          setIsDrawerOpen(e);
+        }}
+      >
         <DrawerTrigger>
-          <Button variant="primary">
+          <Button
+            variant="primary"
+            onClick={() => {
+              setIsDrawerOpen(true);
+            }}
+          >
             <PlusIcon className="w-4 h-4 mr-2" />
             Add Purchase
           </Button>
         </DrawerTrigger>
-        <DrawerContent>
+        <DrawerContent className="lg:w-[60vw] lg:mx-auto px-4">
           <DrawerHeader>
-            <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-            <DrawerDescription>This action cannot be undone.</DrawerDescription>
+            <DrawerTitle>New Purchase</DrawerTitle>
           </DrawerHeader>
-          <DrawerFooter>
-            <Button>Submit</Button>
-            <DrawerClose>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
+          <PurchaseForm
+            onSubmitRefresh={handleUpdate}
+            className="h-[80vh] overflow-y-scroll"
+          />
         </DrawerContent>
-        {/* <PurchaseForm onSubmitRefresh={handleUpdate} />
-        <Space s="h-8" />
-        <PurchaseHistory key={key} /> */}
+        {/* <PurchaseForm onSubmitRefresh={handleUpdate} /> */}
+        <PurchaseHistory key={key} />
       </Drawer>{" "}
     </DefaultLayout>
   );

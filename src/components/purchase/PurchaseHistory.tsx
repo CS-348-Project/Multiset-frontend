@@ -39,9 +39,7 @@ export const PurchaseHistory = ({ _key = 0 }: PurchaseHistoryProps) => {
 
       <div>
         {loading ? (
-          <div className="flex justify-center">
-            <Loading />
-          </div>
+          <Loading />
         ) : (
           <div className="grid gap-2">
             {purchases &&

@@ -19,11 +19,12 @@ import { useEffect, useState } from "react";
 import { UserInfo } from "@/types/UserInfo";
 import { dollarsToCents } from "@/utils/currencyConverter";
 import { useNavigate, useParams } from "react-router-dom";
+import Loading from "../ui/loading";
 
 const FormSchema = z.object({
   purchase_id: z.number().optional(),
   name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
+    message: "Name must be at least 2 characters",
   }),
   category: z.string(),
   total_cost: z.coerce
@@ -54,11 +55,13 @@ const FormSchema = z.object({
 type PurchaseFormProps = {
   onSubmitRefresh?: () => void;
   purchase_id?: number;
+  className?: string;
 };
 
 export function PurchaseForm({
   onSubmitRefresh,
   purchase_id,
+  className,
 }: PurchaseFormProps): JSX.Element {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -170,8 +173,12 @@ export function PurchaseForm({
     }
   }
 
-  const splitEvenly = (e: any) => {
+  const handleSplitEvenly = (e: any) => {
     e.preventDefault();
+    splitEvenly();
+  };
+
+  const splitEvenly = () => {
     const totalCost = form.getValues("total_cost");
     let checkedUsers = usersInGroup.filter((user) => {
       return form
@@ -208,174 +215,181 @@ export function PurchaseForm({
   };
 
   return (
-    <>
+    <div className={className}>
       {loading ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full lg:w-2/3 space-y-6"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      readOnly={purchase_id !== undefined}
-                      className={`placeholder-gray-400 ${
-                        purchase_id !== undefined
-                          ? "bg-gray-100 text-gray-400 cursor-default"
-                          : "bg-white"
-                      }`}
-                      placeholder="Ex: Apples"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    A short description of what you purchased!
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <FormControl>
-                    <Input
-                      readOnly={purchase_id !== undefined}
-                      className={`placeholder-gray-400 ${
-                        purchase_id !== undefined
-                          ? "bg-gray-100 text-gray-400 cursor-default"
-                          : "bg-white"
-                      }`}
-                      placeholder="Ex: Groceries"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="total_cost"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Total Cost</FormLabel>
-                  <FormControl>
-                    <Input
-                      readOnly={purchase_id !== undefined}
-                      className={`placeholder-gray-400 ${
-                        purchase_id !== undefined
-                          ? "bg-gray-100 text-gray-400 cursor-default"
-                          : "bg-white"
-                      }`}
-                      {...field}
-                      onChange={(e) => {
-                        if (
-                          e.target.value == "" ||
-                          !isNaN(parseFloat(e.target.value))
-                        ) {
-                          field.onChange(e.target.value);
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="purchase_splits"
-              render={({ field }) => {
-                return (
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="p-4 w-full grid gap-3">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Purchase Split</FormLabel>
-                    <Button onClick={splitEvenly} className="ml-3">
-                      Split Evenly
-                    </Button>
-                    {usersInGroup.map((user) => {
-                      const split = field.value.find(
-                        (split) => split.borrower === user.id
-                      );
-                      const isChecked = split !== undefined;
-                      const amount = isChecked ? split?.amount : 0;
-
-                      return (
-                        <div
-                          key={user.id}
-                          className="flex flex-row items-center space-x-3 space-y-0 w-full lg:w-2/3"
-                        >
-                          <Checkbox
-                            className="my-2"
-                            checked={isChecked}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                field.onChange([
-                                  ...(field.value || []),
-                                  { borrower: user.id, amount: 0 },
-                                ]);
-                              } else {
-                                field.onChange(
-                                  field.value?.filter(
-                                    (value) => value.borrower !== user.id
-                                  )
-                                );
-                              }
-                            }}
-                          />
-                          <FormLabel className="w-full">
-                            {user.first_name} {user.last_name}
-                          </FormLabel>
-                          <div className="flex items-center justify-end w-full">
-                            {isChecked && (
-                              <div className="flex items-center">
-                                <h3 className="text-sm mr-5">$</h3>
-                                <Input
-                                  className="w-100"
-                                  placeholder="Enter a number"
-                                  value={amount}
-                                  onChange={(e) => {
-                                    if (!isNaN(Number(e.target.value))) {
-                                      const updatedSplits = field.value.map(
-                                        (split) => {
-                                          if (split.borrower === user.id) {
-                                            return {
-                                              ...split,
-                                              amount: e.target.value,
-                                            };
-                                          }
-                                          return split;
-                                        }
-                                      );
-                                      field.onChange(updatedSplits);
-                                    }
-                                  }}
-                                />
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        readOnly={purchase_id !== undefined}
+                        className={`placeholder-gray-400 ${
+                          purchase_id !== undefined
+                            ? "bg-gray-100 text-gray-400 cursor-default"
+                            : "bg-white"
+                        }`}
+                        placeholder="Ex: Apples"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      A short description of what you purchased!
+                    </FormDescription>
+                    <FormMessage />
                   </FormItem>
-                );
-              }}
-            />
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <FormControl>
+                      <Input
+                        readOnly={purchase_id !== undefined}
+                        className={`placeholder-gray-400 ${
+                          purchase_id !== undefined
+                            ? "bg-gray-100 text-gray-400 cursor-default"
+                            : "bg-white"
+                        }`}
+                        placeholder="Ex: Groceries"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="total_cost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total Cost</FormLabel>
+                    <FormControl>
+                      <Input
+                        readOnly={purchase_id !== undefined}
+                        className={`placeholder-gray-400 ${
+                          purchase_id !== undefined
+                            ? "bg-gray-100 text-gray-400 cursor-default"
+                            : "bg-white"
+                        }`}
+                        {...field}
+                        onChange={(e) => {
+                          if (
+                            e.target.value == "" ||
+                            !isNaN(parseFloat(e.target.value))
+                          ) {
+                            field.onChange(e.target.value);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="purchase_splits"
+                render={({ field }) => {
+                  return (
+                    <FormItem className="border border-grey rounded-3xl p-4 grid gap-2">
+                      <FormLabel>Purchase Split</FormLabel>
+                      <Button onClick={handleSplitEvenly} variant="primary">
+                        Split Evenly
+                      </Button>
+                      {usersInGroup?.length > 0 ? (
+                        usersInGroup.map((user) => {
+                          const split = field.value.find(
+                            (split) => split.borrower === user.id
+                          );
+                          const isChecked = split !== undefined;
+                          const amount = isChecked ? split?.amount : 0;
 
-            <Button type="submit">Submit</Button>
+                          return (
+                            <div
+                              key={user.id}
+                              className="flex flex-row items-center space-x-3 space-y-0 w-full"
+                            >
+                              <Checkbox
+                                className="my-2"
+                                checked={isChecked}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    field.onChange([
+                                      ...(field.value || []),
+                                      { borrower: user.id, amount: 0 },
+                                    ]);
+                                  } else {
+                                    field.onChange(
+                                      field.value?.filter(
+                                        (value) => value.borrower !== user.id
+                                      )
+                                    );
+                                  }
+                                }}
+                              />
+                              <FormLabel className="w-full">
+                                {user.first_name} {user.last_name}
+                              </FormLabel>
+                              <div className="flex items-center justify-end w-full h-8">
+                                {isChecked && (
+                                  <div className="flex items-center">
+                                    <h3 className="text-sm mr-5">$</h3>
+                                    <Input
+                                      className="w-20 lg:w-80"
+                                      placeholder="Enter a number"
+                                      value={amount}
+                                      onChange={(e) => {
+                                        if (!isNaN(Number(e.target.value))) {
+                                          const updatedSplits = field.value.map(
+                                            (split) => {
+                                              if (split.borrower === user.id) {
+                                                return {
+                                                  ...split,
+                                                  amount: e.target.value,
+                                                };
+                                              }
+                                              return split;
+                                            }
+                                          );
+                                          field.onChange(updatedSplits);
+                                        }
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <Loading />
+                      )}
+                    </FormItem>
+                  );
+                }}
+              />
+            </div>
+
+            <div className="sticky left-0 bottom-0 w-full h-auto text-center p-4">
+              <Button type="submit" className="w-full">
+                Submit
+              </Button>
+            </div>
           </form>
         </Form>
       )}
-    </>
+    </div>
   );
 }
