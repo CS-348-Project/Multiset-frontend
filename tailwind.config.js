@@ -27,6 +27,13 @@ module.exports = {
         blue: "hsl(var(--primary-blue))",
         red: "hsl(var(--primary-red))",
 
+        "purple-secondary": "hsl(var(--secondary-purple))",
+        "yellow-secondary": "hsl(var(--secondary-yellow))",
+        "grey-secondary": "hsl(var(--secondary-grey))",
+        "green-secondary": "hsl(var(--secondary-green))",
+        "blue-secondary": "hsl(var(--secondary-blue))",
+        "red-secondary": "hsl(var(--secondary-red))",
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

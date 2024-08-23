@@ -12,10 +12,9 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 
 const Home = () => {
-  // const [groups, setGroups] = useState<DetailedGroup[]>([]);
   const { profile } = useProfile();
   const [groups, setGroups] = useState<DetailedGroup[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,7 +26,7 @@ const Home = () => {
       setGroups(response.data);
       setLoading(false);
     });
-  }, [profile]);
+  }, []);
 
   if (loading) {
     return <LoadingPage />;

@@ -1,24 +1,29 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
-import {
-  Table,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
 import { OptimalSettlement } from "@/types/OptimalSettlement";
 import { apiService } from "@/utils/api";
 import { toast } from "../ui/use-toast";
 import useProfile from "@/context/profile-context";
+import { ArrowDownToLine, ArrowUpToLine } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import Loading from "../ui/loading";
 
 type OptimalPaymentTableProps = {
   key?: number;
+  userOwes?: boolean;
 };
 
-export const OptimalPaymentTable = ({ _key = 0 }: OptimalPaymentTableProps) => {
+export const OptimalPaymentTable = ({
+  _key = 0,
+  userOwes = true,
+}: OptimalPaymentTableProps) => {
   const params = useParams<{ id: string }>();
   const groupId = Number(params.id);
   const profile = useProfile();
@@ -35,7 +40,12 @@ export const OptimalPaymentTable = ({ _key = 0 }: OptimalPaymentTableProps) => {
     apiService
       .post(`/api/optimization/calculate?group_id=${groupId}`)
       .then((res) => {
-        setOptimizationData(res.data.transfers);
+        const data = res.data.transfers.filter((transfer: OptimalSettlement) =>
+          userOwes
+            ? transfer.from_user_id === profile.profile?.id
+            : transfer.to_user_id === profile.profile?.id
+        );
+        setOptimizationData(data);
         setLoadingOptimizationData(false);
       })
       .catch(() => {
@@ -48,85 +58,61 @@ export const OptimalPaymentTable = ({ _key = 0 }: OptimalPaymentTableProps) => {
       });
   }, []);
 
+  if (loadingOptimizationData)
+    return (
+      <div className="flex justify-center">
+        <Loading />
+      </div>
+    );
+
   return (
-    <div className="mr-10 mb-10">
-      <h2 className="font-semibold text-black text-xl mt-8 mb-4">
-        Oustanding Balances
-      </h2>
-
-      <p className="text-black text-sm md:text-base mb-10">
-        Below, you can see both who owes you money and whom you owe money to.
-        Note that if your group is optimized, you may not be repaying the same
-        person you borrowed from.
-      </p>
-
+    <div>
+      {userOwes ? (
+        <div className="flex gap-3 items-center mb-1">
+          <ArrowDownToLine className="w-6 h-6 bg-red text-white rounded-full p-1" />
+          <h2 className="font-semibold text-black text-xl">You owe</h2>
+        </div>
+      ) : (
+        <div className="flex gap-3 items-center mb-1">
+          <ArrowUpToLine className="w-6 h-6 bg-green text-white rounded-full p-1" />
+          <h2 className="font-semibold text-black text-xl">You're owed</h2>
+        </div>
+      )}
       <Table>
-        {(loadingOptimizationData || optimizationData) && (
+        {optimizationData && optimizationData.length > 0 && (
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-[200px]">From</TableHead>
-              <TableHead className="w-[200px]">To</TableHead>
-              <TableHead className="w-[200px]">Amount ($)</TableHead>
-              <TableHead className="w-[300px]"></TableHead>
-              {/* empty one makes sure we line up w settlements table */}
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="p-2 w-24">Member</TableHead>
+              <TableHead className="p-2 w-12">Amount</TableHead>
             </TableRow>
           </TableHeader>
         )}
 
         <TableBody>
-          {loadingOptimizationData ? (
-            <TableRow>
-              <TableCell colSpan={2} className="text-center">
-                Loading...
-              </TableCell>
-            </TableRow>
-          ) : optimizationData && optimizationData.length > 0 ? (
-            optimizationData!
-              .sort((a, b) => {
-                const aEq = a.from_user_id === profile.profile?.id;
-                const bEq = b.from_user_id === profile.profile?.id;
-
-                if (aEq === bEq) {
-                  return a.from_first_name.localeCompare(b.from_first_name);
-                }
-
-                return aEq ? -1 : 1;
-              })
-              .filter(
-                (settlement: OptimalSettlement) => settlement.from_user_id !== 0
-              )
-              .map((settlement: OptimalSettlement) => {
-                return (
-                  <TableRow
-                    key={`${settlement.to_user_id} ${settlement.from_user_id}`}
-                  >
-                    {settlement.from_user_id === profile.profile?.id ? (
-                      <TableCell className="font-semibold">You</TableCell>
-                    ) : (
-                      <TableCell>
-                        {settlement.from_first_name} {settlement.from_last_name}
-                      </TableCell>
-                    )}
-
-                    {settlement.to_user_id === profile.profile?.id ? (
-                      <TableCell className="font-semibold">You</TableCell>
-                    ) : (
-                      <TableCell>
-                        {settlement.to_first_name} {settlement.to_last_name}
-                      </TableCell>
-                    )}
-
-                    <TableCell>
-                      ${(settlement.amount / 100).toFixed(2)}
-                    </TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                );
-              })
+          {optimizationData && optimizationData.length > 0 ? (
+            optimizationData!.map((settlement: OptimalSettlement) => {
+              return (
+                <TableRow
+                  className="hover:bg-transparent"
+                  key={`${settlement.to_user_id} ${settlement.from_user_id}`}
+                >
+                  <TableCell className="p-2">
+                    {userOwes
+                      ? `${settlement.to_first_name} ${settlement.to_last_name}`
+                      : `${settlement.from_first_name} ${settlement.from_last_name}`}
+                  </TableCell>
+                  <TableCell className="p-2">
+                    ${(settlement.amount / 100).toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              );
+            })
           ) : optimizationData ? (
-            <TableRow>
-              <TableCell colSpan={2} className="text-center">
-                You have no outstanding balances in this group!
+            <TableRow className="hover:bg-transparent">
+              <TableCell className="p-2" colSpan={2}>
+                {userOwes
+                  ? "You have no debt in this group!"
+                  : "No one owes you in this group!"}
               </TableCell>
             </TableRow>
           ) : null}

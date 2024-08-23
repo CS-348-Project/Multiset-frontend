@@ -2,7 +2,6 @@ import {
   HomeIcon,
   LineChartIcon,
   WalletIcon,
-  PiIcon,
   MenuIcon,
   LayoutDashboardIcon,
   HandCoinsIcon,
@@ -10,6 +9,7 @@ import {
   HistoryIcon,
   ClipboardListIcon,
   ChevronsUpDown,
+  RotateCw,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useLocation } from "react-router-dom";
@@ -22,6 +22,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../ui/dropdown";
+import useIsMobile from "@/utils/windowSize";
 
 const MenuWrapper = ({ children }: { children?: React.ReactNode }) => (
   <div className="w-[340px] hidden lg:block bg-grey relative overflow-hidden p-6">
@@ -215,32 +216,45 @@ const ContentWrapper = ({
 }) => {
   const [sheetOpen, setSheetOpen] = useState(false);
   const { profile } = useProfile();
+  const isMobile = useIsMobile();
+  const handleRefresh = () => window.location.reload();
 
   return (
     <div className="relative w-full flex flex-col bg-white p-4">
       <div className="sticky top-0 w-full flex h-14 lg:h-[60px] items-center justify-between bg-white px-4 lg:bg-transparent z-10">
-        {!hideMenu && (
-          <div className="lg:hidden">
+        <div className="flex gap-2">
+          {!hideMenu && (
+            <div className="lg:hidden">
+              <Button
+                variant="ghost"
+                className="p-0"
+                onClick={() => setSheetOpen(true)}
+              >
+                <MenuIcon className="h-6 w-6" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </div>
+          )}
+          <Sheet open={sheetOpen} onOpenChange={(open) => setSheetOpen(open)}>
+            <SheetTitle></SheetTitle>
+            <SheetTrigger asChild></SheetTrigger>
+            <SheetContent
+              side="left"
+              className="w-64 bg-white text-white border-none"
+            >
+              {menu}
+            </SheetContent>
+          </Sheet>
+          {isMobile && (
             <Button
               variant="ghost"
-              className="p-0"
-              onClick={() => setSheetOpen(true)}
+              className="text-black m-0 p-0"
+              onClick={handleRefresh}
             >
-              <MenuIcon className="h-6 w-6" />
-              <span className="sr-only">Toggle menu</span>
+              <RotateCw className="w-5 h-5" />
             </Button>
-          </div>
-        )}
-        <Sheet open={sheetOpen} onOpenChange={(open) => setSheetOpen(open)}>
-          <SheetTitle></SheetTitle>
-          <SheetTrigger asChild></SheetTrigger>
-          <SheetContent
-            side="left"
-            className="w-64 bg-white text-white border-none"
-          >
-            {menu}
-          </SheetContent>
-        </Sheet>
+          )}
+        </div>
 
         <div className="flex gap-2">
           <NotificationDropdown />
@@ -275,7 +289,9 @@ const ContentWrapper = ({
           )}
         </div>
       </div>
-      <div className="px-4 lg:pb-24 lg:py-0 lg:px-20">{children}</div>
+      <div className="px-4 lg:pb-24 lg:px-20 w-full h-full py-4 lg:py-0">
+        {children}
+      </div>
     </div>
   );
 };

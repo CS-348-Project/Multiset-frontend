@@ -5,13 +5,19 @@
 @layer base {
   :root {
     --primary-black: 0 0% 12%;
-    --primary-white: 0 0% 96%;
+    --primary-white: 0 0% 98%;
     --primary-purple: 253 76% 66%;
     --primary-yellow: 44 96% 49%;
     --primary-grey: 241 7% 94%;
     --primary-green: 94 41% 53%;
     --primary-blue: 212 99% 64%;
     --primary-red: 5 93% 63%;
+
+    --secondary-purple: 253 76% 93%;
+    --secondary-yellow: 44 96% 93%;
+    --secondary-green: 94 41% 93%;
+    --secondary-blue: 212 99% 93%;
+    --secondary-red: 5 93% 93%;
 
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;

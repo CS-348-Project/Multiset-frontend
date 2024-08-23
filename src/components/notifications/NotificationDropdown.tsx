@@ -18,23 +18,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
+import useIsMobile from "@/utils/windowSize";
 
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unread, setUnread] = useState<number>(0);
-  const [width, setWidth] = useState<number>(window.innerWidth);
-
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-    window.addEventListener("resize", handleWindowSizeChange);
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange);
-    };
-  }, []);
-
-  const isMobile = width <= 768;
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     apiService
