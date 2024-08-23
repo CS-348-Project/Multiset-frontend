@@ -59,7 +59,6 @@ export const Purchase = () => {
             className="h-[80vh] overflow-y-scroll"
           />
         </DrawerContent>
-        {/* <PurchaseForm onSubmitRefresh={handleUpdate} /> */}
         <PurchaseHistory key={key} />
       </Drawer>{" "}
     </DefaultLayout>

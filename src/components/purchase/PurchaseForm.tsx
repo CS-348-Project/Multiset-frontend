@@ -382,7 +382,7 @@ export function PurchaseForm({
               />
             </div>
 
-            <div className="sticky left-0 bottom-0 w-full h-auto text-center p-4">
+            <div className="sticky left-0 bottom-0 w-full h-auto text-center py-4">
               <Button type="submit" className="w-full">
                 Submit
               </Button>
