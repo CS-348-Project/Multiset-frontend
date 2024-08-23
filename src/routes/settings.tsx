@@ -46,9 +46,6 @@ const Settings = () => {
         </div>
 
         <div className="my-4">
-          <Button className="mr-4" onClick={() => setMembersDialogOpen(true)}>
-            Members
-          </Button>
           <Button variant="destructive" onClick={handleDeleteGroup}>
             Delete Group
           </Button>
@@ -57,11 +54,6 @@ const Settings = () => {
       <DeleteGroupDialog
         isOpen={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        group={group}
-      />
-      <MembersDialog
-        isOpen={membersDialogOpen}
-        onClose={() => setMembersDialogOpen(false)}
         group={group}
       />
     </DefaultLayout>
