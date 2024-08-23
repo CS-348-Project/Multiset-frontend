@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { apiService } from "@/utils/api";
 import React, { useEffect } from "react";
@@ -32,7 +33,17 @@ export const JoinGroup = () => {
       {failed ? (
         <div className="flex flex-col items-center">
           <h1 className="text-2xl font-semibold">Failed to join group</h1>
-          <p className="text-lg">{error_message}</p>
+          <p className="text-lg">
+            Make sure that you are logged in and that the url is correct
+          </p>
+          <Button
+            className="my-5"
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Log In
+          </Button>
         </div>
       ) : (
         <></>
