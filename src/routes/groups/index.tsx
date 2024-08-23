@@ -1,6 +1,6 @@
 import { GroceryList } from "@/routes/groceryList";
 import GroupPage from "./group-id";
-import NewGroup from "./new-group";
+import AddMembers from "./add-members";
 import { Purchase } from "@/routes/purchase";
 import { Analytics } from "@/routes/analytics";
 import { Logs } from "@/routes/logs";
@@ -9,13 +9,14 @@ import { PurchaseDetails } from "@/components/purchase/PurchaseDetails";
 import Settings from "../settings";
 import { EditPurchase } from "@/components/purchase/EditPurchase";
 import withAuth from "@/hooks/withAuth";
+import { CreateGroup } from "./create-group";
 
 const groupsRoutes = {
   path: "groups",
   children: [
     {
       path: "new",
-      element: <NewGroup />,
+      element: <CreateGroup />,
     },
     {
       path: ":id",
@@ -52,6 +53,10 @@ const groupsRoutes = {
     {
       path: ":id/purchase/edit/:purchaseId",
       element: <EditPurchase />,
+    },
+    {
+      path: ":id/add-members",
+      element: <AddMembers />,
     },
   ].map((route) => ({
     ...route,

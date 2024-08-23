@@ -22,7 +22,6 @@ export const Analytics = () => {
     const groupId = pathname[pathname.findIndex((s) => s === "groups") + 1];
 
     apiService
-      // TODO: make the group ID dynamic
       .get(`/api/analytics/purchase-categories?group_id=${groupId}`)
       .then((response) => {
         const new_graph_data = construct_purchase_categories_graph_data(
