@@ -178,7 +178,6 @@ const AddMembers = () => {
                 onClick={copyToClipboard}
                 style={{
                   cursor: "pointer",
-                  // color: "blue",
                   textDecoration: "underline",
                 }}
               >
