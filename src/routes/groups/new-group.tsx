@@ -47,7 +47,7 @@ const NewGroup = () => {
     }
 
     apiService
-      .get<UserInfo[]>(`/api/users/?email=${email}`)
+      .get<UserInfo[]>(`/api/users/get?email=${email}`)
       .then((response) => {
         if (response.data.length === 0) {
           toast({
@@ -94,7 +94,7 @@ const NewGroup = () => {
       }
       try {
         await apiService
-          .get<UserInfo[]>(`/api/users/?email=${email}`)
+          .get<UserInfo[]>(`/api/users/get?email=${email}`)
           .then((response) => {
             if (response.data.length !== 0) {
               groupAccounts.push(response.data[0]);

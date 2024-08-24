@@ -125,7 +125,7 @@ export function PurchaseForm({
         purchase_id: purchase_id,
       };
       apiService
-        .put(`/api/purchases/update_purchase/`, data)
+        .put(`/api/purchases/update_purchase`, data)
         .then(() => {
           toast({
             title: "Success",
