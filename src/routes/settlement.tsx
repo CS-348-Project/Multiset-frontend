@@ -37,7 +37,7 @@ export const Settlement = () => {
   const fetchSettlements = () => {
     setLoading(true);
     apiService
-      .get(`/api/settlements/all?group_id=${group_id}`)
+      .get(`/api/settlements/get?group_id=${group_id}`)
       .then((response) => {
         setSettlements(response.data);
         setLoading(false);

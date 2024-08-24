@@ -27,7 +27,7 @@ const NotificationDropdown = () => {
 
   useEffect(() => {
     apiService
-      .get("api/notifications/")
+      .get("api/notifications/get")
       .then((response) => {
         setNotifications(response.data);
       })

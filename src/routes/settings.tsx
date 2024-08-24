@@ -102,7 +102,7 @@ const Settings = () => {
   useEffect(() => {
     const pathname = location.pathname.split("/");
     const groupId = pathname[pathname.findIndex((s) => s === "groups") + 1];
-    apiService.get(`/api/groups/?group_id=${groupId}`).then((res) => {
+    apiService.get(`/api/groups/get?group_id=${groupId}`).then((res) => {
       setGroup(res.data);
     });
   }, []);

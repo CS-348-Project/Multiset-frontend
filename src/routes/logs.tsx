@@ -22,7 +22,7 @@ export const Logs = () => {
   const fetchLogs = () => {
     setLoading(true);
     apiService
-      .get("/api/member-activity-logs", {
+      .get("/api/member-activity-logs/get", {
         params: {
           group_id,
         },

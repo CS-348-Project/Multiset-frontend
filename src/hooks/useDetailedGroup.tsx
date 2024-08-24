@@ -8,17 +8,18 @@ const useDetailedGroup = (id: number) => {
     queryKey: ["group", id],
     queryFn: async () => {
       const response = await apiService.get(
-        `/api/groups/?group_id=${id}&detailed=true`
+        `/api/groups/get?group_id=${id}&detailed=true`
       );
 
-      const debts = await apiService.get(`api/optimization/debts?group_id=${id}`);
+      const debts = await apiService.get(
+        `api/optimization/debts?group_id=${id}`
+      );
 
       return {
-        ...response.data, users: debts.data.map(
-          (debt: UserInfo) => {
-            return { ...debt, balance: (debt.balance ?? 0) / 100 } // Convert cents to dollars
-          }
-        )
+        ...response.data,
+        users: debts.data.map((debt: UserInfo) => {
+          return { ...debt, balance: (debt.balance ?? 0) / 100 }; // Convert cents to dollars
+        }),
       };
     },
   });

@@ -30,9 +30,9 @@ const ProfileContextProvider = ({
   };
   const refetchProfile = fetchProfile;
 
-  const fetchGroups = async (user_id: number) => {
+  const fetchGroups = async () => {
     try {
-      const response = await apiService.get(`/api/groups?user_id=${user_id}`);
+      const response = await apiService.get(`/api/groups/get`);
       setGroups(response.data);
     } catch {
       console.error("Problem fetching groups");
@@ -40,7 +40,7 @@ const ProfileContextProvider = ({
   };
   const refetchGroups = () => {
     if (!profile) return;
-    fetchGroups(profile.id);
+    fetchGroups();
   };
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const ProfileContextProvider = ({
 
   useEffect(() => {
     if (!profile) return;
-    fetchGroups(profile.id);
+    fetchGroups();
   }, [profile]);
 
   return (

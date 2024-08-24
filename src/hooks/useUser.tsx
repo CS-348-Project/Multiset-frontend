@@ -6,7 +6,7 @@ const useUser = (id: number) => {
   return useQuery<User>({
     queryKey: ["user", id],
     queryFn: async () => {
-      const response = await apiService.get(`/api/users/?user_id=${id}`);
+      const response = await apiService.get(`/api/users/get?user_id=${id}`);
       return response.data[0];
     },
   });

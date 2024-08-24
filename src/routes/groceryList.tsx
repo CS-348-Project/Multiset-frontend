@@ -52,7 +52,7 @@ export const GroceryList = () => {
 
   const fetchLists = () => {
     return apiService
-      .get("/api/grocery-lists", { params: { group_id } })
+      .get("/api/grocery-lists/get", { params: { group_id } })
       .then((response) => {
         setGroceryLists(response.data);
         setLoading(false);

@@ -22,7 +22,7 @@ const Home = () => {
       navigate("/");
     }
     setLoading(true);
-    apiService.get(`/api/groups?detailed=true`).then((response) => {
+    apiService.get(`/api/groups/get?detailed=true`).then((response) => {
       setGroups(response.data);
       setLoading(false);
     });
