@@ -32,9 +32,7 @@ const ProfileContextProvider = ({
 
   const fetchGroups = async (user_id: number) => {
     try {
-      const response = await apiService.get("/api/groups", {
-        params: { user_id: user_id },
-      });
+      const response = await apiService.get(`/api/groups?user_id=${user_id}`);
       setGroups(response.data);
     } catch {
       console.error("Problem fetching groups");
