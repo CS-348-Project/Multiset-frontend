@@ -3,6 +3,13 @@ import { TGroceryList } from "@/components/groceryList/types/GroceryListTypes";
 import DefaultLayout from "@/components/layout/default-layout";
 import { Button } from "@/components/ui/button";
 import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import {
   Form,
   FormControl,
   FormField,
@@ -202,12 +209,26 @@ export const GroceryList = () => {
         )}
       </div>
 
-      <GroceryListForm
-        isOpen={isFormOpen}
-        groceryList={selectedGroceryList}
-        onClose={closeForm}
-        onDelete={deleteList}
-      />
+      {selectedGroceryList && (
+        <Drawer open={isFormOpen} onOpenChange={setIsFormOpen}>
+          <DrawerContent className="lg:w-[60vw] lg:mx-auto px-4">
+            <DrawerHeader>
+              <DrawerTitle>{selectedGroceryList.name}</DrawerTitle>
+              <DrawerDescription>
+                <p className="text-muted-foreground text-sm">
+                  Grocery list created on{" "}
+                  {timeConverter(selectedGroceryList.created_at)}
+                </p>
+              </DrawerDescription>
+            </DrawerHeader>
+            <GroceryListForm
+              groceryList={selectedGroceryList}
+              onDelete={deleteList}
+              className="overflow-y-scroll bg-transparent"
+            />
+          </DrawerContent>
+        </Drawer>
+      )}
     </DefaultLayout>
   );
 };

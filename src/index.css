@@ -4,14 +4,20 @@
 
 @layer base {
   :root {
-    --coral: 3.6 89.4% 70.4%;
-    --rose: 4.8 86.1% 77.5%;
-    --darkrose: 4 24.2% 51.4%;
-    --creme: 42 55.6% 92.9%;
-    --dusk: 45 4.2% 18.8%;
-    --offdusk: 60 2.6% 22.5%;
-    --lilac: 243.4 100% 82.9%;
-    --navy: 222.2 84% 4.9%;
+    --primary-black: 0 0% 12%;
+    --primary-white: 0 0% 98%;
+    --primary-purple: 253 76% 66%;
+    --primary-yellow: 44 96% 49%;
+    --primary-grey: 241 7% 94%;
+    --primary-green: 94 41% 53%;
+    --primary-blue: 212 99% 64%;
+    --primary-red: 5 93% 63%;
+
+    --secondary-purple: 253 76% 93%;
+    --secondary-yellow: 44 96% 93%;
+    --secondary-green: 94 41% 93%;
+    --secondary-blue: 212 99% 93%;
+    --secondary-red: 5 93% 93%;
 
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
@@ -85,6 +91,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 body::before {
@@ -97,7 +106,6 @@ body::before {
   pointer-events: none;
   /* background-color: aliceblue; */
   opacity: 0.4;
-  filter: url(#noiseFilter);
   z-index: 9999;
 }
 

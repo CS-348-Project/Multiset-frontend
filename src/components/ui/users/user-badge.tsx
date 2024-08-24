@@ -19,7 +19,7 @@ const UserBadgeDisplay = ({ user }: { user: UserInfo }) => {
         <h3 className="text-lg font-medium text-ellipsis overflow-hidden">
           {user.first_name} {user.last_name}
         </h3>
-        <p className="text-dusk text-ellipsis overflow-hidden">{user.email}</p>
+        <p className="text-black text-ellipsis overflow-hidden">{user.email}</p>
       </div>
       <div className="text-right">
         {(user.balance ?? 0) >= 0 ? (

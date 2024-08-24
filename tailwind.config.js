@@ -18,14 +18,22 @@ module.exports = {
     },
     extend: {
       colors: {
-        coral: "hsl(var(--coral))",
-        rose: "hsl(var(--rose))",
-        darkrose: "hsl(var(--darkrose))",
-        creme: "hsl(var(--creme))",
-        dusk: "hsl(var(--dusk))",
-        offdusk: "hsl(var(--offdusk))",
-        lilac: "hsl(var(--lilac))",
-        navy: "hsl(var(--navy))",
+        black: "hsl(var(--primary-black))",
+        white: "hsl(var(--primary-white))",
+        purple: "hsl(var(--primary-purple))",
+        yellow: "hsl(var(--primary-yellow))",
+        grey: "hsl(var(--primary-grey))",
+        green: "hsl(var(--primary-green))",
+        blue: "hsl(var(--primary-blue))",
+        red: "hsl(var(--primary-red))",
+
+        "purple-secondary": "hsl(var(--secondary-purple))",
+        "yellow-secondary": "hsl(var(--secondary-yellow))",
+        "grey-secondary": "hsl(var(--secondary-grey))",
+        "green-secondary": "hsl(var(--secondary-green))",
+        "blue-secondary": "hsl(var(--secondary-blue))",
+        "red-secondary": "hsl(var(--secondary-red))",
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -84,13 +92,13 @@ module.exports = {
           "60%": { top: "20vh", right: "20vw", transform: "scale(1.3)" },
           "100%": { top: "40vh", right: "15vw", transform: "scale(1)" },
         },
-        "navy-blob": {
+        "purple-blob": {
           "0%": { top: "30vh", right: "16vw", transform: "scale(1.2)" },
           "30%": { top: "60vh", right: "16vw", transform: "scale(1)" },
           "60%": { top: "40vh", right: "26vw", transform: "scale(1)" },
           "100%": { top: "30vh", right: "16vw", transform: "scale(1.2)" },
         },
-        "coral-blob": {
+        "pink-blob": {
           "0%": { top: "40vh", right: "14vw", transform: "scale(1)" },
           "30%": { top: "25vh", right: "20vw", transform: "scale(1.4)" },
           "60%": { top: "40vh", right: "16vw", transform: "scale(1)" },
@@ -101,8 +109,12 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "yellow-blob": "yellow-blob 8s ease-in-out infinite",
-        "navy-blob": "navy-blob 8s ease-in-out infinite",
-        "coral-blob": "coral-blob 8s ease-in-out infinite",
+        "purple-blob": "purple-blob 8s ease-in-out infinite",
+        "pink-blob": "pink-blob 8s ease-in-out infinite",
+      },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
       },
     },
   },

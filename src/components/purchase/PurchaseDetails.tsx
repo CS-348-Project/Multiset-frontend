@@ -72,7 +72,7 @@ export const PurchaseDetails = () => {
 
   return (
     <DefaultLayout>
-      <div className="absolute top-20 left-4 lg:top-14 lg:left-20">
+      <div>
         <div
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => navigate(`/groups/${params.id}/purchase`)}

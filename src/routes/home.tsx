@@ -2,19 +2,19 @@ import React, { useEffect } from "react";
 import GroupCard from "@/components/groups/group-card";
 import DefaultLayout from "@/components/layout/default-layout";
 import LoadingPage from "@/components/layout/loading-page";
-import NewGroupButton from "@/components/ui/groups/new-group-button";
 import { useState } from "react";
 import { DetailedGroup } from "@/types/Group";
 import useProfile from "@/context/profile-context";
 import { apiService } from "@/utils/api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { isLoggedIn } from "@/hooks/withAuth";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
 
 const Home = () => {
-  // const [groups, setGroups] = useState<DetailedGroup[]>([]);
   const { profile } = useProfile();
   const [groups, setGroups] = useState<DetailedGroup[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const Home = () => {
       setGroups(response.data);
       setLoading(false);
     });
-  }, [profile]);
+  }, []);
 
   if (loading) {
     return <LoadingPage />;
@@ -34,16 +34,12 @@ const Home = () => {
 
   return (
     <DefaultLayout hideMenu>
-      <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-        <div className="flex items-center gap-4">
-          <div className="flex flex-col gap-2">
-            <h1 className="font-semibold text-dusk text-2xl md:text-3xl lg:text-4xl">
-              Welcome Back, {profile?.first_name}!
-            </h1>
-          </div>
-        </div>
+      <div className="flex flex-col gap-4 md:gap-8 md:p-6">
+        <h1 className="font-semibold text-black text-2xl md:text-3xl lg:text-4xl">
+          Welcome Back, {profile?.first_name}!
+        </h1>
 
-        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] mb-12">
           {/* Existing Groups */}
           {groups?.length > 0 &&
             groups.map((group) => (
@@ -51,11 +47,17 @@ const Home = () => {
                 <GroupCard group={group} />
               </React.Fragment>
             ))}
-
-          {/* New Group Button */}
-          <div className="w-full aspect-[5/4] rounded-xl">
-            <NewGroupButton />
-          </div>
+        </div>
+        {/* New Group Button */}
+        <div className="bottom-2 lg:bottom-8 left-0 fixed flex w-full justify-center h-12 z-10">
+          <Link to="/groups/new">
+            <Button
+              variant="default"
+              className="w-auto h-full bg-blue hover:bg-blue/80"
+            >
+              <PlusIcon className="h-8 w-8" />
+            </Button>
+          </Link>
         </div>
       </div>
     </DefaultLayout>
