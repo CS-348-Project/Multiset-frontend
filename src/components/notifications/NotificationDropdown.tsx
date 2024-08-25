@@ -137,14 +137,14 @@ const NotificationDropdown = () => {
         }
       }}
     >
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="w-8 h-8 relative">
+      <DropdownMenuTrigger>
+        <div className="w-8 h-8 relative inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/30 hover:text-black/80">
           <BellIcon className="w-4 h-4" />
           {unread > 0 && (
             <span className="absolute top-1 right-1 w-3 h-3 bg-red rounded-full"></span>
           )}
           <span className="sr-only">Toggle user menu</span>
-        </Button>
+        </div>
       </DropdownMenuTrigger>
       {notifications?.length > 0 ? (
         <DropdownMenuContent align="end" className="bg-white pt-4">
@@ -190,13 +190,13 @@ const NotificationDropdown = () => {
       }}
     >
       <DrawerTrigger>
-        <Button variant="ghost" size="icon" className="w-8 h-8 relative">
+        <div className="w-8 h-8 relative inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/30 hover:text-black/80">
           <BellIcon className="w-4 h-4" />
           {unread > 0 && (
             <span className="absolute top-1 right-1 w-3 h-3 bg-red rounded-full"></span>
           )}
           <span className="sr-only">Toggle user menu</span>
-        </Button>
+        </div>
       </DrawerTrigger>
       {notifications?.length > 0 ? (
         <DrawerContent>

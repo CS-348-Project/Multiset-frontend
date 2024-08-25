@@ -90,13 +90,11 @@ const MenuList = () => {
     href: string;
     icon: React.ReactNode;
     label: string;
-    key: string;
   }
 
-  const NavLink: React.FC<NavLinkProps> = ({ href, icon, label, key }) => {
+  const NavLink: React.FC<NavLinkProps> = ({ href, icon, label }) => {
     return (
       <a
-        key={key}
         href={href}
         className="flex items-center w-full gap-3 rounded-full px-3 py-3 text-black transition-all hover:bg-white text-lg leading-none duration-200"
       >
