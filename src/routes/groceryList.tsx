@@ -45,18 +45,16 @@ export const GroceryList = () => {
     setSelectedGroceryList(groceryLists.find((list) => list.id === id) ?? null);
   };
 
-  const closeForm = () => {
-    setIsFormOpen(false);
-    setSelectedGroceryList(null);
+  const handleFormChange = (open: boolean) => {
+    setIsFormOpen(open);
+    if (!open) setSelectedGroceryList(null);
   };
 
   const fetchLists = () => {
-    return apiService
-      .get("/api/grocery-lists/get", { params: { group_id } })
-      .then((response) => {
-        setGroceryLists(response.data);
-        setLoading(false);
-      });
+    return apiService.get(`/api/grocery-lists/${group_id}`).then((response) => {
+      setGroceryLists(response.data);
+      setLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -210,7 +208,7 @@ export const GroceryList = () => {
       </div>
 
       {selectedGroceryList && (
-        <Drawer open={isFormOpen} onOpenChange={setIsFormOpen}>
+        <Drawer open={isFormOpen} onOpenChange={handleFormChange}>
           <DrawerContent className="lg:w-[60vw] lg:mx-auto px-4">
             <DrawerHeader>
               <DrawerTitle>{selectedGroceryList.name}</DrawerTitle>
