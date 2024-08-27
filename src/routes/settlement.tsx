@@ -27,7 +27,7 @@ export const Settlement = () => {
   const [loading, setLoading] = React.useState(true);
   const params = useParams<{ id: string }>();
   const group_id = Number(params.id);
-  const [key, setKey] = useState(0);
+  const [key, setKey] = useState(1);
 
   const handleUpdate = () => {
     setKey((prev) => prev + 1);

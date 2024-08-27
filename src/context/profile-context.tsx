@@ -68,5 +68,4 @@ const useProfile = () => {
   return context;
 };
 
-export { ProfileContextProvider };
-export default useProfile;
+export { ProfileContextProvider, useProfile as default };

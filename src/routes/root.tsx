@@ -39,8 +39,8 @@ const Root = () => {
         <div className="bg-yellow absolute filter blur-[60px] h-[200px] w-[200px] animate-yellow-blob"></div>
       </div>
       <div className="relative w-full h-full text-center flex flex-col justify-between py-8">
-        <div className="mt-10">
-          <h1 className="mt-10 text-7xl font-bold tracking-tight text-foreground">
+        <div className="mt-20">
+          <h1 className="text-7xl font-bold tracking-tight text-foreground">
             Multiset
           </h1>
           <p className="text-foreground text-md font-normal">

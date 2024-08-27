@@ -36,7 +36,8 @@ const FormSchema = z.object({
         return decimalPlaces <= 2;
       },
       { message: "Maximum of 2 decimal places allowed" }
-    ),
+    )
+    .refine((value) => value < 10000000, { message: "Amount too large" }),
   purchase_splits: z.array(
     z.object({
       borrower: z.number(),

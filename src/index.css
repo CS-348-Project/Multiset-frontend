@@ -104,9 +104,9 @@ body::before {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  /* background-color: aliceblue; */
   opacity: 0.4;
   z-index: 9999;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .multiset-scroll::-webkit-scrollbar {

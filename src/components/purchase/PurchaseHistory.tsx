@@ -54,7 +54,9 @@ export const PurchaseHistory = ({ _key = 0 }: PurchaseHistoryProps) => {
                     tabIndex={0}
                     role="button"
                   >
-                    <ShoppingCart className="flex-none w-10 h-10 bg-black/30 p-2 rounded-full text-white" />
+                    <div className="rounded-full w-10 h-10 bg-black/30">
+                      <ShoppingCart className="flex-none w-10 h-10 p-2 text-white" />
+                    </div>
                     <div className="grow min-w-0 hyphens-auto">
                       <div className="font-medium line-clamp-1">
                         {purchase.name}

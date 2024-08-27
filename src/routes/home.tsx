@@ -49,7 +49,7 @@ const Home = () => {
             ))}
         </div>
         {/* New Group Button */}
-        <div className="bottom-2 lg:bottom-8 left-0 fixed flex w-full justify-center h-12 z-10">
+        <div className="bottom-4 lg:bottom-8 left-0 fixed flex w-full justify-center h-12 z-10">
           <Link to="/groups/new">
             <Button
               variant="default"

@@ -1,9 +1,9 @@
 import { apiService } from "@/utils/api";
-import { User } from "@/utils/types";
+import { UserInfo } from "@/types/UserInfo";
 import { useQuery } from "@tanstack/react-query";
 
 const useUser = (id: number) => {
-  return useQuery<User>({
+  return useQuery<UserInfo>({
     queryKey: ["user", id],
     queryFn: async () => {
       const response = await apiService.get(`/api/users/get?user_id=${id}`);

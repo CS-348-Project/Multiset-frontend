@@ -16,17 +16,16 @@ import {
 import Loading from "../ui/loading";
 
 type OptimalPaymentTableProps = {
-  key?: number;
+  // key?: number;
   userOwes?: boolean;
 };
 
 export const OptimalPaymentTable = ({
-  _key = 0,
   userOwes = true,
 }: OptimalPaymentTableProps) => {
   const params = useParams<{ id: string }>();
   const groupId = Number(params.id);
-  const profile = useProfile();
+  const { profile } = useProfile();
 
   const [optimizationData, setOptimizationData] = useState<
     OptimalSettlement[] | undefined
@@ -36,14 +35,14 @@ export const OptimalPaymentTable = ({
 
   useEffect(() => {
     setLoadingOptimizationData(true);
-
+    if (!profile) return;
     apiService
       .post(`/api/optimization/calculate?group_id=${groupId}`)
       .then((res) => {
         const data = res.data.transfers.filter((transfer: OptimalSettlement) =>
           userOwes
-            ? transfer.from_user_id === profile.profile?.id
-            : transfer.to_user_id === profile.profile?.id
+            ? transfer.from_user_id === profile?.id
+            : transfer.to_user_id === profile?.id
         );
         setOptimizationData(data);
         setLoadingOptimizationData(false);
@@ -56,7 +55,7 @@ export const OptimalPaymentTable = ({
           ),
         });
       });
-  }, []);
+  }, [profile]);
 
   if (loadingOptimizationData) return <Loading />;
 
