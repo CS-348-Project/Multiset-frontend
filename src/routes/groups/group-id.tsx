@@ -7,13 +7,27 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { PlusIcon, SettingsIcon, UsersIcon } from "lucide-react";
 import { OptimalPaymentTable } from "@/components/settlement/OptimalPaymentTable";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerFooter,
+  DrawerDescription,
+} from "@/components/ui/drawer";
+import { useState } from "react";
+import { AddMembersCard } from "@/components/groups/AddMembersCard";
 
 const GroupPage = () => {
   const navigate = useNavigate();
+  const [manageGroupOpen, setManageGroupOpen] = useState(false);
   const { id } = useParams<{ id: string }>();
-  if (!id) navigate("/home");
+  const { data, isLoading } = useDetailedGroup(id ?? "");
 
-  const { data, isLoading } = useDetailedGroup(parseInt(id as string));
+  if (!id) {
+    navigate("/home");
+    return null;
+  }
 
   if (isLoading || !data) {
     return <LoadingPage />;
@@ -30,7 +44,7 @@ const GroupPage = () => {
       </div>
 
       <Space s="h-4" />
-      <div className="flex gap-3">
+      <div className="flex gap-3 flex-wrap">
         <Button
           variant="primary"
           onClick={() =>
@@ -43,10 +57,7 @@ const GroupPage = () => {
           <PlusIcon className="w-4 h-4 mr-2" />
           Add Purchase
         </Button>
-        <Button
-          variant="secondary"
-          onClick={() => alert("not done yet")} // TODO: Implement this
-        >
+        <Button variant="secondary" onClick={() => setManageGroupOpen(true)}>
           <SettingsIcon className="w-4 h-4 mr-2" />
           Manage Group
         </Button>
@@ -63,6 +74,29 @@ const GroupPage = () => {
         </div>
       </div>
       <PurchaseHistory />
+
+      <Drawer
+        open={manageGroupOpen}
+        onOpenChange={(open) => setManageGroupOpen(open)}
+      >
+        <DrawerContent className="lg:w-[60vw] lg:mx-auto max-h-full mt-2 px-4">
+          <DrawerHeader>
+            <DrawerTitle>Manage Group</DrawerTitle>
+            <DrawerDescription hidden>Manage Group Members</DrawerDescription>
+          </DrawerHeader>
+          <AddMembersCard existingGroup groupId={id} />
+          <DrawerFooter>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setManageGroupOpen(false);
+              }}
+            >
+              Back
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </DefaultLayout>
   );
 };

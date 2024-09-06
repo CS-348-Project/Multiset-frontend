@@ -5,6 +5,7 @@ export interface Group {
   name: string;
   optimize_payments: boolean;
   created_at: string;
+  share_code: string;
 }
 
 export interface DetailedGroup extends Group {

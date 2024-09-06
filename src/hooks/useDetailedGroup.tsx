@@ -3,8 +3,8 @@ import { DetailedGroup } from "@/types/Group";
 import { useQuery } from "@tanstack/react-query";
 import { UserInfo } from "@/types/UserInfo";
 
-const useDetailedGroup = (id: number) => {
-  return useQuery<DetailedGroup>({
+const useDetailedGroup = (id: string) => {
+  const query = useQuery<DetailedGroup>({
     queryKey: ["group", id],
     queryFn: async () => {
       const response = await apiService.get(
@@ -23,6 +23,8 @@ const useDetailedGroup = (id: number) => {
       };
     },
   });
+
+  return { ...query, refetch: query.refetch };
 };
 
 export default useDetailedGroup;

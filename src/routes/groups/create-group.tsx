@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -78,7 +78,7 @@ export const CreateGroup = () => {
 
   return (
     <>
-      <div className="relative w-full h-screen flex items-center justify-center bg-creme">
+      <div className="relative w-full h-screen flex items-center justify-center bg-grey">
         <div className="absolute left-4 top-4">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
             <CornerUpLeftIcon className="h-6 w-6" />
